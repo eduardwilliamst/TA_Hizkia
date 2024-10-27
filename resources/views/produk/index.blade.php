@@ -101,14 +101,14 @@ Produk
                     </div>
                     <div class="form-group">
                         <label for="gambar">Gambar</label>
-                        <input type="file" class="form-control" id="gambar" name="gambar">
+                        <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" required>
                     </div>
                     <div class="form-group">
-                        <label for="usia_awal">usia Awal</label>
+                        <label for="usia_awal">Usia Awal</label>
                         <input type="date" class="form-control" id="usia_awal" name="usia_awal" required>
                     </div>
                     <div class="form-group">
-                        <label for="usia_akhir">usia Akhir</label>
+                        <label for="usia_akhir">Usia Akhir</label>
                         <input type="date" class="form-control" id="usia_akhir" name="usia_akhir" required>
                     </div>
                     <div class="form-group">
@@ -138,7 +138,6 @@ Produk
         </div>
     </div>
 </div>
-
 
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEditProduk" tabindex="-1" aria-labelledby="modalEditProdukLabel" aria-hidden="true">

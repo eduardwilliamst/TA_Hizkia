@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\Produk;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
@@ -59,9 +60,9 @@ class KategoriController extends Controller
             'nama' => 'required|string|max:45',
         ]);
 
-        // Temukan kategori dan update data
         $kategori = Kategori::findOrFail($id);
-        $kategori->update($request->all());
+        $kategori->nama = $request->nama;
+        $kategori->save();
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui!');
     }
@@ -75,5 +76,15 @@ class KategoriController extends Controller
         $kategori->delete();
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus!');
+    }
+
+    public function getEditForm(Request $request)
+    {
+        $kategori = Kategori::find($request->id);
+
+        return response()->json(array(
+            'status' => 'oke',
+            'msg' => view('kategori.modal', compact('kategori'))->render()
+        ), 200);
     }
 }

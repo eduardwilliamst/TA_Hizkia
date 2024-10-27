@@ -6,6 +6,7 @@ use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\Diskon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
@@ -37,25 +38,35 @@ class ProdukController extends Controller
     {
         // Validasi input
         $request->validate([
-            'barcode' => 'required|string|max:45',
-            'nama' => 'required|string|max:100',
-            'harga' => 'required|integer',
+            'barcode' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
+            'harga' => 'required|numeric',
             'stok' => 'required|integer',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal ukuran gambar 2MB
             'usia_awal' => 'required|date',
             'usia_akhir' => 'required|date',
             'kategori_idkategori' => 'required|exists:kategoris,idkategori',
             'diskon_iddiskon' => 'nullable|exists:diskons,iddiskon',
         ]);
 
-        // Simpan produk baru
-        $produk = new Produk($request->all());
+        // Membuat produk baru
+        $produk = new Produk();
+        $produk->barcode = $request->barcode;
+        $produk->nama = $request->nama;
+        $produk->harga = $request->harga;
+        $produk->stok = $request->stok;
+        $produk->usia_awal = $request->usia_awal;
+        $produk->usia_akhir = $request->usia_akhir;
+        $produk->kategori_idkategori = $request->kategori_idkategori;
+        $produk->diskon_iddiskon = $request->diskon_iddiskon;
 
-        // Jika ada gambar, simpan file gambar
-        // if ($request->hasFile('gambar')) {
-        //     $filePath = $request->file('gambar')->store('produk_images', 'public');
-        //     $produk->gambar = $filePath;
-        // }
+        // Menyimpan gambar jika ada
+        if ($request->hasFile('gambar')) {
+            $imagePath = $request->file('gambar')->store('images/produk', 'public');
+            $produk->gambar = $imagePath; // Simpan path gambar ke database
+        }
 
+        // Simpan produk ke database
         $produk->save();
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');

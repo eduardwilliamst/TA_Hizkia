@@ -298,6 +298,32 @@
 
     <!-- Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        if($('.datatable-basic').length)
+        {
+            $('.datatable-basic').DataTable();
+        }
+        if($('.datatable-not-paginate').length)
+        {
+            $('.datatable-not-paginate').DataTable({
+                paginate: false
+            });
+        }
+        function load_modal(token, url, modal) {
+            $(modal).modal('show');
+            $(modal + 'Title').html('Edit Permission');
+            $(modal + 'Content').html(`<div class="d-flex justify-content-center align-items-center" style="height: 200px;"><div class="spinner-border text-primary" role="status"></div></div>`);
+            var act = url;
+            console.log(act);
+            $.post(act, {
+                    _token: token,
+                },
+                function(data) {
+                    $(modal + 'Content').html(data);
+                });
+        }
+
+    </script>
 
     @yield('javascript')
 </body>

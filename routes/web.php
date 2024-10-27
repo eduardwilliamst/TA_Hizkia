@@ -46,6 +46,7 @@ Route::post('pembelian/getEditForm', [PembelianController::class, 'getEditForm']
 
 Route::resource('penjualan', PenjualanController::class);
 Route::post('penjualan/getEditForm', [PenjualanController::class, 'getEditForm'])->name('penjualan.getEditForm');
+Route::post('penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
 
 Route::resource('posmesin', PosMesinController::class);
 Route::post('posmesin/getEditForm', [PosMesinController::class, 'getEditForm'])->name('posmesin.getEditForm');

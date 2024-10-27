@@ -12,4 +12,9 @@ class Kategori extends Model
     protected $table = 'kategoris'; // Nama tabel di database
     protected $primaryKey = 'idkategori'; // Primary key tabel
     protected $fillable = ['nama']; // Kolom yang dapat diisi
+
+    public function produks()
+    {
+        return $this->hasMany(Produk::class, 'kategori_idkategori', 'idkategori');
+    }
 }
