@@ -38,7 +38,7 @@ class ProdukController extends Controller
     {
         // Validasi input
         $request->validate([
-            'barcode' => 'required|string|max:255',
+            'barcode' => 'required|string|max:255|unique:produks,barcode',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'stok' => 'required|integer',
