@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiskonController;
@@ -32,6 +33,8 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+Route::resource('cart', CartController::class);
 
 // Menambahkan resource routes untuk controller yang telah Anda buat
 Route::resource('diskon', DiskonController::class);
