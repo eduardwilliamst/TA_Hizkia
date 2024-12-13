@@ -57,45 +57,52 @@
 
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-collapse layout-top-nav">
     <div class="wrapper">
-
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-            </ul>
-
-            <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-
-                        </button>
-                        <div class="dropdown-menu">
-
+            <div class="container"><a href="{{ route('dashboard') }}" class="navbar-brand">
+                    <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                    <span class="brand-text font-weight-light">Aplikasi</span>
+                </a>
+                <!-- Right navbar links -->
+                <ul class="navbar-nav ml-auto order-1 order-md-3">
+                    <form class="form-inline ml-0 ml-md-3">
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                            <span class="brand-text font-weight-light">General Ledger</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-sm">
                             <a href="" class="dropdown-item">
                                 Akun
                             </a>
-
+                            <div class="dropdown-divider"></div>
                             <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">
-                                <p>
-                                    Logout
-                                </p>
+                                Logout
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
                         </div>
-                    </div>
-
-                </li>
-            </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    </li>
+                </ul>
+            </div>
         </nav>
         <!-- /.navbar -->
 
@@ -214,9 +221,11 @@
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row mb-2">
-                        @yield('page-bar')
+                        <div class="col-sm-6">
+                            @yield('page-bar')
+                        </div>
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -229,16 +238,16 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            <strong>Copyright &copy; <a href="http://adminlte.io">General Ledger</a>.</strong>
-            All rights reserved.
-        </footer>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
         </aside>
         <!-- /.control-sidebar -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; <a href="http://adminlte.io">General Ledger</a>.</strong>
+            All rights reserved.
+        </footer>
     </div>
     <!-- ./wrapper -->
 
@@ -299,16 +308,15 @@
     <!-- Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        if($('.datatable-basic').length)
-        {
+        if ($('.datatable-basic').length) {
             $('.datatable-basic').DataTable();
         }
-        if($('.datatable-not-paginate').length)
-        {
+        if ($('.datatable-not-paginate').length) {
             $('.datatable-not-paginate').DataTable({
                 paginate: false
             });
         }
+
         function load_modal(token, url, modal) {
             $(modal).modal('show');
             $(modal + 'Title').html('Edit Permission');
@@ -322,7 +330,6 @@
                     $(modal + 'Content').html(data);
                 });
         }
-
     </script>
 
     @yield('javascript')

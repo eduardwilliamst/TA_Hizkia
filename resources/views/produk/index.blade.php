@@ -4,19 +4,13 @@
 Produk
 @endsection
 
-@section('contents')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Data Produk</h1>
-            </div>
-        </div>
-    </div>
-</div>
+@section('page-bar')
+<h1 class="m-0">Data Produk</h1>
+@endsection
 
+@section('contents')
 <div class="content">
-    <div class="container-fluid">
+    <div class="container">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -116,7 +110,7 @@ Produk
                         <select class="form-control" id="kategori_idkategori" name="kategori_idkategori" required>
                             <option value="">Pilih Kategori</option>
                             @foreach($kategoris as $kategori)
-                                <option value="{{ $kategori->idkategori }}">{{ $kategori->nama }}</option>
+                            <option value="{{ $kategori->idkategori }}">{{ $kategori->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -125,7 +119,7 @@ Produk
                         <select class="form-control" id="diskon_iddiskon" name="diskon_iddiskon">
                             <option value="">Pilih Diskon (Opsional)</option>
                             @foreach($diskons as $diskon)
-                                <option value="{{ $diskon->iddiskon }}">{{ $diskon->keterangan }}</option>
+                            <option value="{{ $diskon->iddiskon }}">{{ $diskon->keterangan }}</option>
                             @endforeach
                         </select>
                     </div>

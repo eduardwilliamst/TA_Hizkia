@@ -35,12 +35,23 @@ class PenjualanController extends Controller
     public function store(Request $request)
     {
         // Validasi keranjang
-        $request->validate([
-            'cart' => 'required|array',
-            'cart.*.id' => 'required|exists:produks,idproduk',
-            'cart.*.quantity' => 'required|integer|min:1',
-            'cara_bayar' => 'required|string',
-        ]);
+        // $request->validate([
+        //     'cart' => 'required|array',
+        //     'cart.*.id' => 'required|exists:produks,idproduk',
+        //     'cart.*.quantity' => 'required|integer|min:1',
+        //     'cara_bayar' => 'required|string',
+        // ]);
+
+        try {
+            $request->validate([
+                'cart' => 'required|array',
+                'cart.*.id' => 'required|exists:produks,idproduk',
+                'cart.*.quantity' => 'required|integer|min:1',
+                'cara_bayar' => 'required|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
 
         $cart = $request->input('cart');
         $totalBayar = 0;

@@ -1,9 +1,9 @@
 @extends('layouts.adminlte')
 
 @section('title')
-Dashboard
+Keranjang
 @endsection
 
 @section('page-bar')
-Dashboard
+<h1 class="m-0">Keranjang</h1>
 @endsection
