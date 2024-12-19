@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Menetapkan primary key untuk kombinasi
-            $table->primary(['penjualan_id', 'produk_id', 'diskon_id', 'promo_produk_id']);
+            $table->primary(['penjualan_id', 'produk_id']);
         });
     }
 

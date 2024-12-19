@@ -188,35 +188,35 @@ Penjualan
     });
 
     document.getElementById("checkout-button").addEventListener("click", function() {
+    const cartData = cart.map(item => ({
+        id: item.id,
+        quantity: item.quantity,
+        price: item.price,
+    }));
 
-        const cartData = cart.map(item => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price
-        }));
+    const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
 
-        const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
+    fetch("{{ route('penjualan.store') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+        },
+        body: JSON.stringify({
+            cart: cartData,
+            cara_bayar: caraBayar,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            cart.length = 0;
+            updateCart();
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
 
-        fetch("/penjualan/store", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                },
-                body: JSON.stringify({
-                    cart: cartData,
-                    cara_bayar: caraBayar
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                    cart.length = 0;
-                    updateCart();
-                }
-            })
-            .catch(error => console.error("Error:", error));
-    });
 </script>
 @endsection

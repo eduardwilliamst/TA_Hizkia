@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('harga')->nullable();
             $table->integer('stok')->nullable();
             $table->string('gambar', 512)->nullable();
-            $table->dateTime('usia_awal')->nullable();
-            $table->dateTime('usia_akhir')->nullable();
+            // $table->dateTime('usia_awal')->nullable();
+            // $table->dateTime('usia_akhir')->nullable();
 
             // Foreign keys
             $table->unsignedBigInteger('kategori_idkategori');

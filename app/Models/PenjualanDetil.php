@@ -20,8 +20,6 @@ class PenjualanDetil extends Model
         'harga',
         'jumlah',
         'sub_total',
-        'promo_produk_id',
-        'diskon_id',
     ];
 
     /**
@@ -43,16 +41,16 @@ class PenjualanDetil extends Model
     /**
      * Relasi ke model Promo
      */
-    public function promoProduk()
-    {
-        return $this->belongsTo(Promo::class, 'promo_produk_id');
-    }
+    // public function promoProduk()
+    // {
+    //     return $this->belongsTo(Promo::class, 'promo_produk_id');
+    // }
 
-    /**
-     * Relasi ke model Diskon
-     */
-    public function diskon()
-    {
-        return $this->belongsTo(Diskon::class, 'diskon_id');
-    }
+    // /**
+    //  * Relasi ke model Diskon
+    //  */
+    // public function diskon()
+    // {
+    //     return $this->belongsTo(Diskon::class, 'diskon_id');
+    // }
 }

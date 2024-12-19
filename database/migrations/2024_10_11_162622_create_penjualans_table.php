@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('total_diskon')->nullable();
             $table->integer('total_bayar')->nullable();
             
-            $table->foreignId('pos_session_id')->constrained('pos_sessions', 'idpos_session')->onDelete('restrict')->onUpdate('restrict');
+            // $table->foreignId('pos_session_id')->constrained('pos_sessions', 'idpos_session')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
                         
             $table->timestamps();

@@ -17,8 +17,6 @@ class Produk extends Model
         'harga',
         'stok',
         'gambar',
-        'usia_awal',
-        'usia_akhir',
         'kategori_idkategori',
         'diskon_iddiskon'
     ]; // Kolom yang dapat diisi

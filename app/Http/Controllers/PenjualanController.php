@@ -67,7 +67,7 @@ class PenjualanController extends Controller
             'cara_bayar' => $request->input('cara_bayar'),
             'total_diskon' => 0, // Tambahkan logika diskon jika ada
             'total_bayar' => $totalBayar,
-            'pos_session_id' => auth()->user()->current_session_id, // Asumsikan session aktif
+            // 'pos_session_id' => auth()->user()->current_session_id, // Asumsikan session aktif
             'user_id' => auth()->id(),
         ]);
 

@@ -17,7 +17,6 @@ class Penjualan extends Model
         'cara_bayar',
         'total_diskon',
         'total_bayar',
-        'pos_session_id',
         'user_id',
     ];
 

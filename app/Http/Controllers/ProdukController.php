@@ -43,8 +43,8 @@ class ProdukController extends Controller
             'harga' => 'required|numeric',
             'stok' => 'required|integer',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal ukuran gambar 2MB
-            'usia_awal' => 'required|date',
-            'usia_akhir' => 'required|date',
+            // 'usia_awal' => 'required|date',
+            // 'usia_akhir' => 'required|date',
             'kategori_idkategori' => 'required|exists:kategoris,idkategori',
             'diskon_iddiskon' => 'nullable|exists:diskons,iddiskon',
         ]);
@@ -55,8 +55,8 @@ class ProdukController extends Controller
         $produk->nama = $request->nama;
         $produk->harga = $request->harga;
         $produk->stok = $request->stok;
-        $produk->usia_awal = $request->usia_awal;
-        $produk->usia_akhir = $request->usia_akhir;
+        // $produk->usia_awal = $request->usia_awal;
+        // $produk->usia_akhir = $request->usia_akhir;
         $produk->kategori_idkategori = $request->kategori_idkategori;
         $produk->diskon_iddiskon = $request->diskon_iddiskon;
 
