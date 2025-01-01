@@ -21,6 +21,14 @@ class PenjualanController extends Controller
         }
     }
 
+    public function listData()
+    {
+        $datas = Penjualan::all();
+        dd($datas);
+
+        return view('penjualan.list', compact('datas'));
+    }
+
     public function data(Request $request)
     {
         try {
@@ -32,15 +40,14 @@ class PenjualanController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function show()
     {
-        // Validasi keranjang
-        // $request->validate([
-        //     'cart' => 'required|array',
-        //     'cart.*.id' => 'required|exists:produks,idproduk',
-        //     'cart.*.quantity' => 'required|integer|min:1',
-        //     'cara_bayar' => 'required|string',
-        // ]);
+        $penjualans = Penjualan::all();
+
+        return view('penjualan.list', compact('penjualans'));
+    }
+
+    public function store(Request $request){
 
         try {
             $request->validate([
@@ -83,5 +90,87 @@ class PenjualanController extends Controller
         }
 
         return response()->json(['message' => 'Penjualan berhasil disimpan!', 'penjualan_id' => $penjualan->idpenjualan]);
+    }
+
+    // Tambah produk ke keranjang
+    public function addToCart(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:produks,idproduk',
+            'name' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = session()->get('cart', []);
+
+        // Tambahkan item ke cart
+        $cart[$request->id] = [
+            'id' => $request->id,
+            'name' => $request->name,
+            'price' => $request->price,
+            'quantity' => $request->quantity,
+        ];
+
+        // Simpan kembali ke session
+        session()->put('cart', $cart);
+
+        return response()->json(['message' => 'Produk berhasil ditambahkan ke keranjang!', 'cart' => $cart]);
+    }
+
+    // Tampilkan isi keranjang
+    public function viewCart()
+    {
+        $cart = session()->get('cart', []);
+        
+        // $cart1 = session('cart', []);
+        // dd($cart);
+        return view('cart.index', compact('cart'));
+    }
+
+    // Hapus keranjang
+    public function clearCart()
+    {
+        session()->forget('cart');
+        return response()->json(['message' => 'Keranjang berhasil dikosongkan!']);
+    }
+
+    // Checkout (Simpan ke database)
+    public function checkout(Request $request)
+    {
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return response()->json(['error' => 'Keranjang kosong!'], 400);
+        }
+
+        $totalBayar = array_sum(array_map(function ($item) {
+            return $item['price'] * $item['quantity'];
+        }, $cart));
+
+        // Simpan ke tabel penjualans
+        $penjualan = Penjualan::create([
+            'tanggal' => Carbon::now(),
+            'cara_bayar' => $request->cara_bayar,
+            'total_diskon' => 0, // Tambahkan logika diskon jika diperlukan
+            'total_bayar' => $totalBayar,
+            'user_id' => auth()->id(),
+        ]);
+
+        // Simpan ke tabel penjualan_detils
+        foreach ($cart as $item) {
+            PenjualanDetil::create([
+                'penjualan_id' => $penjualan->idpenjualan,
+                'produk_id' => $item['id'],
+                'harga' => $item['price'],
+                'jumlah' => $item['quantity'],
+                'sub_total' => $item['price'] * $item['quantity'],
+            ]);
+        }
+
+        // Kosongkan keranjang
+        session()->forget('cart');
+
+        return response()->json(['message' => 'Checkout berhasil!', 'penjualan_id' => $penjualan->idpenjualan]);
     }
 }

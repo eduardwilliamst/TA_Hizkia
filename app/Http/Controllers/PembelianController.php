@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pembelian;
+use App\Models\Produk;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,23 @@ class PembelianController extends Controller
     public function index()
     {
         $pembelians = Pembelian::with('supplier')->get();
-        return view('pembelian.index', compact('pembelians'));
+        $suppliers = Supplier::all();
+        $produks = Produk::all();
+        return view('pembelian.index', compact('pembelians', 'suppliers', 'produks'));
+    }
+
+    public function listData()
+    {
+        $datas = Pembelian::all();
+
+        return view('pembelian.list', compact('datas'));
+    }
+
+    public function show()
+    {
+        $pembelians = Pembelian::all();
+
+        return view('pembelian.list', compact('pembelians'));
     }
 
     /**
@@ -82,5 +99,15 @@ class PembelianController extends Controller
         $pembelian->delete();
 
         return redirect()->route('pembelian.index')->with('success', 'Pembelian berhasil dihapus!');
+    }
+
+    public function getEditForm(Request $request)
+    {
+        $pembelian = Pembelian::find($request->id);
+
+        return response()->json(array(
+            'status' => 'oke',
+            'msg' => view('pembelian.modal', compact('pembelian'))->render()
+        ), 200);
     }
 }

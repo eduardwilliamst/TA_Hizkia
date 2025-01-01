@@ -196,15 +196,35 @@ Penjualan
 
     const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
 
-    fetch("{{ route('penjualan.store') }}", {
+    // fetch("{{ route('penjualan.store') }}", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "X-CSRF-TOKEN": "{{ csrf_token() }}",
+    //     },
+    //     body: JSON.stringify({
+    //         cart: cartData,
+    //         cara_bayar: caraBayar,
+    //     }),
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //     if (data.message) {
+    //         alert(data.message);
+    //         cart.length = 0;
+    //         updateCart();
+    //     }
+    // })
+    // .catch(error => console.error("Error:", error));
+
+    fetch("{{ route('cart.save') }}", { // Ganti route ke endpoint penyimpanan session
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
         },
         body: JSON.stringify({
-            cart: cartData,
-            cara_bayar: caraBayar,
+            cart: cartData, // Data keranjang dikirim ke session
         }),
     })
     .then(response => response.json())
@@ -216,6 +236,7 @@ Penjualan
         }
     })
     .catch(error => console.error("Error:", error));
+
 });
 
 </script>

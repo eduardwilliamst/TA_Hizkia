@@ -34,9 +34,7 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    @foreach($user->roles as $role)
-                                        <span class="badge badge-primary">{{ $role->name }}</span>
-                                    @endforeach
+                                    <span class="badge badge-primary">{{ $user->role }}</span>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editRoleModal{{ $user->id }}">

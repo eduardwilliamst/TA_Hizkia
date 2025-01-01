@@ -34,7 +34,11 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-Route::resource('cart', CartController::class);
+Route::get('cart', [PenjualanController::class, 'viewCart'])->name('penjualan.viewCart');
+Route::post('cart/save', [CartController::class, 'save'])->name('cart.save');
+Route::post('cart/add', [PenjualanController::class, 'addToCart'])->name('penjualan.addToCart');
+Route::post('cart/checkout', [PenjualanController::class, 'checkout'])->name('penjualan.checkout');
+Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // Menambahkan resource routes untuk controller yang telah Anda buat
 Route::resource('diskon', DiskonController::class);
@@ -45,9 +49,11 @@ Route::resource('kategori', KategoriController::class);
 Route::post('kategori/getEditForm', [KategoriController::class, 'getEditForm'])->name('kategori.getEditForm');
 
 Route::resource('pembelian', PembelianController::class);
+Route::get('pembelian/listData', [PembelianController::class, 'listData'])->name('pembelian.listData');
 Route::post('pembelian/getEditForm', [PembelianController::class, 'getEditForm'])->name('pembelian.getEditForm');
 
 Route::resource('penjualan', PenjualanController::class);
+Route::get('penjualan/listData', [PenjualanController::class, 'listData'])->name('penjualan.listData');
 Route::post('penjualan/getEditForm', [PenjualanController::class, 'getEditForm'])->name('penjualan.getEditForm');
 Route::post('penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
 

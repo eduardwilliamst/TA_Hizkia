@@ -78,7 +78,15 @@
                         </div>
                     </form>
                     <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('penjualan.viewCart') }}" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge badge-danger navbar-badge">3</span> <!-- Ganti angka sesuai jumlah item dalam cart -->
+                        </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
@@ -98,10 +106,8 @@
                             </form>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                    </li>
                 </ul>
+
             </div>
         </nav>
         <!-- /.navbar -->
@@ -147,42 +153,6 @@
                                         <p>Kategori</p>
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('pembelian*') || Request::is('penjualan*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-shopping-cart"></i>
-                                <p>
-                                    Transaksi
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-arrow-down"></i>
-                                        <p>Pembelian</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('penjualan.index') }}" class="nav-link {{ Request::is('penjualan') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-arrow-up"></i>
-                                        <p>Penjualan</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('produk*') || Request::is('promo*') || Request::is('supplier*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-box"></i>
-                                <p>
-                                    Produk & Promo
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('produk.index') }}" class="nav-link {{ Request::is('produk') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-box-open"></i>
@@ -204,9 +174,62 @@
                             </ul>
                         </li>
 
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link {{ Request::is('pembelian.index') || Request::is('penjualan.index') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>
+                                    Transaksi
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian/index') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-arrow-down"></i>
+                                        <p>Pembelian</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('penjualan.index') }}" class="nav-link {{ Request::is('penjualan/index') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-arrow-up"></i>
+                                        <p>Penjualan</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-history"></i> <!-- Ganti ikon utama menjadi fas fa-history -->
+                                <p>
+                                    Histori
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('pembelian.listData') }}" class="nav-link {{ Request::is('pembelian.listData') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-file-invoice-dollar"></i> <!-- Ganti ikon List Pembelian -->
+                                        <p>List Pembelian</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('penjualan.listData') }}" class="nav-link {{ Request::is('penjualan.listData') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-receipt"></i> <!-- Ganti ikon List Penjualan -->
+                                        <p>List Penjualan</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('supplier.index') }}" class="nav-link {{ Request::is('supplier') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>Supplier</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('users.index') }}" class="nav-link {{ Request::is('users') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users"></i>
+                                <i class="nav-icon fas fa-user"></i>
                                 <p>Pengguna</p>
                             </a>
                         </li>
