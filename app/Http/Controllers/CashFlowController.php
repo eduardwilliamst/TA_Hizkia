@@ -13,7 +13,7 @@ class CashFlowController extends Controller
      */
     public function index()
     {
-        $cashflows = posSession::all();
+        $cashflows = PosSession::all();
         return view('cashflow.index', compact('cashflows'));
     }
 
@@ -37,7 +37,7 @@ class CashFlowController extends Controller
             'type' => 'required|in:cash_in,cash_out', // Pastikan type hanya 'cash_in' atau 'cash_out'
         ]);
         // dd($request);
-        dd(session()->all()); // Menampilkan seluruh data session yang ada
+        // dd(session()->all()); // Menampilkan seluruh data session yang ada
 
         // Tentukan apakah jumlah positif atau negatif berdasarkan tipe
         $jumlah = $request->type === 'cash_in' ? $request->jumlah : -$request->jumlah;
@@ -83,7 +83,7 @@ class CashFlowController extends Controller
      */
     public function edit($id)
     {
-        $posSession = posSession::findOrFail($id); // Mencari posSession berdasarkan ID
+        $posSession = PosSession::findOrFail($id); // Mencari posSession berdasarkan ID
         return view('cashflow.edit', compact('posSession'));
     }
 
@@ -100,7 +100,7 @@ class CashFlowController extends Controller
         ]);
 
         // Temukan posSession dan update data
-        $posSession = posSession::findOrFail($id);
+        $posSession = PosSession::findOrFail($id);
         $posSession->update($request->all());
 
         return redirect()->route('cahsflow.index')->with('success', 'posSession berhasil diperbarui!');

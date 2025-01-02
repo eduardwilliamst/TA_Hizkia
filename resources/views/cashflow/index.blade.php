@@ -45,7 +45,7 @@ Cashflow
                                 <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idsupplier }})" class="btn btn-info btn-sm">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('cashflow.destroy', $cashflow->idsupplier) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('cashflow.destroy', $cashflow->idpos_session) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this supplier?');">

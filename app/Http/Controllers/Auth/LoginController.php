@@ -80,12 +80,9 @@ class LoginController extends Controller
                 // Create a new pos_session
                 
                 $posSession = PosSession::create([
-                    'balance_awal' => 100000,   // Set initial balance, or adjust as needed
-                    'balance_akhir' => 0,  // Set final balance, or adjust as needed
+                    'saldo_awal' => 100000,   // Set initial balance, or adjust as needed
                     'tanggal' => now(),    // Use current timestamp
                     'keterangan' => 'Sesi dimulai',  // Default session description
-                    'cash_in' => 0,        // Cash in, adjust as needed
-                    'cash_out' => 0,       // Cash out, adjust as needed
                     'user_iduser' => Auth::id(), // Logged-in user's ID
                     'pos_mesin_idpos_mesin' => $posMesinId, // Selected POS machine ID
                 ]);
