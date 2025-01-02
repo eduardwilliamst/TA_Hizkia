@@ -4,19 +4,13 @@
 List Penjualan
 @endsection
 
-@section('contents')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Data Penjualan</h1>
-            </div>
-        </div>
-    </div>
-</div>
+@section('page-bar')
+<h1 class="m-0">Data Penjualan</h1>
+@endsection
 
+@section('contents')
 <div class="content">
-    <div class="container-fluid">
+    <div class="container">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -68,8 +62,7 @@ List Penjualan
     $(document).ready(function() {
         $('#penjualanTable').DataTable({
             dom: 'Bfrtip',
-            buttons: [
-                {
+            buttons: [{
                     extend: 'excel',
                     exportOptions: {
                         columns: ':not(:last-child)'

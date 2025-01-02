@@ -85,7 +85,8 @@
                     <li class="nav-item">
                         <a href="{{ route('penjualan.viewCart') }}" class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="badge badge-danger navbar-badge">3</span> <!-- Ganti angka sesuai jumlah item dalam cart -->
+                            <!-- <span class="badge badge-danger navbar-badge">3</span> -->
+                             <!-- Ganti angka sesuai jumlah item dalam cart -->
                         </a>
                     </li>
                     <li class="nav-item dropdown">
