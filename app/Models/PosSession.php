@@ -14,12 +14,9 @@ class PosSession extends Model
 
     // Menentukan kolom yang bisa diisi (fillable)
     protected $fillable = [
-        'balance_awal',
-        'balance_akhir',
+        'saldo_awal',
         'tanggal',
         'keterangan', // Kolom keterangan ditambahkan
-        'cash_in',    // Kolom cash_in ditambahkan
-        'cash_out',   // Kolom cash_out ditambahkan
         'user_iduser', // Foreign key untuk pengguna
         'pos_mesin_idpos_mesin', // Foreign key untuk mesin POS
     ];

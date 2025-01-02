@@ -13,7 +13,9 @@ class CashFlowController extends Controller
      */
     public function index()
     {
-        $cashflows = PosSession::all();
+        $id_pos_session = session('pos_session');
+        $cashflows = CashFlow::where('id_pos_session', $id_pos_session)->with('posSession')->get();
+        // dd($cashflows);
         return view('cashflow.index', compact('cashflows'));
     }
 

@@ -29,8 +29,11 @@ Cashflow
                 <table id="cashflowTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Saldo Awal</th>
                             <th>Tanggal</th>
+                            <th>Tipe</th>
+                            <th>Jumlah</th>
+                            <th>Balance Awal</th>
+                            <th>Balance Akhir</th>
                             <th>Keterangan</th>
                             <th>Action</th>
                         </tr>
@@ -38,14 +41,17 @@ Cashflow
                     <tbody>
                         @foreach($cashflows as $cashflow)
                         <tr>
-                            <td>{{ $cashflow->saldo_awal }}</td>
-                            <td>{{ $cashflow->tanggal }}</td>
+                            <td>{{ \Carbon\Carbon::parse($cashflow->tanggal)->translatedFormat('d F Y H:i') }}</td>
+                            <td>{{ ucwords(str_replace('_', ' ', $cashflow->tipe)) }}</td>
+                            <td>{{ $cashflow->jumlah }}</td>
+                            <td>{{ $cashflow->balance_awal }}</td>
+                            <td>{{ $cashflow->balance_akhir }}</td>
                             <td>{{ $cashflow->keterangan }}</td>
                             <td>
-                                <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idsupplier }})" class="btn btn-info btn-sm">
+                                <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idcashflow }})" class="btn btn-info btn-sm">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('cashflow.destroy', $cashflow->idpos_session) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('cashflow.destroy', $cashflow->idcashflow) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this supplier?');">

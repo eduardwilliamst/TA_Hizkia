@@ -92,7 +92,7 @@ class LoginController extends Controller
                 session(['pos_session' => $posSession->idpos_session]);
 
                 // Redirect to the dashboard or intended route
-                return view('dashboard');
+                return redirect('/dashboard');
             }
 
             // If login fails, return with errors
