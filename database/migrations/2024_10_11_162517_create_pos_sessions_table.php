@@ -12,17 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pos_sessions', function (Blueprint $table) {
-            $table->id('idpos_session');
-            $table->integer('balance_awal')->nullable();
-            $table->integer('balance_akhir')->nullable();
-            $table->dateTime('tanggal')->nullable();
-            
-            // Pastikan foreign key sesuai dengan primary key dari tabel yang direferensikan
-            $table->foreignId('user_iduser')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('pos_mesin_idpos_mesin')->constrained('pos_mesins', 'idpos_mesin')->onDelete('restrict')->onUpdate('restrict');
-            
-            $table->timestamps();
-        });        
+            $table->id('idpos_session'); // Primary key
+            $table->integer('balance_awal')->nullable(); // Saldo awal
+            $table->integer('balance_akhir')->nullable(); // Saldo akhir
+            $table->dateTime('tanggal')->nullable(); // Tanggal sesi
+            $table->integer('cash_in')->nullable(); // Jumlah uang masuk
+            $table->integer('cash_out')->nullable(); // Jumlah uang keluar
+            $table->string('keterangan', 45)->nullable(); // Keterangan sesi
+
+            // Relasi foreign key
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('pos_mesin_id')->constrained('pos_mesins')->onDelete('restrict')->onUpdate('restrict');
+
+            $table->timestamps(); // Timestamps
+        });
     }
 
     /**
