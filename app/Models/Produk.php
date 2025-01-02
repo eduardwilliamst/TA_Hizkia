@@ -18,18 +18,11 @@ class Produk extends Model
         'stok',
         'gambar',
         'kategori_idkategori',
-        'diskon_iddiskon'
     ]; // Kolom yang dapat diisi
 
     // Relasi dengan model Kategori
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_idkategori', 'idkategori');
-    }
-
-    // Relasi dengan model Diskon
-    public function diskon()
-    {
-        return $this->belongsTo(Diskon::class, 'diskon_iddiskon', 'iddiskon');
     }
 }

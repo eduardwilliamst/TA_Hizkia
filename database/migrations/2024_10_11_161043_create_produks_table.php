@@ -13,26 +13,15 @@ return new class extends Migration
     {
         Schema::create('produks', function (Blueprint $table) {
             $table->id('idproduk');
-            $table->string('barcode', 100)->nullable();
-            $table->string('nama', 100)->nullable(false);
+            $table->string('barcode', 45)->nullable();
+            $table->string('nama', 45)->nullable();
             $table->integer('harga')->nullable();
-            $table->unsignedInteger('stok')->default(0);
-            $table->string('gambar', 255)->nullable();
+            $table->integer('stok')->nullable();
+            $table->string('gambar', 45)->nullable();
 
-            // Foreign keys
+            // Foreign key
             $table->unsignedBigInteger('kategori_idkategori');
-            $table->unsignedBigInteger('diskon_iddiskon')->nullable();
-
-            // Foreign Key Constraints
-            $table->foreign('kategori_idkategori')
-                  ->references('idkategori')->on('kategoris')
-                  ->onDelete('restrict')
-                  ->onUpdate('cascade');
-
-            $table->foreign('diskon_iddiskon')
-                  ->references('iddiskon')->on('diskons')
-                  ->onDelete('set null')
-                  ->onUpdate('cascade');
+            $table->foreign('kategori_idkategori')->references('idkategori')->on('kategoris')->onDelete('restrict')->onUpdate('restrict');
 
             $table->timestamps();
         });

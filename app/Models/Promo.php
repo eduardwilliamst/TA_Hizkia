@@ -10,14 +10,33 @@ class Promo extends Model
     use HasFactory;
 
     protected $table = 'promos'; // Nama tabel di database
-    protected $primaryKey = 'idpromo'; // Primary key tabel
+    protected $primaryKey = 'idpromo'; // Nama primary key
+    public $timestamps = true; // Menggunakan timestamps
     protected $fillable = [
+        'buy_x',
+        'get_y',
         'deskripsi',
         'tanggal_awal',
         'tanggal_akhir',
-        'buy_x',
-        'get_y',
-    ]; // Kolom yang dapat diisi
+        'tipe',
+        'produk_idutama',
+        'produk_idtambahan',
+        'nilai_diskon',
+    ];
 
-    // Anda dapat menambahkan relasi atau metode lain sesuai kebutuhan di sini
+    /**
+     * Relasi ke model Produk (Produk Utama)
+     */
+    public function produkUtama()
+    {
+        return $this->belongsTo(Produk::class, 'produk_idutama', 'idproduk');
+    }
+
+    /**
+     * Relasi ke model Produk (Produk Tambahan)
+     */
+    public function produkTambahan()
+    {
+        return $this->belongsTo(Produk::class, 'produk_idtambahan', 'idproduk');
+    }
 }

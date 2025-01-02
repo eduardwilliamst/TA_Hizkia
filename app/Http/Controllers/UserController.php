@@ -30,7 +30,7 @@ class UserController extends Controller
 
         $role = Role::where('name', $request->role)->first();
         $user->syncRoles([$role->id]);
-
+        dd($test);
         return redirect()->back()->with('success', 'User role updated successfully!');
     }
 }

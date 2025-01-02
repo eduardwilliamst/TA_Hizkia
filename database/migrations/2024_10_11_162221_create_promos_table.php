@@ -25,10 +25,11 @@ return new class extends Migration
             $table->timestamps(); // Timestamps
 
             // Foreign key constraints
-            $table->foreign('produk_idutama')->references('id')->on('produks')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('produk_idtambahan')->references('id')->on('produks')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('produk_idutama')->references('idproduk')->on('produks')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('produk_idtambahan')->references('idproduk')->on('produks')->onDelete('cascade')->onUpdate('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.

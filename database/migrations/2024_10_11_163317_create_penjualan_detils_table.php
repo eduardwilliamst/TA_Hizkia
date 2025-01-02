@@ -12,17 +12,34 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('penjualan_detils', function (Blueprint $table) {
-            $table->foreignId('penjualan_id')->constrained('penjualans', 'idpenjualan')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('produk_id')->constrained('produks', 'idproduk')->onDelete('restrict')->onUpdate('restrict');
+            // Kolom penjualan_id (mengacu pada idpenjualan di tabel penjualan)
+            $table->unsignedBigInteger('penjualan_idpenjualan');
+            
+            // Kolom produk_id (mengacu pada idproduk di tabel produk)
+            $table->unsignedBigInteger('produk_idproduk');
+            
+            // Kolom harga, jumlah, sub_total
             $table->integer('harga')->nullable();
             $table->integer('jumlah')->nullable();
             $table->integer('sub_total')->nullable();
-            $table->foreignId('promo_produk_id')->nullable()->constrained('promos', 'idpromo')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('diskon_id')->nullable()->constrained('diskons', 'iddiskon')->onDelete('restrict')->onUpdate('restrict');
-            $table->timestamps();
+            
+            // Kolom promo_produk_idproduk (mengacu pada idpromo di tabel promo)
+            $table->unsignedBigInteger('promo_produk_idproduk')->nullable();
+            
+            // Menambahkan primary key yang merupakan kombinasi penjualan_idpenjualan dan produk_idproduk
+            $table->primary(['penjualan_idpenjualan', 'produk_idproduk']);
 
-            // Menetapkan primary key untuk kombinasi
-            $table->primary(['penjualan_id', 'produk_id']);
+            // Defining foreign key constraints
+            $table->foreign('penjualan_idpenjualan')->references('idpenjualan')->on('penjualans')
+                  ->onDelete('no action')->onUpdate('no action');
+            
+            $table->foreign('produk_idproduk')->references('idproduk')->on('produks')
+                  ->onDelete('no action')->onUpdate('no action');
+            
+            $table->foreign('promo_produk_idproduk')->references('idpromo')->on('promos')
+                  ->onDelete('no action')->onUpdate('no action');
+
+            $table->timestamps();
         });
     }
 
