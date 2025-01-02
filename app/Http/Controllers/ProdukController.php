@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\Kategori;
-use App\Models\Diskon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,9 +15,8 @@ class ProdukController extends Controller
     public function index()
     {
         $kategoris = Kategori::all();
-        $diskons = Diskon::all();
-        $produks = Produk::with(['kategori', 'diskon'])->get(); // Mengambil produk beserta relasi kategori dan diskon
-        return view('produk.index', compact('produks', 'kategoris', 'diskons'));
+        $produks = Produk::with(['kategori'])->get(); // Mengambil produk beserta relasi kategori dan diskon
+        return view('produk.index', compact('produks', 'kategoris'));
     }
 
     /**
@@ -27,8 +25,7 @@ class ProdukController extends Controller
     public function create()
     {
         $kategoris = Kategori::all();
-        $diskons = Diskon::all();
-        return view('produk.create', compact('kategoris', 'diskons'));
+        return view('produk.create', compact('kategoris'));
     }
 
     /**
@@ -46,7 +43,6 @@ class ProdukController extends Controller
             // 'usia_awal' => 'required|date',
             // 'usia_akhir' => 'required|date',
             'kategori_idkategori' => 'required|exists:kategoris,idkategori',
-            'diskon_iddiskon' => 'nullable|exists:diskons,iddiskon',
         ]);
 
         // Membuat produk baru
@@ -58,7 +54,6 @@ class ProdukController extends Controller
         // $produk->usia_awal = $request->usia_awal;
         // $produk->usia_akhir = $request->usia_akhir;
         $produk->kategori_idkategori = $request->kategori_idkategori;
-        $produk->diskon_iddiskon = $request->diskon_iddiskon;
 
         // Menyimpan gambar jika ada
         if ($request->hasFile('gambar')) {
@@ -79,8 +74,7 @@ class ProdukController extends Controller
     {
         $produk = Produk::findOrFail($id);
         $kategoris = Kategori::all();
-        $diskons = Diskon::all();
-        return view('produk.edit', compact('produk', 'kategoris', 'diskons'));
+        return view('produk.edit', compact('produk', 'kategoris'));
     }
 
     /**
@@ -98,7 +92,6 @@ class ProdukController extends Controller
             'usia_awal' => 'required|integer',
             'usia_akhir' => 'required|integer',
             'kategori_idkategori' => 'required|exists:kategoris,idkategori',
-            'diskon_iddiskon' => 'nullable|exists:diskons,iddiskon',
         ]);
 
         // Temukan produk dan update data

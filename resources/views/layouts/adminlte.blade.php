@@ -78,15 +78,10 @@
                         </div>
                     </form>
                     <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                            <i class="fas fa-bars"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a href="{{ route('penjualan.viewCart') }}" class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
                             <!-- <span class="badge badge-danger navbar-badge">3</span> -->
-                             <!-- Ganti angka sesuai jumlah item dalam cart -->
+                            <!-- Ganti angka sesuai jumlah item dalam cart -->
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -94,18 +89,27 @@
                             <span class="brand-text font-weight-light">General Ledger</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-sm">
-                            <a href="" class="dropdown-item">
-                                Akun
+                            <a href="" class="dropdown-item d-flex justify-content-between align-items-center">
+                                Akun <i class="fas fa-user-circle text-muted"></i>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
+                            <a href="{{ route('cashflow.index') }}" class="dropdown-item d-flex justify-content-between align-items-center">
+                                Cashflow <i class="fas fa-credit-card text-muted"></i>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('logout') }}" class="dropdown-item d-flex justify-content-between align-items-center" onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">
-                                Logout
+                                Logout <i class="fas fa-sign-out-alt text-muted"></i>
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
                         </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                            <i class="fas fa-bars"></i>
+                        </a>
                     </li>
                 </ul>
 
@@ -116,7 +120,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="#" class="brand-link">
+            <a href="" class="brand-link text-center">
                 <span class="brand-text font-weight-light">General Ledger</span>
             </a>
 
@@ -134,7 +138,7 @@
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('perkiraan*') || Request::is('diskon*') || Request::is('kategori*') ? 'active' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('perkiraan*') || Request::is('promo*') || Request::is('kategori*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>
                                     Master Data
@@ -142,12 +146,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('diskon.index') }}" class="nav-link {{ Request::is('diskon') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-tag"></i>
-                                        <p>Diskon</p>
-                                    </a>
-                                </li>
+
                                 <li class="nav-item">
                                     <a href="{{ route('kategori.index') }}" class="nav-link {{ Request::is('kategori') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>

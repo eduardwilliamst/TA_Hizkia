@@ -3,7 +3,6 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\DiskonController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CashFlowController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -46,8 +46,11 @@ Route::post('cart/checkout', [PenjualanController::class, 'checkout'])->name('pe
 Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // Menambahkan resource routes untuk controller yang telah Anda buat
-Route::resource('diskon', DiskonController::class);
-Route::post('diskon/getEditForm', [DiskonController::class, 'getEditForm'])->name('diskon.getEditForm');
+// Route::resource('diskon', DiskonController::class);
+// Route::post('diskon/getEditForm', [DiskonController::class, 'getEditForm'])->name('diskon.getEditForm');
+
+Route::resource('cashflow', CashFlowController::class);
+Route::post('cashflow/getEditForm', [CashFlowController::class, 'getEditForm'])->name('cashflow.getEditForm');
 
 // Tambahkan getEditForm untuk resource lainnya
 Route::resource('kategori', KategoriController::class);
@@ -76,4 +79,3 @@ Route::post('supplier/getEditForm', [SupplierController::class, 'getEditForm'])-
 
 Route::resource('users', UserController::class);
 Route::post('users/getEditForm', [UserController::class, 'getEditForm'])->name('users.getEditForm');
-

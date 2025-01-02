@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('pos_sessions', function (Blueprint $table) {
             $table->id('idpos_session'); // Primary key
-            $table->integer('balance_awal')->nullable(); // Balance awal
-            $table->integer('balance_akhir')->nullable(); // Balance akhir
+            $table->integer('saldo_awal')->nullable(); // Balance awal
+            // $table->integer('balance_akhir')->nullable(); // Balance akhir
             $table->dateTime('tanggal')->nullable(); // Tanggal
             $table->string('keterangan', 45)->nullable(); // Keterangan
-            $table->integer('cash_in')->nullable(); // Cash in
-            $table->integer('cash_out')->nullable(); // Cash out
+            // $table->integer('cash_in')->nullable(); // Cash in
+            // $table->integer('cash_out')->nullable(); // Cash out
             $table->unsignedBigInteger('user_iduser'); // ID pengguna (foreign key)
             $table->unsignedBigInteger('pos_mesin_idpos_mesin'); // ID mesin POS (foreign key)
 

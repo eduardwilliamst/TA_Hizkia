@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama', 45)->nullable();
             $table->integer('harga')->nullable();
             $table->integer('stok')->nullable();
-            $table->string('gambar', 45)->nullable();
+            $table->string('gambar', 255)->nullable();
 
             // Foreign key
             $table->unsignedBigInteger('kategori_idkategori');

@@ -114,15 +114,6 @@ Produk
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="diskon_iddiskon">Diskon</label>
-                        <select class="form-control" id="diskon_iddiskon" name="diskon_iddiskon">
-                            <option value="">Pilih Diskon (Opsional)</option>
-                            @foreach($diskons as $diskon)
-                            <option value="{{ $diskon->iddiskon }}">{{ $diskon->keterangan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
