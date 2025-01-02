@@ -11,6 +11,7 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        <!-- Email Input -->
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
@@ -25,6 +26,7 @@
                             </div>
                         </div>
 
+                        <!-- Password Input -->
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
@@ -39,6 +41,27 @@
                             </div>
                         </div>
 
+                        <!-- POS Mesin Dropdown -->
+                        <div class="row mb-3">
+                            <label for="pos_mesin" class="col-md-4 col-form-label text-md-end">{{ __('POS Mesin') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="pos_mesin" class="form-control @error('pos_mesin') is-invalid @enderror" name="pos_mesin" required>
+                                    <option value="" disabled selected>{{ __('Select POS Mesin') }}</option>
+                                    @foreach ($posMesins as $posMesin)
+                                        <option value="{{ $posMesin->idpos_mesin }}">{{ $posMesin->nama }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('pos_mesin')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Remember Me -->
                         <div class="row mb-3">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
@@ -51,6 +74,7 @@
                             </div>
                         </div>
 
+                        <!-- Login Button -->
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

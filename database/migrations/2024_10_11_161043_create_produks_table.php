@@ -17,17 +17,11 @@ return new class extends Migration
             $table->string('nama', 45)->nullable();
             $table->integer('harga')->nullable();
             $table->integer('stok')->nullable();
-            $table->string('gambar', 512)->nullable();
-            // $table->dateTime('usia_awal')->nullable();
-            // $table->dateTime('usia_akhir')->nullable();
+            $table->string('gambar', 45)->nullable();
 
-            // Foreign keys
+            // Foreign key
             $table->unsignedBigInteger('kategori_idkategori');
-            $table->unsignedBigInteger('diskon_iddiskon');
-
-            // Foreign Key Constraints
-            $table->foreign('kategori_idkategori')->references('idkategori')->on('kategoris');
-            $table->foreign('diskon_iddiskon')->references('iddiskon')->on('diskons');
+            $table->foreign('kategori_idkategori')->references('idkategori')->on('kategoris')->onDelete('restrict')->onUpdate('restrict');
 
             $table->timestamps();
         });

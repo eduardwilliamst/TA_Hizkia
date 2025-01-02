@@ -12,17 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pos_sessions', function (Blueprint $table) {
-            $table->id('idpos_session');
-            $table->integer('balance_awal')->nullable();
-            $table->integer('balance_akhir')->nullable();
-            $table->dateTime('tanggal')->nullable();
-            
-            // Pastikan foreign key sesuai dengan primary key dari tabel yang direferensikan
-            $table->foreignId('user_iduser')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('pos_mesin_idpos_mesin')->constrained('pos_mesins', 'idpos_mesin')->onDelete('restrict')->onUpdate('restrict');
-            
-            $table->timestamps();
-        });        
+            $table->id('idpos_session'); // Primary key
+            $table->integer('balance_awal')->nullable(); // Balance awal
+            $table->integer('balance_akhir')->nullable(); // Balance akhir
+            $table->dateTime('tanggal')->nullable(); // Tanggal
+            $table->string('keterangan', 45)->nullable(); // Keterangan
+            $table->integer('cash_in')->nullable(); // Cash in
+            $table->integer('cash_out')->nullable(); // Cash out
+            $table->unsignedBigInteger('user_iduser'); // ID pengguna (foreign key)
+            $table->unsignedBigInteger('pos_mesin_idpos_mesin'); // ID mesin POS (foreign key)
+
+            $table->foreign('user_iduser')->references('id')->on('users')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('pos_mesin_idpos_mesin')->references('idpos_mesin')->on('pos_mesins')->onDelete('restrict')->onUpdate('restrict');
+        });
     }
 
     /**

@@ -14,14 +14,20 @@ return new class extends Migration
         Schema::create('penjualans', function (Blueprint $table) {
             $table->id('idpenjualan');
             $table->dateTime('tanggal')->nullable();
-            $table->string('cara_bayar', 45)->nullable();
+            $table->enum('cara_bayar', ['cash', 'card'])->nullable();
             $table->integer('total_diskon')->nullable();
             $table->integer('total_bayar')->nullable();
+            $table->unsignedBigInteger('pos_session_idpos_session'); // Foreign key to pos_sessions
+            $table->unsignedBigInteger('user_iduser'); // Foreign key to users
             
-            // $table->foreignId('pos_session_id')->constrained('pos_sessions', 'idpos_session')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
-                        
-            $table->timestamps();
+            // Foreign key constraints
+            $table->foreign('pos_session_idpos_session', 'penjualans_pos_session_fk')
+                ->references('idpos_session')->on('pos_sessions')
+                ->onDelete('restrict')->onUpdate('restrict');
+
+            $table->foreign('user_iduser', 'penjualans_user_fk')
+                ->references('id')->on('users')
+                ->onDelete('restrict')->onUpdate('restrict');
         });
     }
 
