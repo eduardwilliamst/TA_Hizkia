@@ -80,7 +80,7 @@ class LoginController extends Controller
                 // Create a new pos_session
                 
                 $posSession = PosSession::create([
-                    'saldo_awal' => 100000,   // Set initial balance, or adjust as needed
+                    // 'saldo_awal' => 0,   // Set initial balance, or adjust as needed
                     'tanggal' => now(),    // Use current timestamp
                     'keterangan' => 'Sesi dimulai',  // Default session description
                     'user_iduser' => Auth::id(), // Logged-in user's ID

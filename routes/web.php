@@ -38,6 +38,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+Route::get('/balanceAwal', [HomeController::class, 'store'])->name('balance.store');
 
 Route::get('cart', [PenjualanController::class, 'viewCart'])->name('penjualan.viewCart');
 Route::post('cart/save', [CartController::class, 'save'])->name('cart.save');
