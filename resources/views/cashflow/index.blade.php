@@ -72,10 +72,10 @@ Cashflow
                                         <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idcashflow }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('cashflow.destroy', $cashflow->idcashflow) }}" method="POST" style="display:inline; margin: 0;">
+                                        <form action="{{ route('cashflow.destroy', $cashflow->idcashflow) }}" method="POST" id="delete-form-{{ $cashflow->idcashflow }}" style="display:inline; margin: 0;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?');" title="Hapus">
+                                            <button type="button" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="confirmDelete('delete-form-{{ $cashflow->idcashflow }}')" title="Hapus">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

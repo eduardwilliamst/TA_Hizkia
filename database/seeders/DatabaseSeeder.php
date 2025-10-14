@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // User & Role
-            RoleSeeder::class,
+            RolesAndPermissionsSeeder::class,
             UserSeeder::class,
 
             // Master Data
@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
             // POS
             PosMesinSeeder::class,
+            PosSessionSeeder::class,
 
             // Financial
             CashFlowSeeder::class,

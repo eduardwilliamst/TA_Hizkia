@@ -13,6 +13,9 @@ class CashFlowSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get first pos session
+        $posSessionId = DB::table('pos_sessions')->first()->idpos_session ?? 1;
+
         DB::table('cash_flows')->insert([
             [
                 'tanggal' => Carbon::now()->subDays(30),
@@ -21,8 +24,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 0,
                 'balance_akhir' => 10000000,
                 'keterangan' => 'Modal awal usaha',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(28),
@@ -31,8 +33,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 10000000,
                 'balance_akhir' => 5000000,
                 'keterangan' => 'Pembelian stok awal produk',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(25),
@@ -41,8 +42,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 5000000,
                 'balance_akhir' => 8500000,
                 'keterangan' => 'Penjualan minggu pertama',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(20),
@@ -51,8 +51,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 8500000,
                 'balance_akhir' => 8000000,
                 'keterangan' => 'Bayar listrik dan air',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(18),
@@ -61,8 +60,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 8000000,
                 'balance_akhir' => 12200000,
                 'keterangan' => 'Penjualan minggu kedua',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(15),
@@ -71,8 +69,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 12200000,
                 'balance_akhir' => 10200000,
                 'keterangan' => 'Restock produk',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(11),
@@ -81,8 +78,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 10200000,
                 'balance_akhir' => 14000000,
                 'keterangan' => 'Penjualan minggu ketiga',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(8),
@@ -91,8 +87,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 14000000,
                 'balance_akhir' => 13200000,
                 'keterangan' => 'Gaji karyawan',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(4),
@@ -101,8 +96,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 13200000,
                 'balance_akhir' => 18300000,
                 'keterangan' => 'Penjualan minggu keempat',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
             [
                 'tanggal' => Carbon::now()->subDays(2),
@@ -111,8 +105,7 @@ class CashFlowSeeder extends Seeder
                 'balance_awal' => 18300000,
                 'balance_akhir' => 18000000,
                 'keterangan' => 'Biaya operasional bulanan',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id_pos_session' => $posSessionId,
             ],
         ]);
     }

@@ -92,7 +92,7 @@
                             <span class="brand-text font-weight-light">General Ledger</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-sm">
-                            <a href="" class="dropdown-item d-flex justify-content-between align-items-center">
+                            <a href="{{ route('profile.index') }}" class="dropdown-item d-flex justify-content-between align-items-center">
                                 Akun <i class="fas fa-user-circle text-muted"></i>
                             </a>
                             <div class="dropdown-divider"></div>
@@ -355,6 +355,84 @@
                 function(data) {
                     $(modal + 'Content').html(data);
                 });
+        }
+    </script>
+
+    <!-- Global SweetAlert2 Configuration -->
+    <script>
+        // Configure SweetAlert2 defaults
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        // Show success messages from session
+        @if(session('success'))
+            Toast.fire({
+                icon: 'success',
+                title: '{{ session('success') }}'
+            });
+        @endif
+
+        // Show error messages from session
+        @if(session('error'))
+            Toast.fire({
+                icon: 'error',
+                title: '{{ session('error') }}'
+            });
+        @endif
+
+        // Show warning messages from session
+        @if(session('warning'))
+            Toast.fire({
+                icon: 'warning',
+                title: '{{ session('warning') }}'
+            });
+        @endif
+
+        // Show info messages from session
+        @if(session('info'))
+            Toast.fire({
+                icon: 'info',
+                title: '{{ session('info') }}'
+            });
+        @endif
+
+        // Show validation errors
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: '<ul style="text-align: left;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                confirmButtonColor: '#667eea'
+            });
+        @endif
+
+        // Global delete confirmation function
+        function confirmDelete(formId) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
         }
     </script>
 

@@ -17,15 +17,23 @@ class PosMesinSeeder extends Seeder
         DB::table('pos_mesins')->insert([
             [
                 'nama' => 'POS Mesin 1',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'nama' => 'POS Mesin 2',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'nama' => 'POS Mesin 3',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'nama' => 'POS Mesin 4',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }

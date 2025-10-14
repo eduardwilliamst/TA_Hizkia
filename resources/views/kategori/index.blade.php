@@ -49,10 +49,10 @@ Kategori
                                         <a data-toggle="modal" data-target="#modalEditKategori" onclick="modalEdit({{ $kategori->idkategori }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" style="display:inline; margin: 0;">
+                                        <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" id="delete-form-{{ $kategori->idkategori }}" style="display:inline; margin: 0;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');" title="Hapus">
+                                            <button type="button" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="confirmDelete('delete-form-{{ $kategori->idkategori }}')" title="Hapus">
                                                 <i class="fas fa-trash"></i> Hapus
                                             </button>
                                         </form>

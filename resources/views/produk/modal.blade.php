@@ -14,7 +14,7 @@
                 <input type="text" class="form-control" id="barcode" name="barcode" value="{{ $produk->barcode }}" required>
             </div>
             <div class="form-group">
-                <label for="nama">Nama</label>
+                <label for="nama">Nama Produk</label>
                 <input type="text" class="form-control" id="nama" name="nama" value="{{ $produk->nama }}" required>
             </div>
             <div class="form-group">
@@ -26,13 +26,41 @@
                 <input type="number" class="form-control" id="stok" name="stok" value="{{ $produk->stok }}" required>
             </div>
             <div class="form-group">
-                <label for="gambar">Gambar</label>
+                <label for="gambar">Gambar Produk</label>
+                @if($produk->gambar)
+                    <div class="mb-2">
+                        <img src="{{ asset('storage/' . $produk->gambar) }}"
+                             alt="{{ $produk->nama }}"
+                             class="img-thumbnail"
+                             style="max-height: 150px; object-fit: cover;">
+                        <p class="text-muted small mt-1">Gambar saat ini</p>
+                    </div>
+                @endif
                 <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*">
                 <small class="form-text text-muted">Kosongkan jika tidak ingin mengubah gambar.</small>
             </div>
+            <div class="form-group">
+                <label for="usia_awal">Usia Awal</label>
+                <input type="number" class="form-control" id="usia_awal" name="usia_awal" value="{{ $produk->usia_awal }}" required>
+            </div>
+            <div class="form-group">
+                <label for="usia_akhir">Usia Akhir</label>
+                <input type="number" class="form-control" id="usia_akhir" name="usia_akhir" value="{{ $produk->usia_akhir }}" required>
+            </div>
+            <div class="form-group">
+                <label for="kategori_idkategori">Kategori</label>
+                <select class="form-control" id="kategori_idkategori" name="kategori_idkategori" required>
+                    <option value="">Pilih Kategori</option>
+                    @foreach($kategoris as $kategori)
+                    <option value="{{ $kategori->idkategori }}" {{ $produk->kategori_idkategori == $kategori->idkategori ? 'selected' : '' }}>
+                        {{ $kategori->nama }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
             </div>
         </form>
     </div>

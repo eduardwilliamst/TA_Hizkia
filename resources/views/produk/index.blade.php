@@ -61,13 +61,16 @@ Produk
                                 </td>
                                 <td style="text-align: center;">
                                     <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <a data-toggle="modal" data-target="#modalDetailProduk" onclick="modalDetail({{ $produk->idproduk }})" class="btn btn-success btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Detail">
+                                            <i class="fas fa-eye"></i> Detail
+                                        </a>
                                         <a data-toggle="modal" data-target="#modalEditProduk" onclick="modalEdit({{ $produk->idproduk }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('produk.destroy', $produk->idproduk) }}" method="POST" style="display:inline; margin: 0;">
+                                        <form action="{{ route('produk.destroy', $produk->idproduk) }}" method="POST" id="delete-form-{{ $produk->idproduk }}" style="display:inline; margin: 0;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?');" title="Hapus">
+                                            <button type="button" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="confirmDelete('delete-form-{{ $produk->idproduk }}')" title="Hapus">
                                                 <i class="fas fa-trash"></i> Hapus
                                             </button>
                                         </form>
@@ -143,6 +146,13 @@ Produk
     </div>
 </div>
 
+<!-- Modal Detail -->
+<div class="modal fade" id="modalDetailProduk" tabindex="-1" aria-labelledby="modalDetailProdukLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" id="modalDetailContent">
+
+    </div>
+</div>
+
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEditProduk" tabindex="-1" aria-labelledby="modalEditProdukLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="modalContent">
@@ -171,6 +181,23 @@ Produk
             ]
         });
     });
+
+    function modalDetail(produkId) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("produk.getDetailForm") }}',
+            data: {
+                '_token': '<?php echo csrf_token() ?>',
+                'id': produkId,
+            },
+            success: function(data) {
+                $("#modalDetailContent").html(data.msg);
+            },
+            error: function(xhr) {
+                console.log(xhr);
+            }
+        });
+    }
 
     function modalEdit(produkId) {
         $.ajax({

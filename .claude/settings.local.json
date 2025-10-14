@@ -5,7 +5,10 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nImprove UI/UX with modern animations and better design\n\n- Add custom CSS with smooth animations and transitions\n- Enhance penjualan views with better product cards and cart UI\n- Improve produk index with color-coded stock badges\n- Enhance cart page with modern empty state design\n- Improve cashflow page with transaction type indicators\n- Update kategori page with cleaner layout\n- Add toast notifications for cart actions\n- Implement responsive design improvements\n- Add gradient designs and hover effects throughout\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(php artisan:*)",
+      "Bash(dir:*)",
+      "Bash(php:*)"
     ],
     "deny": [],
     "ask": []

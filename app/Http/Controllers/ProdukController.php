@@ -100,7 +100,12 @@ class ProdukController extends Controller
 
         // Jika ada gambar baru, simpan file gambar baru
         if ($request->hasFile('gambar')) {
-            $filePath = $request->file('gambar')->store('produk_images', 'public');
+            // Hapus gambar lama jika ada
+            if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
+                Storage::disk('public')->delete($produk->gambar);
+            }
+
+            $filePath = $request->file('gambar')->store('images/produk', 'public');
             $produk->gambar = $filePath;
         }
 
@@ -115,8 +120,35 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
+
+        // Hapus gambar dari storage jika ada
+        if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
+            Storage::disk('public')->delete($produk->gambar);
+        }
+
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
+    }
+
+    /**
+     * Mendapatkan form edit produk untuk modal
+     */
+    public function getEditForm(Request $request)
+    {
+        $produk = Produk::findOrFail($request->id);
+        $kategoris = Kategori::all();
+        $view = view('produk.modal', compact('produk', 'kategoris'))->render();
+        return response()->json(['msg' => $view]);
+    }
+
+    /**
+     * Mendapatkan detail produk untuk modal
+     */
+    public function getDetailForm(Request $request)
+    {
+        $produk = Produk::with('kategori')->findOrFail($request->id);
+        $view = view('produk.detail', compact('produk'))->render();
+        return response()->json(['msg' => $view]);
     }
 }
