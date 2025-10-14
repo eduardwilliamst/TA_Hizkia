@@ -10,49 +10,59 @@ Kategori
 
 @section('contents')
 <div class="content">
-    <div class="container">
-        <div class="card">
+    <div class="container-fluid">
+        <div class="card animate-fade-in-up">
             <div class="card-header">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h3 class="card-title">List of Kategori</h3>
+                        <h3 class="mb-0">
+                            <i class="fas fa-th-large mr-2"></i>
+                            Daftar Kategori
+                        </h3>
                     </div>
                     <div class="col-md-6 text-right">
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addDataModal">
-                            <i class="fas fa-plus"></i> Tambah Data
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addDataModal" style="padding: 0.7rem 1.5rem; border-radius: 12px;">
+                            <i class="fas fa-plus-circle mr-2"></i>Tambah Kategori
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="card-body">
-                <table id="kategoriTable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama Kategori</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($kategoris as $kategori)
-                        <tr>
-                            <td>{{ $kategori->nama }}</td>
-                            <td>
-                                <a data-toggle="modal" data-target="#modalEditKategori" onclick="modalEdit({{ $kategori->idkategori }})" class="btn btn-info btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="card-body" style="padding: 2rem;">
+                <div style="overflow-x: auto;">
+                    <table id="kategoriTable" class="table table-hover" style="border-radius: 10px; overflow: hidden;">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;"><i class="fas fa-tag mr-2"></i>Nama Kategori</th>
+                                <th style="width: 30%; text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($kategoris as $kategori)
+                            <tr class="animate-fade-in">
+                                <td style="font-weight: 600; color: #333; font-size: 1.05rem;">
+                                    <i class="fas fa-folder mr-2" style="color: #667eea;"></i>
+                                    {{ $kategori->nama }}
+                                </td>
+                                <td style="text-align: center;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <a data-toggle="modal" data-target="#modalEditKategori" onclick="modalEdit({{ $kategori->idkategori }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" style="display:inline; margin: 0;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');" title="Hapus">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

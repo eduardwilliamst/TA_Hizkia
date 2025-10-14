@@ -10,59 +10,82 @@ Cashflow
 
 @section('contents')
 <div class="content">
-    <div class="container">
-        <div class="card">
+    <div class="container-fluid">
+        <div class="card animate-fade-in-up">
             <div class="card-header">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h3 class="card-title">List of Cahshflow</h3>
+                        <h3 class="mb-0">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Manajemen Cashflow
+                        </h3>
                     </div>
                     <div class="col-md-6 text-right">
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addCashflowModal">
-                            <i class="fas fa-plus"></i> Tambah Cashflow
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addCashflowModal" style="padding: 0.7rem 1.5rem; border-radius: 12px;">
+                            <i class="fas fa-plus-circle mr-2"></i>Tambah Cashflow
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="card-body">
-                <table id="cashflowTable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Tipe</th>
-                            <th>Jumlah</th>
-                            <th>Balance Awal</th>
-                            <th>Balance Akhir</th>
-                            <th>Keterangan</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($cashflows as $cashflow)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($cashflow->tanggal)->translatedFormat('d F Y H:i') }}</td>
-                            <td>{{ ucwords(str_replace('_', ' ', $cashflow->tipe)) }}</td>
-                            <td>{{ $cashflow->jumlah }}</td>
-                            <td>{{ $cashflow->balance_awal }}</td>
-                            <td>{{ $cashflow->balance_akhir }}</td>
-                            <td>{{ $cashflow->keterangan }}</td>
-                            <td>
-                                <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idcashflow }})" class="btn btn-info btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('cashflow.destroy', $cashflow->idcashflow) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this supplier?');">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="card-body" style="padding: 2rem;">
+                <div style="overflow-x: auto;">
+                    <table id="cashflowTable" class="table table-hover" style="border-radius: 10px; overflow: hidden;">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-calendar mr-2"></i>Tanggal</th>
+                                <th><i class="fas fa-tag mr-2"></i>Tipe</th>
+                                <th><i class="fas fa-dollar-sign mr-2"></i>Jumlah</th>
+                                <th><i class="fas fa-wallet mr-2"></i>Balance Awal</th>
+                                <th><i class="fas fa-balance-scale mr-2"></i>Balance Akhir</th>
+                                <th><i class="fas fa-info-circle mr-2"></i>Keterangan</th>
+                                <th style="text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($cashflows as $cashflow)
+                            <tr class="animate-fade-in">
+                                <td style="font-weight: 500; color: #666;">
+                                    <i class="far fa-clock mr-2"></i>
+                                    {{ \Carbon\Carbon::parse($cashflow->tanggal)->translatedFormat('d F Y H:i') }}
+                                </td>
+                                <td>
+                                    <span class="badge" style="padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;
+                                        background: {{ $cashflow->tipe == 'cash_in' ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)' }};
+                                        color: white;">
+                                        <i class="fas fa-{{ $cashflow->tipe == 'cash_in' ? 'arrow-down' : 'arrow-up' }} mr-1"></i>
+                                        {{ ucwords(str_replace('_', ' ', $cashflow->tipe)) }}
+                                    </span>
+                                </td>
+                                <td style="color: {{ $cashflow->tipe == 'cash_in' ? '#11998e' : '#eb3349' }}; font-weight: 700; font-size: 1.05rem;">
+                                    Rp {{ number_format($cashflow->jumlah, 0, ',', '.') }}
+                                </td>
+                                <td style="font-weight: 600; color: #666;">
+                                    Rp {{ number_format($cashflow->balance_awal, 0, ',', '.') }}
+                                </td>
+                                <td style="font-weight: 700; color: #333;">
+                                    Rp {{ number_format($cashflow->balance_akhir, 0, ',', '.') }}
+                                </td>
+                                <td style="color: #666;">{{ Str::limit($cashflow->keterangan, 40) }}</td>
+                                <td style="text-align: center;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <a data-toggle="modal" data-target="#editCashflowModal" onclick="modalEdit({{ $cashflow->idcashflow }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('cashflow.destroy', $cashflow->idcashflow) }}" method="POST" style="display:inline; margin: 0;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?');" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

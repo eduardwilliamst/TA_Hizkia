@@ -42,6 +42,9 @@
     {{-- cropperjs --}}
     <link href="{{ asset('js/cropper/cropper.min.css') }}" rel="stylesheet" type="text/css" />
 
+    {{-- Custom Animations & UX Improvements --}}
+    <link href="{{ asset('css/custom-animations.css') }}" rel="stylesheet" type="text/css" />
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-50BBRYS4HY"></script>
     <script>
