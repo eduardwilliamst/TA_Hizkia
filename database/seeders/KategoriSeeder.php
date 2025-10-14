@@ -23,6 +23,21 @@ class KategoriSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nama' => 'Minuman',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Elektronik',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Aksesoris',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

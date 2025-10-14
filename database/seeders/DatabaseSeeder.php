@@ -9,10 +9,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // User & Role
             RoleSeeder::class,
             UserSeeder::class,
+
+            // Master Data
             KategoriSeeder::class,
-            PosMesinSeeder::class
+            SupplierSeeder::class,
+            ProdukSeeder::class,
+            PromoSeeder::class,
+
+            // POS
+            PosMesinSeeder::class,
+
+            // Financial
+            CashFlowSeeder::class,
         ]);
     }
 }
