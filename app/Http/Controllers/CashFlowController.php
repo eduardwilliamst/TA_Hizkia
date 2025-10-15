@@ -63,7 +63,7 @@ class CashFlowController extends Controller
 
         $balance_awal = $lastCashFlow
             ? $lastCashFlow->balance_akhir // Gunakan balance_akhir dari data terakhir
-            : $posSession->saldo_awal;    // Gunakan saldo_awal dari posSession jika belum ada data
+            : $posSession->balance_awal;    // Gunakan balance_awal dari posSession jika belum ada data
 
         // Simpan data baru ke tabel pos_sessions
         CashFlow::create([

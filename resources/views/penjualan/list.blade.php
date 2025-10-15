@@ -27,7 +27,7 @@ List Penjualan
                             <th>Tanggal</th>
                             <th>Cara Bayar</th>
                             <th>Total Diskon</th>
-                            <th>Total Bayar</th>
+                            <th>Total Harga</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -37,7 +37,7 @@ List Penjualan
                             <td>{{ $penjualan->tanggal }}</td>
                             <td>{{ $penjualan->cara_bayar }}</td>
                             <td>{{ number_format($penjualan->total_diskon, 0, ',', '.') }}</td>
-                            <td>{{ number_format($penjualan->total_bayar, 0, ',', '.') }}</td>
+                            <td>{{ number_format($penjualan->total_harga, 0, ',', '.') }}</td>
                             <td>
                                 <form action="{{ route('penjualan.destroy', $penjualan->idpenjualan) }}" method="POST" style="display:inline;">
                                     @csrf

@@ -73,7 +73,7 @@
                         </div>
 
                         <!-- Kategori -->
-                        <div class="detail-card" style="background: #f8f9fa; padding: 1rem; border-radius: 12px; border-left: 4px solid #17a2b8;">
+                        <div class="detail-card" style="background: #f8f9fa; padding: 1rem; border-radius: 12px; border-left: 4px solid #17a2b8; grid-column: span 2;">
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
                                 <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-list" style="color: white; font-size: 1.2rem;"></i>
@@ -81,19 +81,6 @@
                                 <div>
                                     <small style="color: #666; font-size: 0.85rem; display: block;">Kategori</small>
                                     <strong style="color: #333; font-size: 1rem;">{{ $produk->kategori->nama ?? '-' }}</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Usia -->
-                        <div class="detail-card" style="background: #f8f9fa; padding: 1rem; border-radius: 12px; border-left: 4px solid #28a745;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-calendar-alt" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <div>
-                                    <small style="color: #666; font-size: 0.85rem; display: block;">Rentang Usia</small>
-                                    <strong style="color: #333; font-size: 1rem;">{{ $produk->usia_awal ?? 0 }} - {{ $produk->usia_akhir ?? 0 }}</strong>
                                 </div>
                             </div>
                         </div>

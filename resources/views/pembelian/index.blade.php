@@ -32,7 +32,8 @@ List Pembelian
                         <tr>
                             <th>Tanggal Pesan</th>
                             <th>Tanggal Datang</th>
-                            <th>Pembelian</th>
+                            <th>Supplier</th>
+                            <th>Tipe</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -41,7 +42,8 @@ List Pembelian
                         <tr>
                             <td>{{ $pembelian->tanggal_pesan }}</td>
                             <td>{{ $pembelian->tanggal_datang }}</td>
-                            <td>{{ $pembelian->pembelian->nama_pembelian }}</td>  <!-- Menampilkan nama pembelian -->
+                            <td>{{ $pembelian->supplier->nama ?? '-' }}</td>
+                            <td>{{ $pembelian->tipe->keterangan ?? '-' }}</td>
                             <td>
                                 <form action="{{ route('pembelian.destroy', $pembelian->idpembelian) }}" method="POST" style="display:inline;">
                                     @csrf
@@ -82,18 +84,20 @@ List Pembelian
                         <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
                     </div>
                     <div class="form-group">
-                        <label for="idproduks">Produks</label>
-                        <select class="form-control" id="idproduks" name="idproduks" required>
-                            @foreach($produks as $produk)
-                                <option value="{{ $produk->idproduk }}">{{ $produk->nama }}</option>
+                        <label for="supplier_idsupplier">Supplier</label>
+                        <select class="form-control" id="supplier_idsupplier" name="supplier_idsupplier" required>
+                            <option value="">Pilih Supplier</option>
+                            @foreach($suppliers as $supplier)
+                                <option value="{{ $supplier->idsupplier }}">{{ $supplier->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="supplier_idsupplier">Supplier</label>
-                        <select class="form-control" id="supplier_idsupplier" name="supplier_idsupplier" required>
-                            @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->idsupplier }}">{{ $supplier->nama_supplier }}</option>
+                        <label for="tipe_idtipe">Tipe Pembelian</label>
+                        <select class="form-control" id="tipe_idtipe" name="tipe_idtipe" required>
+                            <option value="">Pilih Tipe</option>
+                            @foreach($tipes as $tipe)
+                                <option value="{{ $tipe->idtipe }}">{{ $tipe->keterangan }}</option>
                             @endforeach
                         </select>
                     </div>

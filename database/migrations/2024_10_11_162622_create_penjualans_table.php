@@ -16,10 +16,11 @@ return new class extends Migration
             $table->dateTime('tanggal')->nullable();
             $table->enum('cara_bayar', ['cash', 'card'])->nullable();
             $table->integer('total_diskon')->nullable();
-            $table->integer('total_bayar')->nullable();
+            $table->integer('total_harga')->nullable();
             $table->unsignedBigInteger('pos_session_idpos_session'); // Foreign key to pos_sessions
             $table->unsignedBigInteger('user_iduser'); // Foreign key to users
-            
+            $table->timestamps(); // created_at and updated_at
+
             // Foreign key constraints
             $table->foreign('pos_session_idpos_session', 'penjualans_pos_session_fk')
                 ->references('idpos_session')->on('pos_sessions')

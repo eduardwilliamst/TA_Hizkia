@@ -19,11 +19,14 @@ class PosSessionSeeder extends Seeder
 
         DB::table('pos_sessions')->insert([
             [
-                'saldo_awal' => 0,
+                'balance_awal' => 100000,
+                'balance_akhir' => 150000,
                 'tanggal' => Carbon::now()->subDays(30),
                 'keterangan' => 'Session untuk seeding cash flow',
                 'user_iduser' => $userId,
                 'pos_mesin_idpos_mesin' => $posMesinId,
+                'created_at' => Carbon::now()->subDays(30),
+                'updated_at' => Carbon::now()->subDays(30),
             ],
         ]);
     }

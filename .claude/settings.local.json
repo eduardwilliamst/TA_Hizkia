@@ -8,7 +8,8 @@
       "Bash(git config:*)",
       "Bash(php artisan:*)",
       "Bash(dir:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

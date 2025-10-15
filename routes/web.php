@@ -11,6 +11,7 @@ use App\Http\Controllers\PosMesinController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TipeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CashFlowController;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +82,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('supplier', SupplierController::class);
     Route::post('supplier/getEditForm', [SupplierController::class, 'getEditForm'])->name('supplier.getEditForm');
+
+    Route::resource('tipe', TipeController::class);
+    Route::post('tipe/getEditForm', [TipeController::class, 'getEditForm'])->name('tipe.getEditForm');
 
     Route::resource('users', UserController::class);
     Route::post('users/getEditForm', [UserController::class, 'getEditForm'])->name('users.getEditForm');

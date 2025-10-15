@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             // Master Data
             KategoriSeeder::class,
             SupplierSeeder::class,
+            TipeSeeder::class,
             ProdukSeeder::class,
             PromoSeeder::class,
 

@@ -10,11 +10,12 @@ class PosSession extends Model
 
     protected $table = 'pos_sessions'; // Nama tabel di database
     protected $primaryKey = 'idpos_session'; // Nama primary key
-    public $timestamps = false; // Menggunakan timestamps, jadi created_at dan updated_at akan otomatis ada
+    public $timestamps = true; // Menggunakan timestamps, jadi created_at dan updated_at akan otomatis ada
 
     // Menentukan kolom yang bisa diisi (fillable)
     protected $fillable = [
-        'saldo_awal',
+        'balance_awal',
+        'balance_akhir',
         'tanggal',
         'keterangan', // Kolom keterangan ditambahkan
         'user_iduser', // Foreign key untuk pengguna

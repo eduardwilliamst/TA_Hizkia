@@ -15,12 +15,19 @@ class Pembelian extends Model
         'tanggal_pesan',
         'tanggal_datang',
         'supplier_idsupplier',
+        'tipe_idtipe',
     ]; // Kolom yang dapat diisi
 
     // Relasi dengan model Supplier
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_idsupplier', 'idsupplier');
+    }
+
+    // Relasi dengan model Tipe
+    public function tipe()
+    {
+        return $this->belongsTo(Tipe::class, 'tipe_idtipe', 'idtipe');
     }
 
     // Anda dapat menambahkan relasi atau metode lain sesuai kebutuhan di sini

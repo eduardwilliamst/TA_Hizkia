@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pembelian;
 use App\Models\Produk;
 use App\Models\Supplier;
+use App\Models\Tipe;
 use Illuminate\Http\Request;
 
 class PembelianController extends Controller
@@ -14,10 +15,10 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        $pembelians = Pembelian::with('supplier')->get();
+        $pembelians = Pembelian::with(['supplier', 'tipe'])->get();
         $suppliers = Supplier::all();
-        $produks = Produk::all();
-        return view('pembelian.index', compact('pembelians', 'suppliers', 'produks'));
+        $tipes = Tipe::all();
+        return view('pembelian.index', compact('pembelians', 'suppliers', 'tipes'));
     }
 
     public function listData()
@@ -53,6 +54,7 @@ class PembelianController extends Controller
             'tanggal_pesan' => 'required|date',
             'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
+            'tipe_idtipe' => 'required|exists:tipes,idtipe',
         ]);
 
         // Buat pembelian baru
@@ -68,7 +70,8 @@ class PembelianController extends Controller
     {
         $pembelian = Pembelian::findOrFail($id);
         $suppliers = Supplier::all(); // Mengambil semua supplier untuk opsi dropdown
-        return view('pembelian.edit', compact('pembelian', 'suppliers'));
+        $tipes = Tipe::all(); // Mengambil semua tipe untuk opsi dropdown
+        return view('pembelian.edit', compact('pembelian', 'suppliers', 'tipes'));
     }
 
     /**
@@ -81,6 +84,7 @@ class PembelianController extends Controller
             'tanggal_pesan' => 'required|date',
             'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
+            'tipe_idtipe' => 'required|exists:tipes,idtipe',
         ]);
 
         // Temukan pembelian dan update data

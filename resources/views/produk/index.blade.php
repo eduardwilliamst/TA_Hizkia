@@ -120,14 +120,6 @@ Produk
                         <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" required>
                     </div>
                     <div class="form-group">
-                        <label for="usia_awal">Usia Awal</label>
-                        <input type="date" class="form-control" id="usia_awal" name="usia_awal" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="usia_akhir">Usia Akhir</label>
-                        <input type="date" class="form-control" id="usia_akhir" name="usia_akhir" required>
-                    </div>
-                    <div class="form-group">
                         <label for="kategori_idkategori">Kategori</label>
                         <select class="form-control" id="kategori_idkategori" name="kategori_idkategori" required>
                             <option value="">Pilih Kategori</option>

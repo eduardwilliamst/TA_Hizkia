@@ -73,7 +73,7 @@ class PenjualanController extends Controller
             'tanggal' => Carbon::now(),
             'cara_bayar' => $request->input('cara_bayar'),
             'total_diskon' => 0, // Tambahkan logika diskon jika ada
-            'total_bayar' => $totalBayar,
+            'total_harga' => $totalBayar,
             // 'pos_session_id' => auth()->user()->current_session_id, // Asumsikan session aktif
             'user_id' => auth()->id(),
         ]);
@@ -153,7 +153,7 @@ class PenjualanController extends Controller
             'tanggal' => Carbon::now(),
             'cara_bayar' => $request->cara_bayar,
             'total_diskon' => 0, // Tambahkan logika diskon jika diperlukan
-            'total_bayar' => $totalBayar,
+            'total_harga' => $totalBayar,
             'user_id' => auth()->id(),
         ]);
 

@@ -174,6 +174,12 @@
                                         <p>Supplier</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('tipe.index') }}" class="nav-link {{ Request::is('tipe') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-list-alt"></i>
+                                        <p>Tipe Pembelian</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
