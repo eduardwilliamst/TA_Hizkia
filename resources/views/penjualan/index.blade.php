@@ -387,5 +387,58 @@ Penjualan
 
 });
 
+// Search functionality
+document.getElementById('search-bar').addEventListener('input', function(e) {
+    const searchQuery = e.target.value.toLowerCase().trim();
+
+    // Get all product cards across all tabs
+    const productCards = document.querySelectorAll('.product-card');
+
+    productCards.forEach(card => {
+        const productName = card.dataset.name ? card.dataset.name.toLowerCase() : '';
+        const productBarcode = card.dataset.barcode ? card.dataset.barcode.toLowerCase() : '';
+
+        // Get the parent column div (col-xl-3, col-lg-4, etc.)
+        const columnDiv = card.closest('[class*="col-"]');
+
+        // Check if search query matches product name or barcode
+        if (productName.includes(searchQuery) || productBarcode.includes(searchQuery)) {
+            if (columnDiv) {
+                columnDiv.style.display = '';
+            } else {
+                card.style.display = '';
+            }
+        } else {
+            if (columnDiv) {
+                columnDiv.style.display = 'none';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    });
+
+    // If search is active, show all tabs content to display matching products
+    if (searchQuery) {
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.classList.add('show', 'active');
+        });
+        // Hide category tabs when searching
+        document.getElementById('categoryTabs').style.display = 'none';
+    } else {
+        // Reset to original tab view
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.classList.remove('show', 'active');
+        });
+        // Re-activate the currently selected tab
+        const activeTab = document.querySelector('#categoryTabs .nav-link.active');
+        if (activeTab) {
+            const target = activeTab.getAttribute('href');
+            document.querySelector(target)?.classList.add('show', 'active');
+        }
+        // Show category tabs again
+        document.getElementById('categoryTabs').style.display = '';
+    }
+});
+
 </script>
 @endsection
