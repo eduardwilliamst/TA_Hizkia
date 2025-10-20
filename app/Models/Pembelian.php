@@ -30,5 +30,17 @@ class Pembelian extends Model
         return $this->belongsTo(Tipe::class, 'tipe_idtipe', 'idtipe');
     }
 
-    // Anda dapat menambahkan relasi atau metode lain sesuai kebutuhan di sini
+    // Relasi dengan PembelianDetil (Detail pembelian produk)
+    public function detils()
+    {
+        return $this->hasMany(PembelianDetil::class, 'pembelian_id', 'idpembelian');
+    }
+
+    // Hitung total pembelian
+    public function getTotalAttribute()
+    {
+        return $this->detils->sum(function ($detil) {
+            return $detil->harga * $detil->jumlah;
+        });
+    }
 }

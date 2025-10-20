@@ -9,7 +9,8 @@
       "Bash(php artisan:*)",
       "Bash(dir:*)",
       "Bash(php:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(where:*)"
     ],
     "deny": [],
     "ask": []
