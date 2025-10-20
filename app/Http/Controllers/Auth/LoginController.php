@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\PosMesin;
 use App\Models\PosSession;
+use App\Models\CashFlow;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -76,17 +78,29 @@ class LoginController extends Controller
 
                 // Get the selected pos_mesin id
                 $posMesinId = $request->input('pos_mesin');
-                // dd($posMesinId, Auth::id());
+
+                // Get the POS machine to access its initial balance
+                $posMesin = PosMesin::find($posMesinId);
+
+                // Get the last session for this machine to determine starting balance
+                $lastSession = PosSession::where('pos_mesin_idpos_mesin', $posMesinId)
+                    ->orderBy('idpos_session', 'desc')
+                    ->first();
+
+                // Set balance_awal: use last session's balance_akhir, or machine's initial_balance, or default 1000000
+                $balanceAwal = $lastSession && $lastSession->balance_akhir
+                    ? $lastSession->balance_akhir
+                    : ($posMesin->initial_balance ?? 1000000);
+
                 // Create a new pos_session
-                
                 $posSession = PosSession::create([
-                    // 'saldo_awal' => 0,   // Set initial balance, or adjust as needed
-                    'tanggal' => now(),    // Use current timestamp
-                    'keterangan' => 'Sesi dimulai',  // Default session description
-                    'user_iduser' => Auth::id(), // Logged-in user's ID
-                    'pos_mesin_idpos_mesin' => $posMesinId, // Selected POS machine ID
+                    'balance_awal' => $balanceAwal,
+                    'balance_akhir' => $balanceAwal, // Initialize as same as balance_awal
+                    'tanggal' => now(),
+                    'keterangan' => 'Sesi dimulai',
+                    'user_iduser' => Auth::id(),
+                    'pos_mesin_idpos_mesin' => $posMesinId,
                 ]);
-                // dd($posSession);
 
                 // Store the pos_session ID in the session
                 session(['pos_session' => $posSession->idpos_session]);
@@ -109,6 +123,47 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        // Get the current POS session before session is invalidated
+        $posSessionId = session('pos_session');
+
+        try {
+            // Finalize the POS session if exists
+            if ($posSessionId) {
+                DB::beginTransaction();
+
+                $posSession = PosSession::find($posSessionId);
+
+                if ($posSession) {
+                    // Get all cash flows for this session
+                    $cashFlows = CashFlow::where('id_pos_session', $posSessionId)->get();
+
+                    // Calculate totals
+                    $totalCashIn = $cashFlows->where('tipe', 'cash_in')->sum('jumlah');
+                    $totalCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
+
+                    // Update session description with summary
+                    $posSession->keterangan = sprintf(
+                        'Sesi selesai - Cash In: Rp %s, Cash Out: Rp %s',
+                        number_format($totalCashIn, 0, ',', '.'),
+                        number_format($totalCashOut, 0, ',', '.')
+                    );
+
+                    // Ensure balance_akhir is set (should already be updated by transactions)
+                    if ($posSession->balance_akhir === null) {
+                        $posSession->balance_akhir = $posSession->balance_awal + $totalCashIn - $totalCashOut;
+                    }
+
+                    $posSession->save();
+                }
+
+                DB::commit();
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Failed to close POS session on logout: ' . $e->getMessage());
+        }
+
+        // Perform standard logout
         $this->guard()->logout();
 
         $request->session()->invalidate();

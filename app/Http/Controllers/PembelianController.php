@@ -8,6 +8,7 @@ use App\Models\PembelianDetil;
 use App\Models\Produk;
 use App\Models\Supplier;
 use App\Models\Tipe;
+use App\Models\PosSession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -100,13 +101,30 @@ class PembelianController extends Controller
                 $totalPembelian += $product['harga'] * $product['jumlah'];
             }
 
-            // Catat cash flow sebagai pengeluaran
+            // Get current POS session
+            $posSessionId = session('pos_session');
+
+            // Get current session to calculate new balance
+            $posSession = $posSessionId ? PosSession::find($posSessionId) : null;
+            $balanceAwal = $posSession ? ($posSession->balance_akhir ?? $posSession->balance_awal) : 0;
+            $balanceAkhir = $balanceAwal - $totalPembelian; // Subtract for cash out
+
+            // Catat cash flow sebagai pengeluaran (cash out)
             CashFlow::create([
+                'balance_awal' => $balanceAwal,
+                'balance_akhir' => $balanceAkhir,
                 'tanggal' => $request->tanggal_pesan,
                 'keterangan' => 'Pembelian dari ' . Supplier::find($request->supplier_idsupplier)->nama,
-                'tipe' => 'pengeluaran',
-                'nominal' => $totalPembelian,
+                'tipe' => 'cash_out',
+                'jumlah' => $totalPembelian,
+                'id_pos_session' => $posSessionId,
             ]);
+
+            // Update session balance_akhir if session exists
+            if ($posSession) {
+                $posSession->balance_akhir = $balanceAkhir;
+                $posSession->save();
+            }
 
             DB::commit();
 

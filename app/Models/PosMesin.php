@@ -13,7 +13,8 @@ class PosMesin extends Model
     protected $primaryKey = 'idpos_mesin'; // Nama primary key
     public $timestamps = true; // Menggunakan timestamps
     protected $fillable = [
-        'nama', // Kolom yang dapat diisi
+        'nama',
+        'initial_balance',
     ];
 
     // Anda dapat menambahkan relasi atau metode lain sesuai kebutuhan di sini

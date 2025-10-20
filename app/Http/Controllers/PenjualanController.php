@@ -6,8 +6,11 @@ use App\Models\Kategori;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetil;
 use App\Models\Produk;
+use App\Models\CashFlow;
+use App\Models\PosSession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenjualanController extends Controller
 {
@@ -148,29 +151,71 @@ class PenjualanController extends Controller
             return $item['price'] * $item['quantity'];
         }, $cart));
 
-        // Simpan ke tabel penjualans
-        $penjualan = Penjualan::create([
-            'tanggal' => Carbon::now(),
-            'cara_bayar' => $request->cara_bayar,
-            'total_diskon' => 0, // Tambahkan logika diskon jika diperlukan
-            'total_harga' => $totalBayar,
-            'user_id' => auth()->id(),
-        ]);
-
-        // Simpan ke tabel penjualan_detils
-        foreach ($cart as $item) {
-            PenjualanDetil::create([
-                'penjualan_id' => $penjualan->idpenjualan,
-                'produk_id' => $item['id'],
-                'harga' => $item['price'],
-                'jumlah' => $item['quantity'],
-                'sub_total' => $item['price'] * $item['quantity'],
-            ]);
+        // Get current POS session
+        $posSessionId = session('pos_session');
+        if (!$posSessionId) {
+            return response()->json(['error' => 'Sesi POS tidak ditemukan! Silakan login kembali.'], 400);
         }
 
-        // Kosongkan keranjang
-        session()->forget('cart');
+        DB::beginTransaction();
+        try {
+            // Simpan ke tabel penjualans
+            $penjualan = Penjualan::create([
+                'tanggal' => Carbon::now(),
+                'cara_bayar' => $request->cara_bayar,
+                'total_diskon' => 0, // Tambahkan logika diskon jika diperlukan
+                'total_harga' => $totalBayar,
+                'user_id' => auth()->id(),
+                'pos_session_idpos_session' => $posSessionId,
+            ]);
 
-        return response()->json(['message' => 'Checkout berhasil!', 'penjualan_id' => $penjualan->idpenjualan]);
+            // Simpan ke tabel penjualan_detils
+            foreach ($cart as $item) {
+                PenjualanDetil::create([
+                    'penjualan_id' => $penjualan->idpenjualan,
+                    'produk_id' => $item['id'],
+                    'harga' => $item['price'],
+                    'jumlah' => $item['quantity'],
+                    'sub_total' => $item['price'] * $item['quantity'],
+                ]);
+
+                // Update stock: decrease quantity
+                $produk = Produk::find($item['id']);
+                if ($produk) {
+                    $produk->stok -= $item['quantity'];
+                    $produk->save();
+                }
+            }
+
+            // Get current session to calculate new balance
+            $posSession = PosSession::find($posSessionId);
+            $balanceAwal = $posSession->balance_akhir ?? $posSession->balance_awal;
+            $balanceAkhir = $balanceAwal + $totalBayar;
+
+            // Record to cash_flows (cash in from sales)
+            CashFlow::create([
+                'balance_awal' => $balanceAwal,
+                'balance_akhir' => $balanceAkhir,
+                'tanggal' => Carbon::now(),
+                'keterangan' => 'Penjualan #' . $penjualan->idpenjualan,
+                'tipe' => 'cash_in',
+                'jumlah' => $totalBayar,
+                'id_pos_session' => $posSessionId,
+            ]);
+
+            // Update session balance_akhir
+            $posSession->balance_akhir = $balanceAkhir;
+            $posSession->save();
+
+            DB::commit();
+
+            // Kosongkan keranjang
+            session()->forget('cart');
+
+            return response()->json(['message' => 'Checkout berhasil!', 'penjualan_id' => $penjualan->idpenjualan]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Checkout gagal: ' . $e->getMessage()], 500);
+        }
     }
 }

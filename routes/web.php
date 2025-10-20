@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PosMesinController;
+use App\Http\Controllers\PosSessionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\SupplierController;
@@ -72,6 +73,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('posmesin', PosMesinController::class);
     Route::post('posmesin/getEditForm', [PosMesinController::class, 'getEditForm'])->name('posmesin.getEditForm');
+
+    // POS Session routes
+    Route::post('possession/close', [PosSessionController::class, 'closeSession'])->name('possession.close');
+    Route::get('possession/summary', [PosSessionController::class, 'getSessionSummary'])->name('possession.summary');
 
     Route::resource('produk', ProdukController::class);
     Route::post('produk/getEditForm', [ProdukController::class, 'getEditForm'])->name('produk.getEditForm');
