@@ -12,7 +12,8 @@ Penjualan
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <!-- Products Section (Left Side) -->
+            <div class="col-lg-8 col-md-7">
                 <div class="card animate-fade-in-up">
                     <div class="card-header">
                         <h3 class="mb-0">
@@ -23,14 +24,14 @@ Penjualan
                     <div class="card-body">
                         <!-- Search Bar -->
                         <div class="row mb-4">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div style="position: relative;">
                                     <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                                     <input type="text" id="search-bar" class="form-control" placeholder="Cari produk berdasarkan nama atau barcode..." style="padding-left: 45px; border-radius: 25px; border: 2px solid #e0e0e0; height: 50px;">
                                 </div>
                             </div>
-                            <div class="col-md-6 text-right">
-                                <button class="btn btn-info" onclick="window.location.reload()" style="border-radius: 25px; padding: 0.7rem 1.5rem;">
+                            <div class="col-md-4 text-right">
+                                <button class="btn btn-info" onclick="window.location.reload()" style="border-radius: 25px; padding: 0.7rem 1.5rem; width: 100%;">
                                     <i class="fas fa-sync-alt mr-2"></i>Refresh
                                 </button>
                             </div>
@@ -65,10 +66,10 @@ Penjualan
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Keranjang Belanja -->
-        <div id="cart" class="my-4 animate-fade-in" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+            <!-- Keranjang Belanja (Right Side - Sticky) -->
+            <div class="col-lg-4 col-md-5">
+                <div id="cart" class="animate-fade-in sticky-cart" style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); position: sticky; top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                 <h4 style="margin: 0; color: #333; font-weight: 600;">
                     <i class="fas fa-shopping-cart mr-2" style="color: #667eea;"></i>
@@ -79,27 +80,15 @@ Penjualan
                 </span>
             </div>
 
-            <div style="overflow-x: auto;">
-                <table class="table" style="margin-bottom: 1.5rem;">
-                    <thead>
-                        <tr>
-                            <th style="border-top: none;">Nama</th>
-                            <th style="border-top: none;">Harga</th>
-                            <th style="border-top: none; text-align: center;">Jumlah</th>
-                            <th style="border-top: none;">Subtotal</th>
-                            <th style="border-top: none; text-align: center;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cart-body">
-                        <!-- Item keranjang akan ditambahkan di sini -->
-                        <tr id="empty-cart-message">
-                            <td colspan="5" style="text-align: center; padding: 3rem; color: #999;">
-                                <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
-                                Keranjang masih kosong
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Cart Items List -->
+            <div style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem;" id="cart-items-container">
+                <div id="cart-body">
+                    <!-- Item keranjang akan ditambahkan di sini -->
+                    <div id="empty-cart-message" style="text-align: center; padding: 3rem; color: #999;">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
+                        Keranjang masih kosong
+                    </div>
+                </div>
             </div>
 
             <div style="border-top: 2px solid #f0f0f0; padding-top: 1.5rem;">
@@ -137,6 +126,10 @@ Penjualan
                 </button>
             </div>
         </div>
+            </div>
+        </div>
+    </div>
+</div>
 
         <style>
             .payment-option input[type="radio"]:checked + .payment-card {
@@ -153,9 +146,304 @@ Penjualan
                 transform: translateY(-3px);
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             }
+
+            /* Checkout Modal Animations */
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+            }
+
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+
+            /* Modal Content Animation */
+            .modal.fade .modal-dialog {
+                transition: transform 0.3s ease-out;
+            }
+
+            .modal.show .modal-dialog {
+                transform: scale(1);
+            }
+
+            /* Cart Item Slide In */
+            .cart-item-animate {
+                animation: slideUp 0.3s ease-out;
+            }
+
+            /* Change Display Pulse */
+            .change-pulse {
+                animation: pulse 0.5s ease-in-out;
+            }
+
+            /* Warning Shake */
+            .warning-shake {
+                animation: shake 0.5s ease-in-out;
+            }
+
+            /* Input Focus Effect */
+            #cash-tendered-input:focus {
+                border-color: #667eea !important;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+                transform: scale(1.02);
+                transition: all 0.3s ease;
+            }
+
+            /* Button Hover Effects */
+            #confirm-checkout-btn:not(:disabled):hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+                transition: all 0.3s ease;
+            }
+
+            #confirm-checkout-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            /* Scrollbar Styling for Cart Items */
+            #modal-cart-items::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #modal-cart-items::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            #modal-cart-items::-webkit-scrollbar-thumb {
+                background: #667eea;
+                border-radius: 10px;
+            }
+
+            #modal-cart-items::-webkit-scrollbar-thumb:hover {
+                background: #5568d3;
+            }
+
+            /* Loading Spinner Animation */
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Quick Cash Button Styles */
+            .quick-cash-btn {
+                background: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 0.6rem;
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: #667eea;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-align: center;
+            }
+
+            .quick-cash-btn:hover {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            }
+
+            .quick-cash-btn:active {
+                transform: translateY(0);
+            }
+
+            /* Cart Items Scrollbar */
+            #cart-items-container::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            #cart-items-container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            #cart-items-container::-webkit-scrollbar-thumb {
+                background: #667eea;
+                border-radius: 10px;
+            }
+
+            #cart-items-container::-webkit-scrollbar-thumb:hover {
+                background: #5568d3;
+            }
+
+            /* Cart Item Card Styles */
+            .cart-item-card {
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 0.8rem;
+                transition: all 0.2s ease;
+                border: 2px solid transparent;
+            }
+
+            .cart-item-card:hover {
+                border-color: #667eea;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+            }
+
+            /* Sticky Cart Responsive */
+            @media (max-width: 991px) {
+                .sticky-cart {
+                    position: relative !important;
+                    top: 0 !important;
+                    margin-top: 2rem;
+                }
+            }
         </style>
     </div>
 </div>
+
+<!-- Checkout Confirmation Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1.5rem;">
+                <h5 class="modal-title" id="checkoutModalLabel" style="font-weight: 600; font-size: 1.3rem;">
+                    <i class="fas fa-check-circle mr-2"></i>Konfirmasi Pembayaran
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 0.9;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body" style="padding: 2rem;">
+                <!-- Cart Summary Section -->
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h6 style="font-weight: 600; color: #333; margin-bottom: 1rem;">
+                        <i class="fas fa-shopping-cart mr-2"></i>Ringkasan Belanja
+                    </h6>
+                    <div id="modal-cart-items" style="max-height: 250px; overflow-y: auto;">
+                        <!-- Cart items will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Total Amount Display -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 500;">Total Pembayaran</div>
+                    <div style="color: white; font-size: 2.5rem; font-weight: 700;">
+                        Rp <span id="modal-total-amount">0</span>
+                    </div>
+                    <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; margin-top: 0.5rem;">
+                        <span id="modal-total-items">0</span> Item
+                    </div>
+                </div>
+
+                <!-- Payment Method Display -->
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                    <i class="fas fa-credit-card" style="font-size: 1.5rem; color: #667eea; margin-right: 1rem;"></i>
+                    <div>
+                        <div style="font-size: 0.85rem; color: #666;">Metode Pembayaran</div>
+                        <div id="modal-payment-method" style="font-weight: 600; color: #333; font-size: 1.1rem;">Cash</div>
+                    </div>
+                </div>
+
+                <!-- Cash Payment Section -->
+                <div id="cash-payment-section" style="display: none;">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 600; color: #333; margin-bottom: 0.5rem; display: block;">
+                            <i class="fas fa-money-bill-wave mr-2" style="color: #28a745;"></i>Jumlah Uang Diterima
+                        </label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; font-weight: 600;">Rp</span>
+                            <input type="text" id="cash-tendered-input" class="form-control" placeholder="0" style="padding-left: 45px; font-size: 1.2rem; font-weight: 600; border: 2px solid #e0e0e0; border-radius: 12px; height: 55px;">
+                        </div>
+                    </div>
+
+                    <!-- Quick Cash Buttons -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem;">
+                            <i class="fas fa-bolt mr-1"></i>Nominal Cepat
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;" id="quick-cash-buttons">
+                            <!-- Quick cash buttons will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Change Display -->
+                    <div id="change-display" style="display: none;">
+                        <div class="alert" style="border-radius: 12px; border: none; padding: 1.2rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600;">
+                                    <i class="fas fa-coins mr-2"></i>Kembalian
+                                </span>
+                                <span style="font-size: 1.3rem; font-weight: 700;" id="change-amount">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insufficient Payment Warning -->
+                    <div id="insufficient-warning" class="alert alert-warning" style="display: none; border-radius: 12px; border: none;">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Jumlah uang yang diterima kurang dari total pembayaran
+                    </div>
+                </div>
+
+                <!-- Credit Payment Section -->
+                <div id="credit-payment-section" style="display: none;">
+                    <div class="alert alert-info" style="border-radius: 12px; border: none;">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Pastikan pembayaran kartu kredit telah berhasil
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer" style="border-top: 2px solid #f0f0f0; padding: 1.5rem;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="padding: 0.7rem 1.5rem; border-radius: 10px; font-weight: 600;">
+                    <i class="fas fa-times mr-2"></i>Batal
+                </button>
+                <button type="button" id="confirm-checkout-btn" class="btn btn-success" style="padding: 0.7rem 2rem; border-radius: 10px; font-weight: 600;">
+                    <i class="fas fa-print mr-2"></i>Simpan & Cetak Struk
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('javascript')
@@ -194,7 +482,6 @@ Penjualan
         const cartBody = document.getElementById("cart-body");
         const cartTotal = document.getElementById("cart-total");
         const cartCount = document.getElementById("cart-count");
-        const emptyMessage = document.getElementById("empty-cart-message");
 
         cartBody.innerHTML = "";
         let total = 0;
@@ -202,12 +489,10 @@ Penjualan
 
         if (cart.length === 0) {
             cartBody.innerHTML = `
-                <tr id="empty-cart-message">
-                    <td colspan="5" style="text-align: center; padding: 3rem; color: #999;">
-                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
-                        Keranjang masih kosong
-                    </td>
-                </tr>
+                <div id="empty-cart-message" style="text-align: center; padding: 3rem; color: #999;">
+                    <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
+                    Keranjang masih kosong
+                </div>
             `;
         } else {
             cart.forEach((item, index) => {
@@ -215,34 +500,38 @@ Penjualan
                 total += subtotal;
                 totalItems += item.quantity;
 
-                const row = `
-                    <tr class="animate-fade-in">
-                        <td style="font-weight: 600; color: #333;">${item.name}</td>
-                        <td style="color: #667eea; font-weight: 600;">Rp ${item.price.toLocaleString()}</td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
-                                <button class="btn btn-sm btn-outline-secondary decrease-qty" data-index="${index}" style="border-radius: 50%; width: 30px; height: 30px; padding: 0;">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="cart-quantity" style="width: 60px; text-align: center; border: 2px solid #e0e0e0; border-radius: 8px; padding: 0.3rem;">
-                                <button class="btn btn-sm btn-outline-secondary increase-qty" data-index="${index}" style="border-radius: 50%; width: 30px; height: 30px; padding: 0;">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                const card = `
+                    <div class="cart-item-card animate-fade-in">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: #333; font-size: 0.95rem; margin-bottom: 0.3rem;">${item.name}</div>
+                                <div style="color: #667eea; font-weight: 600; font-size: 0.9rem;">Rp ${item.price.toLocaleString('id-ID')}</div>
                             </div>
-                        </td>
-                        <td style="font-weight: 600; color: #333;">Rp ${subtotal.toLocaleString()}</td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-danger btn-sm remove-item" data-index="${index}" style="border-radius: 8px;">
+                            <button class="btn btn-danger btn-sm remove-item" data-index="${index}" style="border-radius: 8px; padding: 0.3rem 0.6rem;">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </td>
-                    </tr>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <button class="btn btn-sm btn-outline-secondary decrease-qty" data-index="${index}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-minus" style="font-size: 0.7rem;"></i>
+                                </button>
+                                <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="cart-quantity" style="width: 50px; text-align: center; border: 2px solid #e0e0e0; border-radius: 8px; padding: 0.4rem; font-weight: 600;">
+                                <button class="btn btn-sm btn-outline-secondary increase-qty" data-index="${index}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
+                                </button>
+                            </div>
+                            <div style="font-weight: 700; color: #333; font-size: 1rem;">
+                                Rp ${subtotal.toLocaleString('id-ID')}
+                            </div>
+                        </div>
+                    </div>
                 `;
-                cartBody.innerHTML += row;
+                cartBody.innerHTML += card;
             });
         }
 
-        cartTotal.textContent = total.toLocaleString();
+        cartTotal.textContent = total.toLocaleString('id-ID');
         cartCount.textContent = totalItems;
     }
 
@@ -302,11 +591,25 @@ Penjualan
     // Toast notification function
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
+        let bgGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // default info
+        let icon = 'fa-info-circle';
+
+        if (type === 'success') {
+            bgGradient = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+            icon = 'fa-check-circle';
+        } else if (type === 'warning') {
+            bgGradient = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+            icon = 'fa-exclamation-triangle';
+        } else if (type === 'error') {
+            bgGradient = 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)';
+            icon = 'fa-times-circle';
+        }
+
         toast.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: ${type === 'success' ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+            background: ${bgGradient};
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 10px;
@@ -315,7 +618,7 @@ Penjualan
             animation: slideInRight 0.3s ease-out;
             font-weight: 500;
         `;
-        toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+        toast.innerHTML = `<i class="fas ${icon} mr-2"></i>${message}`;
         document.body.appendChild(toast);
 
         setTimeout(() => {
@@ -335,57 +638,313 @@ Penjualan
         }
     });
 
+    // Checkout Button - Open Modal
     document.getElementById("checkout-button").addEventListener("click", function() {
-    const cartData = cart.map(item => ({
-        id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-    }));
-
-    const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
-
-    // fetch("{{ route('penjualan.store') }}", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "X-CSRF-TOKEN": "{{ csrf_token() }}",
-    //     },
-    //     body: JSON.stringify({
-    //         cart: cartData,
-    //         cara_bayar: caraBayar,
-    //     }),
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     if (data.message) {
-    //         alert(data.message);
-    //         cart.length = 0;
-    //         updateCart();
-    //     }
-    // })
-    // .catch(error => console.error("Error:", error));
-
-    fetch("{{ route('cart.save') }}", { // Ganti route ke endpoint penyimpanan session
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-        },
-        body: JSON.stringify({
-            cart: cartData, // Data keranjang dikirim ke session
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            alert(data.message);
-            cart.length = 0;
-            updateCart();
+        // Prevent execution if cart is empty
+        if (cart.length === 0) {
+            showToast('Keranjang belanja masih kosong!', 'warning');
+            return;
         }
-    })
-    .catch(error => console.error("Error:", error));
 
-});
+        // Calculate total amount and item count
+        let totalAmount = 0;
+        let totalItems = 0;
+        cart.forEach(item => {
+            totalAmount += item.price * item.quantity;
+            totalItems += item.quantity;
+        });
+
+        // Get selected payment method
+        const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
+        const paymentMethodText = caraBayar === 'cash' ? 'Cash' : 'Credit Card';
+
+        // Populate modal cart items with animation
+        const modalCartItems = document.getElementById('modal-cart-items');
+        modalCartItems.innerHTML = '';
+        cart.forEach((item, index) => {
+            const subtotal = item.price * item.quantity;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'cart-item-animate';
+            itemDiv.style.cssText = 'display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #e0e0e0; animation-delay: ' + (index * 0.05) + 's;';
+            itemDiv.innerHTML = `
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; color: #333;">${item.name}</div>
+                    <div style="color: #666; font-size: 0.9rem;">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</div>
+                </div>
+                <div style="font-weight: 600; color: #667eea;">Rp ${subtotal.toLocaleString('id-ID')}</div>
+            `;
+            modalCartItems.appendChild(itemDiv);
+        });
+
+        // Update modal total and items
+        document.getElementById('modal-total-amount').textContent = totalAmount.toLocaleString();
+        document.getElementById('modal-total-items').textContent = totalItems;
+        document.getElementById('modal-payment-method').textContent = paymentMethodText;
+
+        // Show/hide payment sections based on payment method
+        const cashSection = document.getElementById('cash-payment-section');
+        const creditSection = document.getElementById('credit-payment-section');
+        const confirmBtn = document.getElementById('confirm-checkout-btn');
+
+        if (caraBayar === 'cash') {
+            cashSection.style.display = 'block';
+            creditSection.style.display = 'none';
+            confirmBtn.disabled = true; // Disable until sufficient payment entered
+
+            // Reset cash input fields
+            document.getElementById('cash-tendered-input').value = '';
+            document.getElementById('change-display').style.display = 'none';
+            document.getElementById('insufficient-warning').style.display = 'none';
+
+            // Generate quick cash buttons
+            generateQuickCashButtons(totalAmount);
+        } else {
+            cashSection.style.display = 'none';
+            creditSection.style.display = 'block';
+            confirmBtn.disabled = false; // Enable immediately for credit
+        }
+
+        // Store total amount for later use
+        window.currentCheckoutTotal = totalAmount;
+
+        // Open modal
+        $('#checkoutModal').modal('show');
+    });
+
+    // Generate Quick Cash Buttons
+    function generateQuickCashButtons(totalAmount) {
+        const quickCashContainer = document.getElementById('quick-cash-buttons');
+        quickCashContainer.innerHTML = '';
+
+        // Calculate smart quick amounts
+        const roundedTotal = Math.ceil(totalAmount / 1000) * 1000; // Round up to nearest thousand
+        const amounts = [
+            roundedTotal,
+            roundedTotal + 5000,
+            roundedTotal + 10000,
+            50000,
+            100000,
+            totalAmount // Exact amount
+        ];
+
+        // Remove duplicates and sort
+        const uniqueAmounts = [...new Set(amounts)].sort((a, b) => a - b).slice(0, 6);
+
+        uniqueAmounts.forEach(amount => {
+            const btn = document.createElement('div');
+            btn.className = 'quick-cash-btn';
+            btn.textContent = formatRupiah(amount);
+            btn.onclick = function() {
+                document.getElementById('cash-tendered-input').value = amount.toLocaleString('id-ID');
+                document.getElementById('cash-tendered-input').dispatchEvent(new Event('input'));
+            };
+            quickCashContainer.appendChild(btn);
+        });
+    }
+
+    // Helper function to format rupiah
+    function formatRupiah(amount) {
+        if (amount >= 1000000) {
+            return (amount / 1000000) + ' Juta';
+        } else if (amount >= 1000) {
+            return (amount / 1000) + 'rb';
+        }
+        return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+
+    // Auto-focus on cash input after modal opens
+    $('#checkoutModal').on('shown.bs.modal', function() {
+        const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
+        if (caraBayar === 'cash') {
+            document.getElementById('cash-tendered-input').focus();
+        }
+    });
+
+    // Keyboard shortcuts for modal
+    $('#checkoutModal').on('keydown', function(e) {
+        // Enter key to confirm (if button is enabled)
+        if (e.key === 'Enter' && !document.getElementById('confirm-checkout-btn').disabled) {
+            e.preventDefault();
+            document.getElementById('confirm-checkout-btn').click();
+        }
+        // Escape key to close modal
+        if (e.key === 'Escape') {
+            $('#checkoutModal').modal('hide');
+        }
+    });
+
+    // Cash Tendered Input Logic - Format and Calculate Change with Enhanced UX
+    document.getElementById('cash-tendered-input').addEventListener('input', function(e) {
+        // Remove non-numeric characters
+        let value = e.target.value.replace(/\D/g, '');
+
+        // Format with thousand separators
+        if (value) {
+            const numericValue = parseInt(value);
+            e.target.value = numericValue.toLocaleString('id-ID');
+
+            // Calculate change
+            const totalAmount = window.currentCheckoutTotal;
+            const change = numericValue - totalAmount;
+
+            const changeDisplay = document.getElementById('change-display');
+            const changeAmount = document.getElementById('change-amount');
+            const insufficientWarning = document.getElementById('insufficient-warning');
+            const confirmBtn = document.getElementById('confirm-checkout-btn');
+            const changeAlert = changeDisplay.querySelector('.alert');
+
+            if (numericValue >= totalAmount) {
+                // Sufficient payment - show change in green with pulse animation
+                changeDisplay.style.display = 'block';
+                insufficientWarning.style.display = 'none';
+                changeAmount.textContent = 'Rp ' + change.toLocaleString('id-ID');
+                changeAlert.className = 'alert alert-success change-pulse';
+                changeAlert.style.borderRadius = '12px';
+                changeAlert.style.border = 'none';
+                changeAlert.style.padding = '1.2rem';
+                confirmBtn.disabled = false;
+
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    changeAlert.classList.remove('change-pulse');
+                }, 500);
+
+                // Visual feedback on input
+                e.target.style.borderColor = '#28a745';
+            } else {
+                // Insufficient payment - show warning with shake animation
+                changeDisplay.style.display = 'none';
+                insufficientWarning.style.display = 'block';
+                insufficientWarning.classList.add('warning-shake');
+                confirmBtn.disabled = true;
+
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    insufficientWarning.classList.remove('warning-shake');
+                }, 500);
+
+                // Visual feedback on input
+                e.target.style.borderColor = '#ffc107';
+            }
+        } else {
+            // Empty input
+            document.getElementById('change-display').style.display = 'none';
+            document.getElementById('insufficient-warning').style.display = 'none';
+            document.getElementById('confirm-checkout-btn').disabled = true;
+            e.target.style.borderColor = '#e0e0e0';
+        }
+    });
+
+    // Confirm Checkout Button - Save Transaction
+    document.getElementById('confirm-checkout-btn').addEventListener('click', function() {
+        const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
+        const totalAmount = window.currentCheckoutTotal;
+
+        // Validate payment for cash
+        if (caraBayar === 'cash') {
+            const cashInput = document.getElementById('cash-tendered-input').value;
+            const cashTendered = parseInt(cashInput.replace(/\D/g, ''));
+
+            if (!cashTendered || cashTendered < totalAmount) {
+                showToast('Jumlah uang yang diterima tidak mencukupi!', 'warning');
+                return;
+            }
+        }
+
+        // Prepare cart data
+        const cartData = cart.map(item => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+        }));
+
+        // Disable button to prevent double submission
+        const confirmBtn = document.getElementById('confirm-checkout-btn');
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+
+        // Send POST request
+        fetch("{{ route('cart.save') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            },
+            body: JSON.stringify({
+                cart: cartData,
+                cara_bayar: caraBayar,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                // Success animation on modal
+                const modalContent = document.querySelector('#checkoutModal .modal-content');
+                modalContent.style.animation = 'pulse 0.3s ease-in-out';
+
+                // Success - clear cart and close modal with delay for animation
+                setTimeout(() => {
+                    showToast('Transaksi berhasil disimpan!', 'success');
+                    cart.length = 0;
+                    updateCart();
+                    $('#checkoutModal').modal('hide');
+
+                    // Reset button
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="fas fa-print mr-2"></i>Simpan & Cetak Struk';
+
+                    // Play success sound (if browser supports it)
+                    playSuccessSound();
+                }, 300);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showToast('Terjadi kesalahan saat menyimpan transaksi!', 'error');
+
+            // Reset button
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<i class="fas fa-print mr-2"></i>Simpan & Cetak Struk';
+        });
+    });
+
+    // Reset modal when closed
+    $('#checkoutModal').on('hidden.bs.modal', function() {
+        document.getElementById('cash-tendered-input').value = '';
+        document.getElementById('change-display').style.display = 'none';
+        document.getElementById('insufficient-warning').style.display = 'none';
+
+        // Reset input border color
+        const cashInput = document.getElementById('cash-tendered-input');
+        if (cashInput) {
+            cashInput.style.borderColor = '#e0e0e0';
+        }
+    });
+
+    // Play success sound function
+    function playSuccessSound() {
+        try {
+            // Create audio context for success beep
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800; // Frequency in Hz
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            // Audio not supported, silently fail
+            console.log('Audio notification not supported');
+        }
+    }
 
 // Search functionality
 document.getElementById('search-bar').addEventListener('input', function(e) {
