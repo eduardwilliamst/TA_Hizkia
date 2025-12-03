@@ -1,333 +1,308 @@
-@extends('layouts.adminlte')
+@extends('layouts.pos')
 
-@section('title')
-Dashboard
-@endsection
+@section('title', 'Dashboard')
 
-@section('page-bar')
-<h1 class="m-0">Dashboard</h1>
-@endsection
-
-@section('contents')
-<div class="content">
-    <div class="container-fluid">
-        <!-- Welcome Banner -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card animate-fade-in-up" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; border: none; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);">
-                    <div class="card-body" style="padding: 2rem;">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h2 style="color: white; font-weight: 700; margin-bottom: 0.5rem;">
-                                    Selamat Datang, {{ Auth::user()->name }}!
-                                </h2>
-                                <p style="color: rgba(255,255,255,0.9); margin-bottom: 0; font-size: 1.1rem;">
-                                    <i class="far fa-calendar-alt mr-2"></i>{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
-                                </p>
-                            </div>
-                            <div class="col-md-4 text-right">
-                                <div style="color: white; font-size: 2.5rem; font-weight: 700;" id="live-clock">
-                                    <i class="far fa-clock mr-2"></i><span id="clock-time"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+@section('content')
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <div class="page-breadcrumb">
+        <div class="breadcrumb-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
         </div>
+    </div>
+</div>
 
-        <!-- Statistics Cards -->
-        <div class="row">
-            <!-- Total Products -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Total Produk</h6>
-                                <h2 style="color: #667eea; font-weight: 700; margin-bottom: 0;">{{ number_format($totalProducts) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-box" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- Welcome Card -->
+<div class="card" style="background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); color: white; margin-bottom: 2rem; border: none;">
+    <div class="card-body" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin: 0 0 0.5rem 0;">
+                    Selamat Datang, {{ Auth::user()->name }}! 👋
+                </h2>
+                <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 1rem;">
+                    <i class="far fa-calendar-alt" style="margin-right: 0.5rem;"></i>
+                    {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+                </p>
             </div>
-
-            <!-- Low Stock Products -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Stok Rendah</h6>
-                                <h2 style="color: #f093fb; font-weight: 700; margin-bottom: 0;">{{ number_format($lowStockProducts) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-exclamation-triangle" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Today's Sales -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Penjualan Hari Ini</h6>
-                                <h2 style="color: #4facfe; font-weight: 700; margin-bottom: 0;">{{ number_format($todaySales) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-shopping-cart" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Today's Revenue -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Pendapatan Hari Ini</h6>
-                                <h2 style="color: #43e97b; font-weight: 700; margin-bottom: 0;">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-money-bill-wave" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Month Sales -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Penjualan Bulan Ini</h6>
-                                <h2 style="color: #fa709a; font-weight: 700; margin-bottom: 0;">{{ number_format($monthSales) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-chart-line" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Month Revenue -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Pendapatan Bulan Ini</h6>
-                                <h2 style="color: #30cfd0; font-weight: 700; margin-bottom: 0;">Rp {{ number_format($monthRevenue, 0, ',', '.') }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-coins" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Users -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Total Pengguna</h6>
-                                <h2 style="color: #a8edea; font-weight: 700; margin-bottom: 0;">{{ number_format($totalUsers) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-users" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Sessions -->
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 style="color: #666; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">Total Sesi POS</h6>
-                                <h2 style="color: #ff9a56; font-weight: 700; margin-bottom: 0;">{{ number_format($activeSessions) }}</h2>
-                            </div>
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-cash-register" style="font-size: 1.8rem; color: white;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts and Tables Row -->
-        <div class="row">
-            <!-- Sales Chart -->
-            <div class="col-lg-8 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; padding: 1.5rem;">
-                        <h3 class="mb-0">
-                            <i class="fas fa-chart-area mr-2"></i>
-                            Grafik Penjualan (7 Hari Terakhir)
-                        </h3>
-                    </div>
-                    <div class="card-body" style="padding: 2rem;">
-                        <canvas id="salesChart" style="max-height: 300px;"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Products -->
-            <div class="col-lg-4 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0; padding: 1.5rem;">
-                        <h3 class="mb-0">
-                            <i class="fas fa-trophy mr-2"></i>
-                            Top 5 Produk
-                        </h3>
-                    </div>
-                    <div class="card-body" style="padding: 1.5rem;">
-                        @forelse($topProducts as $index => $product)
-                            <div style="padding: 1rem; margin-bottom: 1rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 10px; border-left: 4px solid #667eea;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div style="flex: 1;">
-                                        <div style="font-weight: 700; color: #667eea; font-size: 1.2rem; margin-bottom: 0.25rem;">
-                                            #{{ $index + 1 }} {{ $product->nama }}
-                                        </div>
-                                        <div style="color: #666; font-size: 0.9rem;">
-                                            Terjual: <strong>{{ number_format($product->total_qty) }}</strong> unit
-                                        </div>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div style="color: #43e97b; font-weight: 700; font-size: 1rem;">
-                                            Rp {{ number_format($product->total_revenue, 0, ',', '.') }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-center" style="padding: 2rem; color: #999;">
-                                <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                                <p>Belum ada data penjualan bulan ini</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Low Stock Products -->
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div class="card-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 15px 15px 0 0; padding: 1.5rem;">
-                        <h3 class="mb-0">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            Produk Stok Rendah
-                        </h3>
-                    </div>
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style="border: none; color: #666; font-weight: 600;">Produk</th>
-                                        <th style="border: none; color: #666; font-weight: 600;">Kategori</th>
-                                        <th style="border: none; color: #666; font-weight: 600; text-align: center;">Stok</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($lowStockDetails as $product)
-                                        <tr>
-                                            <td style="font-weight: 600; color: #333;">{{ $product->nama }}</td>
-                                            <td>
-                                                <span class="badge" style="padding: 0.4rem 0.8rem; border-radius: 10px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%); color: #667eea; font-weight: 600;">
-                                                    {{ $product->kategori_nama }}
-                                                </span>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <span class="badge badge-danger" style="padding: 0.4rem 0.8rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem;">
-                                                    {{ number_format($product->stok) }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center" style="padding: 2rem; color: #999;">
-                                                <i class="fas fa-check-circle" style="font-size: 2rem; color: #43e97b; margin-bottom: 0.5rem;"></i>
-                                                <p class="mb-0">Semua produk memiliki stok yang cukup</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Sales -->
-            <div class="col-lg-6 mb-4">
-                <div class="card animate-fade-in-up" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div class="card-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 15px 15px 0 0; padding: 1.5rem;">
-                        <h3 class="mb-0">
-                            <i class="fas fa-receipt mr-2"></i>
-                            Transaksi Terbaru
-                        </h3>
-                    </div>
-                    <div class="card-body" style="padding: 1.5rem;">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th style="border: none; color: #666; font-weight: 600;">ID</th>
-                                        <th style="border: none; color: #666; font-weight: 600;">Kasir</th>
-                                        <th style="border: none; color: #666; font-weight: 600;">Total</th>
-                                        <th style="border: none; color: #666; font-weight: 600;">Waktu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($recentSales as $sale)
-                                        <tr>
-                                            <td style="font-weight: 700; color: #667eea;">#{{ $sale->idpenjualan }}</td>
-                                            <td style="color: #333;">{{ $sale->user_name }}</td>
-                                            <td style="font-weight: 600; color: #43e97b;">Rp {{ number_format($sale->total_harga, 0, ',', '.') }}</td>
-                                            <td style="color: #666; font-size: 0.9rem;">{{ \Carbon\Carbon::parse($sale->created_at)->format('d/m/Y H:i') }}</td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center" style="padding: 2rem; color: #999;">
-                                                <i class="fas fa-shopping-cart" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem;"></i>
-                                                <p class="mb-0">Belum ada transaksi</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+            <div style="text-align: right;">
+                <div style="color: white; font-size: 2rem; font-weight: 700;" id="live-clock">
+                    <i class="far fa-clock" style="margin-right: 0.5rem;"></i><span id="clock-time"></span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@push('scripts')
+<!-- Statistics Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Total Products -->
+    <div class="card" style="border-left: 4px solid #4F46E5;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Total Produk</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($totalProducts) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(79, 70, 229, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-box" style="font-size: 1.5rem; color: #4F46E5;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="card" style="border-left: 4px solid #EF4444;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Stok Rendah</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($lowStockProducts) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; color: #EF4444;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Sales -->
+    <div class="card" style="border-left: 4px solid #3B82F6;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Penjualan Hari Ini</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($todaySales) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-shopping-cart" style="font-size: 1.5rem; color: #3B82F6;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Revenue -->
+    <div class="card" style="border-left: 4px solid #10B981;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Pendapatan Hari Ini</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: #10B981;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Month Sales -->
+    <div class="card" style="border-left: 4px solid #8B5CF6;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Penjualan Bulan Ini</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($monthSales) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(139, 92, 246, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-chart-line" style="font-size: 1.5rem; color: #8B5CF6;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Month Revenue -->
+    <div class="card" style="border-left: 4px solid #06B6D4;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Pendapatan Bulan Ini</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">Rp {{ number_format($monthRevenue, 0, ',', '.') }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-coins" style="font-size: 1.5rem; color: #06B6D4;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Users -->
+    <div class="card" style="border-left: 4px solid #F59E0B;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Total Pengguna</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($totalUsers) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(245, 158, 11, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-users" style="font-size: 1.5rem; color: #F59E0B;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Sessions -->
+    <div class="card" style="border-left: 4px solid #EC4899;">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; text-transform: uppercase;">Total Sesi POS</p>
+                    <h2 style="color: #1F2937; font-size: 2rem; font-weight: 700; margin: 0;">{{ number_format($activeSessions) }}</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: 10px; background: rgba(236, 72, 153, 0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-cash-register" style="font-size: 1.5rem; color: #EC4899;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Tables -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Sales Chart -->
+    <div class="card">
+        <div class="card-header" style="background: white;">
+            <h3 class="card-title">
+                <i class="fas fa-chart-area" style="margin-right: 0.5rem;"></i>
+                Grafik Penjualan (7 Hari Terakhir)
+            </h3>
+        </div>
+        <div class="card-body">
+            <canvas id="salesChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="card">
+        <div class="card-header" style="background: white;">
+            <h3 class="card-title">
+                <i class="fas fa-trophy" style="margin-right: 0.5rem;"></i>
+                Top 5 Produk
+            </h3>
+        </div>
+        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+            @forelse($topProducts as $index => $product)
+                <div style="padding: 1rem; margin-bottom: 0.75rem; background: #F9FAFB; border-radius: 8px; border-left: 3px solid #4F46E5;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <span style="font-weight: 700; color: #4F46E5; font-size: 0.875rem;">#{{ $index + 1 }}</span>
+                        <span style="color: #10B981; font-weight: 600; font-size: 0.875rem;">
+                            Rp {{ number_format($product->total_revenue, 0, ',', '.') }}
+                        </span>
+                    </div>
+                    <div style="font-weight: 600; color: #1F2937; margin-bottom: 0.25rem;">{{ $product->nama }}</div>
+                    <div style="color: #6B7280; font-size: 0.875rem;">
+                        Terjual: <strong>{{ number_format($product->total_qty) }}</strong> unit
+                    </div>
+                </div>
+            @empty
+                <div style="text-align: center; padding: 2rem; color: #9CA3AF;">
+                    <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <p style="margin: 0;">Belum ada data penjualan</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<!-- Low Stock & Recent Sales -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <!-- Low Stock Products -->
+    <div class="card">
+        <div class="card-header" style="background: white;">
+            <h3 class="card-title">
+                <i class="fas fa-exclamation-circle" style="margin-right: 0.5rem; color: #EF4444;"></i>
+                Produk Stok Rendah
+            </h3>
+        </div>
+        <div class="card-body">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #E5E7EB;">
+                            <th style="padding: 0.75rem; text-align: left; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Produk</th>
+                            <th style="padding: 0.75rem; text-align: left; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Kategori</th>
+                            <th style="padding: 0.75rem; text-align: center; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($lowStockDetails as $product)
+                            <tr style="border-bottom: 1px solid #F3F4F6;">
+                                <td style="padding: 0.75rem; font-weight: 500; color: #1F2937;">{{ $product->nama }}</td>
+                                <td style="padding: 0.75rem;">
+                                    <span style="padding: 0.25rem 0.75rem; background: rgba(79, 70, 229, 0.1); color: #4F46E5; border-radius: 6px; font-size: 0.8125rem; font-weight: 500;">
+                                        {{ $product->kategori_nama }}
+                                    </span>
+                                </td>
+                                <td style="padding: 0.75rem; text-align: center;">
+                                    <span style="padding: 0.375rem 0.75rem; background: #FEE2E2; color: #DC2626; border-radius: 6px; font-weight: 600; font-size: 0.875rem;">
+                                        {{ number_format($product->stok) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" style="padding: 2rem; text-align: center; color: #9CA3AF;">
+                                    <i class="fas fa-check-circle" style="font-size: 2rem; color: #10B981; margin-bottom: 0.5rem; display: block;"></i>
+                                    Semua produk memiliki stok yang cukup
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sales -->
+    <div class="card">
+        <div class="card-header" style="background: white;">
+            <h3 class="card-title">
+                <i class="fas fa-receipt" style="margin-right: 0.5rem; color: #3B82F6;"></i>
+                Transaksi Terbaru
+            </h3>
+        </div>
+        <div class="card-body">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #E5E7EB;">
+                            <th style="padding: 0.75rem; text-align: left; font-size: 0.875rem; font-weight: 600; color: #6B7280;">ID</th>
+                            <th style="padding: 0.75rem; text-align: left; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Kasir</th>
+                            <th style="padding: 0.75rem; text-align: right; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Total</th>
+                            <th style="padding: 0.75rem; text-align: right; font-size: 0.875rem; font-weight: 600; color: #6B7280;">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentSales as $sale)
+                            <tr style="border-bottom: 1px solid #F3F4F6;">
+                                <td style="padding: 0.75rem; font-weight: 600; color: #4F46E5;">#{{ $sale->idpenjualan }}</td>
+                                <td style="padding: 0.75rem; color: #1F2937;">{{ $sale->user_name }}</td>
+                                <td style="padding: 0.75rem; text-align: right; font-weight: 600; color: #10B981;">
+                                    Rp {{ number_format($sale->total_harga, 0, ',', '.') }}
+                                </td>
+                                <td style="padding: 0.75rem; text-align: right; color: #6B7280; font-size: 0.875rem;">
+                                    {{ \Carbon\Carbon::parse($sale->created_at)->format('d/m/Y H:i') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" style="padding: 2rem; text-align: center; color: #9CA3AF;">
+                                    <i class="fas fa-shopping-cart" style="font-size: 2rem; opacity: 0.3; margin-bottom: 0.5rem; display: block;"></i>
+                                    Belum ada transaksi
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
     // Live Clock
@@ -343,9 +318,9 @@ Dashboard
 
     // Sales Chart
     const ctx = document.getElementById('salesChart').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(102, 126, 234, 0.4)');
-    gradient.addColorStop(1, 'rgba(118, 75, 162, 0.1)');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
+    gradient.addColorStop(1, 'rgba(79, 70, 229, 0.01)');
 
     new Chart(ctx, {
         type: 'line',
@@ -355,11 +330,11 @@ Dashboard
                 label: 'Pendapatan (Rp)',
                 data: @json($salesChartData),
                 backgroundColor: gradient,
-                borderColor: '#667eea',
+                borderColor: '#4F46E5',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#667eea',
+                pointBackgroundColor: '#4F46E5',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointRadius: 5,
@@ -374,27 +349,25 @@ Dashboard
                     display: true,
                     labels: {
                         font: {
-                            size: 14,
-                            weight: 'bold'
+                            size: 13,
+                            family: 'Inter'
                         },
-                        color: '#333'
+                        color: '#6B7280',
+                        usePointStyle: true,
+                        padding: 15
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(102, 126, 234, 0.9)',
+                    backgroundColor: 'rgba(31, 41, 55, 0.9)',
                     titleColor: '#fff',
                     bodyColor: '#fff',
                     padding: 12,
-                    borderColor: '#667eea',
+                    borderColor: '#4F46E5',
                     borderWidth: 1,
+                    cornerRadius: 8,
                     callbacks: {
                         label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                            return label;
+                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
                         }
                     }
                 }
@@ -406,21 +379,23 @@ Dashboard
                         callback: function(value) {
                             return 'Rp ' + value.toLocaleString('id-ID');
                         },
-                        color: '#666',
+                        color: '#9CA3AF',
                         font: {
-                            size: 12
+                            size: 12,
+                            family: 'Inter'
                         }
                     },
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.05)',
+                        color: '#F3F4F6',
                         drawBorder: false
                     }
                 },
                 x: {
                     ticks: {
-                        color: '#666',
+                        color: '#9CA3AF',
                         font: {
-                            size: 12
+                            size: 12,
+                            family: 'Inter'
                         }
                     },
                     grid: {
@@ -431,16 +406,5 @@ Dashboard
             }
         }
     });
-
-    // Card Hover Effects
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
 </script>
-@endpush
 @endsection
