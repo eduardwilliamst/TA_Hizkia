@@ -26,23 +26,28 @@ class CartController extends Controller
     {
         // Ambil data cart dari request
         $cart = $request->input('cart', []);
+        $totalDiskon = $request->input('total_diskon', 0);
 
         // Perkaya data cart dengan detail produk
         $cartWithDetails = collect($cart)->map(function ($item) {
             $product = Produk::find($item['id']); // Ambil detail produk dari database
             if ($product) {
+                $isBonus = isset($item['is_bonus']) && $item['is_bonus'];
                 return [
                     'id' => $product->idproduk,
                     'name' => $product->nama,
-                    'price' => $product->harga,
+                    'price' => $isBonus ? 0 : $product->harga,
                     'quantity' => $item['quantity'],
+                    'discount' => $item['discount'] ?? 0,
+                    'promo_applied' => $item['promo_applied'] ?? null,
+                    'is_bonus' => $isBonus,
                 ];
             }
             return null;
         })->filter()->toArray(); // Filter untuk menghapus null jika produk tidak ditemukan
 
         // Simpan data ke session
-        session(['cart' => $cartWithDetails]);
+        session(['cart' => $cartWithDetails, 'total_diskon' => $totalDiskon]);
 
         return response()->json(['message' => 'Cart saved to session successfully.']);
     }

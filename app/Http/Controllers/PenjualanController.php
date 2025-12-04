@@ -6,6 +6,7 @@ use App\Models\Kategori;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetil;
 use App\Models\Produk;
+use App\Models\Promo;
 use App\Models\CashFlow;
 use App\Models\PosSession;
 use Carbon\Carbon;
@@ -35,9 +36,17 @@ class PenjualanController extends Controller
     public function data(Request $request)
     {
         try {
-            // $kategoriId = $request->kategori_idkategori;
             $produks = Produk::where('kategori_idkategori', $request->kategori_id)->get();
-            return view('penjualan.data', compact('produks'))->render();
+
+            // Get active promos
+            $now = Carbon::now();
+            $activePromos = Promo::with(['produkUtama', 'produkTambahan'])
+                ->where('tanggal_awal', '<=', $now)
+                ->where('tanggal_akhir', '>=', $now)
+                ->get()
+                ->keyBy('produk_idutama');
+
+            return view('penjualan.data', compact('produks', 'activePromos'))->render();
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -64,18 +73,21 @@ class PenjualanController extends Controller
         }
 
         $cart = $request->input('cart');
+        $totalDiskon = $request->input('total_diskon', 0);
         $totalBayar = 0;
 
-        // Hitung total pembayaran
+        // Hitung total pembayaran (harga x quantity - diskon per item)
         foreach ($cart as $item) {
-            $totalBayar += $item['price'] * $item['quantity'];
+            $itemTotal = $item['price'] * $item['quantity'];
+            $itemDiscount = $item['discount'] ?? 0;
+            $totalBayar += ($itemTotal - $itemDiscount);
         }
 
         // Simpan data ke tabel penjualans
         $penjualan = Penjualan::create([
             'tanggal' => Carbon::now(),
             'cara_bayar' => $request->input('cara_bayar'),
-            'total_diskon' => 0, // Tambahkan logika diskon jika ada
+            'total_diskon' => $totalDiskon,
             'total_harga' => $totalBayar,
             // 'pos_session_id' => auth()->user()->current_session_id, // Asumsikan session aktif
             'user_id' => auth()->id(),

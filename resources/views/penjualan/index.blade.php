@@ -498,6 +498,49 @@
 
     const cart = [];
 
+    // Calculate promo benefits for an item
+    function calculatePromo(item) {
+        let discount = 0;
+        let freeItems = [];
+        let promoApplied = null;
+
+        if (item.promo) {
+            const buyQty = parseInt(item.promo.buy);
+
+            if (item.promo.type === 'produk gratis' && item.quantity >= buyQty) {
+                // Calculate how many times promo applies
+                const promoTimes = Math.floor(item.quantity / buyQty);
+                const freeQty = promoTimes * parseInt(item.promo.get);
+
+                freeItems.push({
+                    id: item.promo.bonusId,
+                    name: item.promo.bonusName,
+                    price: parseInt(item.promo.bonusPrice),
+                    quantity: freeQty,
+                    isBonus: true
+                });
+
+                promoApplied = {
+                    type: 'produk gratis',
+                    desc: `Beli ${buyQty} Gratis ${item.promo.get}`,
+                    freeQty: freeQty
+                };
+            } else if (item.promo.type === 'diskon' && item.quantity >= buyQty) {
+                // Calculate discount
+                const discountPercent = parseInt(item.promo.diskon);
+                discount = Math.floor((item.price * item.quantity * discountPercent) / 100);
+
+                promoApplied = {
+                    type: 'diskon',
+                    desc: `Diskon ${discountPercent}%`,
+                    discount: discount
+                };
+            }
+        }
+
+        return { discount, freeItems, promoApplied };
+    }
+
     function updateCart() {
         const cartBody = document.getElementById("cart-body");
         const cartTotal = document.getElementById("cart-total");
@@ -506,6 +549,8 @@
         cartBody.innerHTML = "";
         let total = 0;
         let totalItems = 0;
+        let totalDiscount = 0;
+        let allFreeItems = [];
 
         if (cart.length === 0) {
             cartBody.innerHTML = `
@@ -516,16 +561,59 @@
             `;
         } else {
             cart.forEach((item, index) => {
+                if (item.isBonus) return; // Skip bonus items in main loop
+
                 const subtotal = item.price * item.quantity;
-                total += subtotal;
+                const promoResult = calculatePromo(item);
+
+                total += subtotal - promoResult.discount;
                 totalItems += item.quantity;
+                totalDiscount += promoResult.discount;
+
+                // Collect free items
+                allFreeItems = allFreeItems.concat(promoResult.freeItems);
+
+                // Promo badge HTML
+                let promoBadge = '';
+                if (promoResult.promoApplied) {
+                    if (promoResult.promoApplied.type === 'produk gratis') {
+                        promoBadge = `
+                            <div style="background: rgba(16, 185, 129, 0.1); border-radius: 6px; padding: 0.3rem 0.5rem; margin-top: 0.3rem;">
+                                <small style="color: #10B981; font-weight: 600;">
+                                    <i class="fas fa-gift"></i> +${promoResult.promoApplied.freeQty} GRATIS!
+                                </small>
+                            </div>
+                        `;
+                    } else if (promoResult.promoApplied.type === 'diskon') {
+                        promoBadge = `
+                            <div style="background: rgba(245, 158, 11, 0.1); border-radius: 6px; padding: 0.3rem 0.5rem; margin-top: 0.3rem;">
+                                <small style="color: #F59E0B; font-weight: 600;">
+                                    <i class="fas fa-percent"></i> -Rp ${promoResult.promoApplied.discount.toLocaleString('id-ID')}
+                                </small>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Show promo requirement hint
+                let promoHint = '';
+                if (item.promo && !promoResult.promoApplied) {
+                    const needed = parseInt(item.promo.buy) - item.quantity;
+                    if (item.promo.type === 'produk gratis') {
+                        promoHint = `<div style="font-size: 0.75rem; color: #10B981; margin-top: 0.2rem;"><i class="fas fa-info-circle"></i> Tambah ${needed} lagi untuk dapat gratis!</div>`;
+                    } else {
+                        promoHint = `<div style="font-size: 0.75rem; color: #F59E0B; margin-top: 0.2rem;"><i class="fas fa-info-circle"></i> Tambah ${needed} lagi untuk dapat diskon!</div>`;
+                    }
+                }
 
                 const card = `
-                    <div class="cart-item-card animate-fade-in">
+                    <div class="cart-item-card animate-fade-in" style="${promoResult.promoApplied ? 'border-left: 3px solid ' + (promoResult.promoApplied.type === 'produk gratis' ? '#10B981' : '#F59E0B') : ''}">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; color: #333; font-size: 0.95rem; margin-bottom: 0.3rem;">${item.name}</div>
-                                <div style="color: #667eea; font-weight: 600; font-size: 0.9rem;">Rp ${item.price.toLocaleString('id-ID')}</div>
+                                <div style="color: #4F46E5; font-weight: 600; font-size: 0.9rem;">Rp ${item.price.toLocaleString('id-ID')}</div>
+                                ${promoBadge}
+                                ${promoHint}
                             </div>
                             <button class="btn btn-danger btn-sm remove-item" data-index="${index}" style="border-radius: 8px; padding: 0.3rem 0.6rem;">
                                 <i class="fas fa-trash"></i>
@@ -541,18 +629,57 @@
                                     <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
                                 </button>
                             </div>
-                            <div style="font-weight: 700; color: #333; font-size: 1rem;">
-                                Rp ${subtotal.toLocaleString('id-ID')}
+                            <div style="text-align: right;">
+                                ${promoResult.discount > 0 ? `<div style="text-decoration: line-through; color: #999; font-size: 0.85rem;">Rp ${subtotal.toLocaleString('id-ID')}</div>` : ''}
+                                <div style="font-weight: 700; color: ${promoResult.discount > 0 ? '#F59E0B' : '#333'}; font-size: 1rem;">
+                                    Rp ${(subtotal - promoResult.discount).toLocaleString('id-ID')}
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
                 cartBody.innerHTML += card;
             });
+
+            // Show free items section
+            if (allFreeItems.length > 0) {
+                let freeItemsHtml = `
+                    <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%); border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px dashed #10B981;">
+                        <div style="font-weight: 600; color: #10B981; margin-bottom: 0.5rem;">
+                            <i class="fas fa-gift"></i> Bonus Promo:
+                        </div>
+                `;
+                allFreeItems.forEach(freeItem => {
+                    totalItems += freeItem.quantity;
+                    freeItemsHtml += `
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                            <span style="color: #065F46;">${freeItem.name} x${freeItem.quantity}</span>
+                            <span style="color: #10B981; font-weight: 600;">GRATIS!</span>
+                        </div>
+                    `;
+                });
+                freeItemsHtml += '</div>';
+                cartBody.innerHTML += freeItemsHtml;
+            }
+
+            // Show total discount if any
+            if (totalDiscount > 0) {
+                cartBody.innerHTML += `
+                    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                        <span style="color: #92400E; font-weight: 500;"><i class="fas fa-tag"></i> Total Hemat:</span>
+                        <span style="color: #F59E0B; font-weight: 700;">-Rp ${totalDiscount.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+            }
         }
 
         cartTotal.textContent = total.toLocaleString('id-ID');
         cartCount.textContent = totalItems;
+
+        // Store calculated data for checkout
+        window.cartTotal = total;
+        window.cartFreeItems = allFreeItems;
+        window.cartDiscount = totalDiscount;
     }
 
     document.body.addEventListener("click", function(event) {
@@ -562,11 +689,26 @@
             const name = productCard.dataset.name;
             const price = parseInt(productCard.dataset.price);
 
+            // Get promo data if exists
+            let promo = null;
+            if (productCard.dataset.promo === 'true') {
+                promo = {
+                    type: productCard.dataset.promoType,
+                    buy: productCard.dataset.promoBuy,
+                    get: productCard.dataset.promoGet,
+                    diskon: productCard.dataset.promoDiskon,
+                    bonusId: productCard.dataset.promoBonusId,
+                    bonusName: productCard.dataset.promoBonusName,
+                    bonusPrice: productCard.dataset.promoBonusPrice,
+                    desc: productCard.dataset.promoDesc
+                };
+            }
+
             // Add animation feedback
             productCard.classList.add('adding-to-cart');
             setTimeout(() => productCard.classList.remove('adding-to-cart'), 500);
 
-            const existingItem = cart.find(item => item.id === id);
+            const existingItem = cart.find(item => item.id === id && !item.isBonus);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
@@ -574,13 +716,18 @@
                     id,
                     name,
                     price,
-                    quantity: 1
+                    quantity: 1,
+                    promo: promo
                 });
             }
             updateCart();
 
-            // Show success notification
-            showToast('Produk ditambahkan ke keranjang!', 'success');
+            // Show success notification with promo info
+            if (promo) {
+                showToast(`${name} ditambahkan! ${promo.desc}`, 'success');
+            } else {
+                showToast('Produk ditambahkan ke keranjang!', 'success');
+            }
         }
 
         if (event.target.closest(".remove-item")) {
@@ -666,13 +813,17 @@
             return;
         }
 
-        // Calculate total amount and item count
-        let totalAmount = 0;
+        // Use pre-calculated totals from updateCart
+        const totalAmount = window.cartTotal || 0;
+        const totalDiscount = window.cartDiscount || 0;
+        const freeItems = window.cartFreeItems || [];
+
+        // Calculate total items
         let totalItems = 0;
         cart.forEach(item => {
-            totalAmount += item.price * item.quantity;
-            totalItems += item.quantity;
+            if (!item.isBonus) totalItems += item.quantity;
         });
+        freeItems.forEach(item => totalItems += item.quantity);
 
         // Get selected payment method
         const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
@@ -681,20 +832,58 @@
         // Populate modal cart items with animation
         const modalCartItems = document.getElementById('modal-cart-items');
         modalCartItems.innerHTML = '';
+
         cart.forEach((item, index) => {
+            if (item.isBonus) return;
+
             const subtotal = item.price * item.quantity;
+            const promoResult = calculatePromo(item);
+
             const itemDiv = document.createElement('div');
             itemDiv.className = 'cart-item-animate';
             itemDiv.style.cssText = 'display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #e0e0e0; animation-delay: ' + (index * 0.05) + 's;';
+
+            let promoInfo = '';
+            if (promoResult.promoApplied) {
+                if (promoResult.promoApplied.type === 'produk gratis') {
+                    promoInfo = `<div style="color: #10B981; font-size: 0.8rem;"><i class="fas fa-gift"></i> +${promoResult.promoApplied.freeQty} Gratis</div>`;
+                } else {
+                    promoInfo = `<div style="color: #F59E0B; font-size: 0.8rem;"><i class="fas fa-percent"></i> -Rp ${promoResult.promoApplied.discount.toLocaleString('id-ID')}</div>`;
+                }
+            }
+
             itemDiv.innerHTML = `
                 <div style="flex: 1;">
                     <div style="font-weight: 600; color: #333;">${item.name}</div>
                     <div style="color: #666; font-size: 0.9rem;">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</div>
+                    ${promoInfo}
                 </div>
-                <div style="font-weight: 600; color: #667eea;">Rp ${subtotal.toLocaleString('id-ID')}</div>
+                <div style="text-align: right;">
+                    ${promoResult.discount > 0 ? `<div style="text-decoration: line-through; color: #999; font-size: 0.85rem;">Rp ${subtotal.toLocaleString('id-ID')}</div>` : ''}
+                    <div style="font-weight: 600; color: ${promoResult.discount > 0 ? '#F59E0B' : '#4F46E5'};">Rp ${(subtotal - promoResult.discount).toLocaleString('id-ID')}</div>
+                </div>
             `;
             modalCartItems.appendChild(itemDiv);
         });
+
+        // Add free items to modal
+        if (freeItems.length > 0) {
+            const freeItemsDiv = document.createElement('div');
+            freeItemsDiv.style.cssText = 'background: rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem;';
+            freeItemsDiv.innerHTML = '<div style="font-weight: 600; color: #10B981; margin-bottom: 0.5rem;"><i class="fas fa-gift"></i> Bonus Promo:</div>';
+            freeItems.forEach(freeItem => {
+                freeItemsDiv.innerHTML += `<div style="display: flex; justify-content: space-between; color: #065F46;"><span>${freeItem.name} x${freeItem.quantity}</span><span style="color: #10B981; font-weight: 600;">GRATIS</span></div>`;
+            });
+            modalCartItems.appendChild(freeItemsDiv);
+        }
+
+        // Add discount summary to modal
+        if (totalDiscount > 0) {
+            const discountDiv = document.createElement('div');
+            discountDiv.style.cssText = 'background: rgba(245, 158, 11, 0.1); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; display: flex; justify-content: space-between;';
+            discountDiv.innerHTML = `<span style="color: #92400E;"><i class="fas fa-tag"></i> Total Hemat:</span><span style="color: #F59E0B; font-weight: 700;">-Rp ${totalDiscount.toLocaleString('id-ID')}</span>`;
+            modalCartItems.appendChild(discountDiv);
+        }
 
         // Update modal total and items
         document.getElementById('modal-total-amount').textContent = totalAmount.toLocaleString();
@@ -858,7 +1047,9 @@
     // Confirm Checkout Button - Save Transaction
     document.getElementById('confirm-checkout-btn').addEventListener('click', function() {
         const caraBayar = document.querySelector('input[name="cara_bayar"]:checked').value;
-        const totalAmount = window.currentCheckoutTotal;
+        const totalAmount = window.cartTotal || window.currentCheckoutTotal;
+        const totalDiscount = window.cartDiscount || 0;
+        const freeItems = window.cartFreeItems || [];
 
         // Validate payment for cash
         if (caraBayar === 'cash') {
@@ -871,12 +1062,27 @@
             }
         }
 
-        // Prepare cart data
-        const cartData = cart.map(item => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price,
-        }));
+        // Prepare cart data with promo info
+        const cartData = cart.filter(item => !item.isBonus).map(item => {
+            const promoResult = calculatePromo(item);
+            return {
+                id: item.id,
+                quantity: item.quantity,
+                price: item.price,
+                discount: promoResult.discount,
+                promo_applied: promoResult.promoApplied ? promoResult.promoApplied.desc : null
+            };
+        });
+
+        // Add free items to cart data
+        freeItems.forEach(freeItem => {
+            cartData.push({
+                id: freeItem.id,
+                quantity: freeItem.quantity,
+                price: 0, // Free item
+                is_bonus: true
+            });
+        });
 
         // Disable button to prevent double submission
         const confirmBtn = document.getElementById('confirm-checkout-btn');
@@ -893,6 +1099,7 @@
             body: JSON.stringify({
                 cart: cartData,
                 cara_bayar: caraBayar,
+                total_diskon: totalDiscount
             }),
         })
         .then(response => response.json())
