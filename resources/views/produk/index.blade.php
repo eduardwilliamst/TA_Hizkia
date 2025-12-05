@@ -1,98 +1,87 @@
-@extends('layouts.pos')
+@extends('layouts.adminlte')
 
-@section('title', 'Produk')
+@section('title')
+Produk
+@endsection
 
-@section('content')
-<!-- Page Header -->
-<div class="page-header">
-    <h1 class="page-title">Data Produk</h1>
-    <div class="page-breadcrumb">
-        <div class="breadcrumb-item">
-            <a href="{{ route('dashboard') }}" class="breadcrumb-link">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-        </div>
-        <div class="breadcrumb-item">
-            <span>Produk</span>
-        </div>
-    </div>
-</div>
+@section('page-bar')
+<h1 class="m-0">Data Produk</h1>
+@endsection
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="fas fa-box-open" style="margin-right: 0.5rem;"></i>
-            Daftar Produk
-        </h3>
-        <div>
-            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addProdukModal">
-                <i class="fas fa-plus-circle"></i>
-                Tambah Produk
-            </a>
-        </div>
-    </div>
+@section('contents')
+<div class="content">
+    <div class="container-fluid">
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h3 class="mb-0">
+                            <i class="fas fa-box-open mr-2"></i>
+                            Daftar Produk
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addProdukModal" style="padding: 0.7rem 1.5rem; border-radius: 12px;">
+                            <i class="fas fa-plus-circle mr-2"></i>Tambah Produk
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <div class="card-body">
-        <div style="overflow-x: auto;">
-            <table id="produkTable" class="datatable" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th><i class="fas fa-barcode" style="margin-right: 0.5rem;"></i>Barcode</th>
-                        <th><i class="fas fa-tag" style="margin-right: 0.5rem;"></i>Nama Produk</th>
-                        <th><i class="fas fa-money-bill-wave" style="margin-right: 0.5rem;"></i>Harga</th>
-                        <th><i class="fas fa-box" style="margin-right: 0.5rem;"></i>Stok</th>
-                        <th style="text-align: center;"><i class="fas fa-cog" style="margin-right: 0.5rem;"></i>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($produks as $produk)
-                    <tr>
-                        <td style="font-weight: 500; color: #6B7280;">
-                            <span style="background: #F9FAFB; padding: 0.375rem 0.75rem; border-radius: 6px; display: inline-block; border: 1px solid #E5E7EB;">
-                                {{ $produk->barcode }}
-                            </span>
-                        </td>
-                        <td style="font-weight: 600; color: #1F2937;">{{ $produk->nama }}</td>
-                        <td style="color: #10B981; font-weight: 600;">
-                            Rp {{ number_format($produk->harga, 0, ',', '.') }}
-                        </td>
-                        <td>
-                            @if($produk->stok > 20)
-                                <span class="badge" style="padding: 0.375rem 0.75rem; border-radius: 6px; font-weight: 600; background: #D1FAE5; color: #065F46;">
-                                    {{ $produk->stok }} Unit
-                                </span>
-                            @elseif($produk->stok > 10)
-                                <span class="badge" style="padding: 0.375rem 0.75rem; border-radius: 6px; font-weight: 600; background: #FEF3C7; color: #92400E;">
-                                    {{ $produk->stok }} Unit
-                                </span>
-                            @else
-                                <span class="badge" style="padding: 0.375rem 0.75rem; border-radius: 6px; font-weight: 600; background: #FEE2E2; color: #991B1B;">
-                                    {{ $produk->stok }} Unit
-                                </span>
-                            @endif
-                        </td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                                <button data-toggle="modal" data-target="#modalDetailProduk" onclick="modalDetail({{ $produk->idproduk }})" class="btn btn-sm btn-primary" title="Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button data-toggle="modal" data-target="#modalEditProduk" onclick="modalEdit({{ $produk->idproduk }})" class="btn btn-sm btn-warning" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <form action="{{ route('produk.destroy', $produk->idproduk) }}" method="POST" id="delete-form-{{ $produk->idproduk }}" style="display:inline; margin: 0;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('delete-form-{{ $produk->idproduk }}')" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="card-body" style="padding: 2rem;">
+                <div style="overflow-x: auto;">
+                    <table id="produkTable" class="table table-hover" style="border-radius: 10px; overflow: hidden;">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;"><i class="fas fa-barcode mr-2"></i>Barcode</th>
+                                <th style="width: 30%;"><i class="fas fa-tag mr-2"></i>Nama Produk</th>
+                                <th style="width: 20%;"><i class="fas fa-money-bill-wave mr-2"></i>Harga</th>
+                                <th style="width: 15%;"><i class="fas fa-box mr-2"></i>Stok</th>
+                                <th style="width: 20%; text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($produks as $produk)
+                            <tr class="animate-fade-in">
+                                <td style="font-weight: 500; color: #666;">
+                                    <span style="background: #f8f9fa; padding: 0.4rem 0.8rem; border-radius: 8px; display: inline-block;">
+                                        {{ $produk->barcode }}
+                                    </span>
+                                </td>
+                                <td style="font-weight: 600; color: #333;">{{ $produk->nama }}</td>
+                                <td style="color: #667eea; font-weight: 700; font-size: 1.05rem;">
+                                    Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                                </td>
+                                <td>
+                                    <span class="badge" style="padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;
+                                        background: {{ $produk->stok > 20 ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : ($produk->stok > 10 ? 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)' : 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)') }};
+                                        color: white;">
+                                        {{ $produk->stok }} Unit
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <a data-toggle="modal" data-target="#modalDetailProduk" onclick="modalDetail({{ $produk->idproduk }})" class="btn btn-success btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Detail">
+                                            <i class="fas fa-eye"></i> Detail
+                                        </a>
+                                        <a data-toggle="modal" data-target="#modalEditProduk" onclick="modalEdit({{ $produk->idproduk }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <form action="{{ route('produk.destroy', $produk->idproduk) }}" method="POST" id="delete-form-{{ $produk->idproduk }}" style="display:inline; margin: 0;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="confirmDelete('delete-form-{{ $produk->idproduk }}')" title="Hapus">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -164,7 +153,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('javascript')
 <script>
     $(document).ready(function() {
         $('#produkTable').DataTable({

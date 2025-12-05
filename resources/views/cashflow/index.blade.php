@@ -1,11 +1,14 @@
-@ extends('layouts.pos')
+@extends('layouts.adminlte')
 
+@section('title')
+Cashflow
+@endsection
 
-
+@section('page-bar')
 <h1 class="m-0">Cashflow</h1>
 @endsection
 
-@section('content')
+@section('contents')
 <div class="content">
     <div class="container-fluid">
         <div class="card animate-fade-in-up">
@@ -161,7 +164,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('javascript')
 <script>
     $(document).ready(function() {
         $('#cashflowTable').DataTable({

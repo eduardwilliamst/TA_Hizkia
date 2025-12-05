@@ -1,45 +1,41 @@
-@extends('layouts.pos')
+@extends('layouts.adminlte')
 
-@section('title', 'Penjualan')
+@section('title')
+Penjualan
+@endsection
 
-@section('content')
-<!-- Page Header -->
-<div class="page-header">
-    <h1 class="page-title">Point of Sale</h1>
-    <div class="page-breadcrumb">
-        <div class="breadcrumb-item">
-            <a href="{{ route('dashboard') }}" class="breadcrumb-link">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-        </div>
-        <div class="breadcrumb-item">
-            <span>Penjualan</span>
-        </div>
-    </div>
-</div>
+@section('page-bar')
+<h1 class="m-0">Data Penjualan</h1>
+@endsection
 
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: 1.5rem;">
-    <!-- Products Section (Left Side) -->
-    <div>
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i>
-                    Produk
-                </h3>
-            </div>
-            <div class="card-body">
-                <!-- Search Bar -->
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div style="position: relative;">
-                        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9CA3AF;"></i>
-                        <input type="text" id="search-bar" class="form-control" placeholder="Cari produk berdasarkan nama atau barcode..." style="padding-left: 45px; border-radius: 8px; border: 1px solid #E5E7EB; height: 45px;">
+@section('contents')
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Products Section (Left Side) -->
+            <div class="col-lg-8 col-md-7">
+                <div class="card animate-fade-in-up">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-shopping-bag mr-2"></i>
+                            Point of Sale
+                        </h3>
                     </div>
-                    <button class="btn btn-secondary" onclick="window.location.reload()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
+                    <div class="card-body">
+                        <!-- Search Bar -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div style="position: relative;">
+                                    <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                                    <input type="text" id="search-bar" class="form-control" placeholder="Cari produk berdasarkan nama atau barcode..." style="padding-left: 45px; border-radius: 25px; border: 2px solid #e0e0e0; height: 50px;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button class="btn btn-info" onclick="window.location.reload()" style="border-radius: 25px; padding: 0.7rem 1.5rem; width: 100%;">
+                                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- Category Tabs -->
                         <div id="product-container">
@@ -70,22 +66,19 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Keranjang Belanja (Right Side - Sticky) -->
-    <div>
-        <div id="cart" class="card sticky-cart" style="position: sticky; top: 80px;">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>
+            <!-- Keranjang Belanja (Right Side - Sticky) -->
+            <div class="col-lg-4 col-md-5">
+                <div id="cart" class="animate-fade-in sticky-cart" style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); position: sticky; top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0; color: #333; font-weight: 600;">
+                    <i class="fas fa-shopping-cart mr-2" style="color: #667eea;"></i>
                     Keranjang Belanja
-                </h3>
-                <span class="badge" style="background: #4F46E5; color: white; padding: 0.375rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">
+                </h4>
+                <span class="badge" style="background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
                     <span id="cart-count">0</span> Item
                 </span>
             </div>
-            <div class="card-body">
 
             <!-- Cart Items List -->
             <div style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem;" id="cart-items-container">
@@ -128,40 +121,26 @@
                     </div>
                 </div>
 
-                <button type="submit" id="checkout-button" class="btn btn-success" style="width: 100%; padding: 1rem; font-weight: 600; border-radius: 8px; font-size: 1rem;">
-                    <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>Selesaikan Transaksi
+                <button type="submit" id="checkout-button" class="btn btn-success btn-lg" style="width: 100%; padding: 1rem; font-weight: 600; border-radius: 12px; font-size: 1.1rem;">
+                    <i class="fas fa-check-circle mr-2"></i>Selesaikan Transaksi
                 </button>
             </div>
+        </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Responsive -->
-<style>
-    @media (max-width: 991px) {
-        .page-header + div {
-            grid-template-columns: 1fr !important;
-        }
-        .sticky-cart {
-            position: relative !important;
-            top: 0 !important;
-        }
-    }
-</style>
-@endsection
+        <style>
+            .payment-option input[type="radio"]:checked + .payment-card {
+                border-color: #667eea !important;
+                background: rgba(102, 126, 234, 0.05) !important;
+            }
 
-@section('styles')
-<style>
-    .payment-option input[type="radio"]:checked + .payment-card {
-        border-color: #4F46E5 !important;
-        background: rgba(79, 70, 229, 0.05) !important;
-    }
-
-    .payment-option input[type="radio"]:checked + .payment-card i,
-    .payment-option input[type="radio"]:checked + .payment-card div {
-        color: #4F46E5 !important;
-    }
+            .payment-option input[type="radio"]:checked + .payment-card i,
+            .payment-option input[type="radio"]:checked + .payment-card div {
+                color: #667eea !important;
+            }
 
             .payment-card:hover {
                 transform: translateY(-3px);
@@ -339,21 +318,22 @@
                 border: 2px solid transparent;
             }
 
-    .cart-item-card {
-        background: #F9FAFB;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 0.8rem;
-        transition: all 0.2s ease;
-        border: 1px solid #E5E7EB;
-    }
+            .cart-item-card:hover {
+                border-color: #667eea;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+            }
 
-    .cart-item-card:hover {
-        border-color: #4F46E5;
-        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
-    }
-</style>
-@endsection
+            /* Sticky Cart Responsive */
+            @media (max-width: 991px) {
+                .sticky-cart {
+                    position: relative !important;
+                    top: 0 !important;
+                    margin-top: 2rem;
+                }
+            }
+        </style>
+    </div>
+</div>
 
 <!-- Checkout Confirmation Modal -->
 <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">

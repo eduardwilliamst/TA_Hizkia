@@ -1,53 +1,62 @@
-@extends('layouts.pos')
+@extends('layouts.adminlte')
 
-@section('title', 'Pembelian')
+@section('title')
+List Pembelian
+@endsection
 
-@section('content')
-<!-- Page Header -->
-<div class="page-header">
-    <h1 class="page-title">Data Pembelian</h1>
-    <div class="page-breadcrumb">
-        <div class="breadcrumb-item">
-            <a href="{{ route('dashboard') }}" class="breadcrumb-link">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-        </div>
-        <div class="breadcrumb-item">
-            <span>Pembelian</span>
-        </div>
-    </div>
-</div>
+@section('page-bar')
+<h1 class="m-0">Data Pembelian</h1>
+@endsection
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i>
-            Daftar Pembelian
-        </h3>
-        <div>
-            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addPembelianModal">
-                <i class="fas fa-plus-circle"></i>
-                Tambah Pembelian
-            </a>
-        </div>
-    </div>
 
-    <div class="card-body">
-        <div style="overflow-x: auto;">
-            <table id="pembelianTable" class="datatable" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tanggal Pesan</th>
-                        <th>Tanggal Datang</th>
-                        <th>Supplier</th>
-                        <th>Tipe</th>
-                        <th>Produk</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+@section('contents')
+<div class="content">
+    <div class="container-fluid">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="card-title"><i class="fas fa-shopping-cart mr-2"></i>Daftar Pembelian</h3>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addPembelianModal">
+                            <i class="fas fa-plus"></i> Tambah Pembelian
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <table id="pembelianTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tanggal Pesan</th>
+                            <th>Tanggal Datang</th>
+                            <th>Supplier</th>
+                            <th>Tipe</th>
+                            <th>Produk</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         @foreach($pembelians as $pembelian)
                         <tr>
@@ -95,7 +104,8 @@
                         </tr>
                         @endforeach
                     </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -184,7 +194,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('javascript')
 <script>
     let productRowIndex = 0;
     const produks = @json($produks);
