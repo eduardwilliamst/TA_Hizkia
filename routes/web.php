@@ -43,6 +43,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+    // Role-based dashboards
+    Route::get('/admin/dashboard', [HomeController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/cashier/dashboard', [HomeController::class, 'cashierDashboard'])->name('user.dashboard');
+
     Route::post('/balanceAwal', [HomeController::class, 'store'])->name('balance.store');
 
     Route::get('cart', [PenjualanController::class, 'viewCart'])->name('penjualan.viewCart');

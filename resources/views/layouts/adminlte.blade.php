@@ -60,188 +60,344 @@
 
 </head>
 
-<body class="hold-transition sidebar-collapse layout-top-nav">
+<body class="hold-transition sidebar-mini {{ Request::is('penjualan/index') || Request::is('penjualan') ? 'sidebar-collapse' : '' }}">
     <div class="wrapper">
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <div class="container"><a href="{{ route('dashboard') }}" class="navbar-brand">
-                    <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                    <span class="brand-text font-weight-light">Aplikasi</span>
-                </a>
-                <!-- Right navbar links -->
-                <ul class="navbar-nav ml-auto order-1 order-md-3">
-                    <form class="form-inline ml-0 ml-md-3">
-                        <div class="input-group input-group-sm">
-                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                            <div class="input-group-append">
-                                <button class="btn btn-navbar" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="border-bottom: 3px solid #0d6efd;">
+                <!-- Left navbar links -->
+                <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a href="{{ route('penjualan.viewCart') }}" class="nav-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <!-- <span class="badge badge-danger navbar-badge">3</span> -->
-                            <!-- Ganti angka sesuai jumlah item dalam cart -->
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button" style="padding: 0.5rem 1rem;">
+                            <i class="fas fa-bars" style="font-size: 1.3rem; color: #0d6efd;"></i>
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <span class="brand-text font-weight-light">General Ledger</span>
+                </ul>
+
+                <!-- Right navbar links -->
+                <ul class="navbar-nav ml-auto">
+                    <!-- Quick POS Button - Kasir Only -->
+                    @if(!Auth::user()->hasRole('admin'))
+                    <li class="nav-item d-none d-md-block">
+                        <a href="{{ route('penjualan.index') }}" class="btn btn-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; margin-top: 0.3rem; font-weight: 600;">
+                            <i class="fas fa-cash-register mr-1"></i>POS
                         </a>
-                        <div class="dropdown-menu dropdown-menu-sm">
-                            <a href="{{ route('profile.index') }}" class="dropdown-item d-flex justify-content-between align-items-center">
-                                Akun <i class="fas fa-user-circle text-muted"></i>
+                    </li>
+                    @endif
+
+                    <!-- Shopping Cart -->
+                    <li class="nav-item">
+                        <a href="{{ route('penjualan.viewCart') }}" class="nav-link position-relative" style="padding: 0.5rem 1rem;">
+                            <i class="fas fa-shopping-cart" style="font-size: 1.3rem; color: #0d6efd;"></i>
+                            @php
+                                $cartItems = session('cart', []);
+                                $cartCount = count($cartItems);
+                            @endphp
+                            @if($cartCount > 0)
+                            <span class="badge badge-danger navbar-badge" style="position: absolute; top: 5px; right: 5px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: 2px solid white; font-size: 0.7rem; padding: 0.2rem 0.4rem; border-radius: 10px;">
+                                {{ $cartCount }}
+                            </span>
+                            @endif
+                        </a>
+                    </li>
+
+                    <!-- User Menu -->
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown" style="padding: 0.5rem 1rem;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #0d6efd; display: flex; align-items: center; justify-content: center; margin-right: 8px;">
+                                <i class="fas fa-user" style="color: white; font-size: 0.9rem;"></i>
+                            </div>
+                            <span class="d-none d-md-inline" style="color: #333; font-weight: 600;">{{ Auth::user()->name }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm" style="border-radius: 10px; border: none; min-width: 220px;">
+                            <div class="dropdown-header" style="background: #0d6efd; color: white; border-radius: 10px 10px 0 0; padding: 1rem;">
+                                <strong>{{ Auth::user()->name }}</strong>
+                                <br>
+                                <small style="opacity: 0.9;">
+                                    @if(Auth::user()->hasRole('admin'))
+                                        <i class="fas fa-crown mr-1"></i>Administrator
+                                    @else
+                                        <i class="fas fa-cash-register mr-1"></i>Kasir
+                                    @endif
+                                </small>
+                            </div>
+                            <a href="{{ route('profile.index') }}" class="dropdown-item" style="padding: 0.8rem 1.2rem;">
+                                <i class="fas fa-user-circle mr-2" style="color: #0d6efd; width: 20px;"></i>
+                                Profil Saya
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ route('cashflow.index') }}" class="dropdown-item d-flex justify-content-between align-items-center">
-                                Cashflow <i class="fas fa-credit-card text-muted"></i>
+                            <a href="{{ route('cashflow.index') }}" class="dropdown-item" style="padding: 0.8rem 1.2rem;">
+                                <i class="fas fa-wallet mr-2" style="color: #43e97b; width: 20px;"></i>
+                                Cashflow
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ route('logout') }}" class="dropdown-item d-flex justify-content-between align-items-center" onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();">
-                                Logout <i class="fas fa-sign-out-alt text-muted"></i>
+                            @if(!Auth::user()->hasRole('admin'))
+                            <a href="{{ route('penjualan.listData') }}" class="dropdown-item" style="padding: 0.8rem 1.2rem;">
+                                <i class="fas fa-history mr-2" style="color: #4facfe; width: 20px;"></i>
+                                Riwayat Transaksi
+                            </a>
+                            @endif
+                            <div class="dropdown-divider" style="margin: 0.5rem 0;"></div>
+                            <a href="{{ route('logout') }}" class="dropdown-item" style="padding: 0.8rem 1.2rem; color: #f5576c;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-sign-out-alt mr-2" style="width: 20px;"></i>
+                                Logout
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                            <i class="fas fa-bars"></i>
-                        </a>
-                    </li>
                 </ul>
-
-            </div>
         </nav>
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="" class="brand-link text-center">
-                <span class="brand-text font-weight-light">General Ledger</span>
+            <a href="@if(Auth::user()->hasRole('admin')){{ route('admin.dashboard') }}@else{{ route('user.dashboard') }}@endif" class="brand-link" style="background: #0d6efd; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div class="d-flex align-items-center justify-content-center">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        <i class="fas fa-store" style="color: #0d6efd; font-size: 1.2rem;"></i>
+                    </div>
+                    <span class="brand-text font-weight-bold" style="color: white; font-size: 1.2rem;">POS System</span>
+                </div>
             </a>
 
             <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
+                <!-- Sidebar user panel -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div class="image">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #0d6efd; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="color: white; font-size: 1.2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <a href="{{ route('profile.index') }}" class="d-block" style="color: white;">{{ Auth::user()->name }}</a>
+                        <small style="color: rgba(255,255,255,0.6);">
+                            @if(Auth::user()->hasRole('admin'))
+                                <i class="fas fa-crown mr-1"></i>Administrator
+                            @else
+                                <i class="fas fa-cash-register mr-1"></i>Kasir
+                            @endif
+                        </small>
+                    </div>
+                </div>
+
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item has-treeview">
-                            <a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Dashboard</p>
+
+                        <!-- DASHBOARD -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 0.5rem;">
+                            <i class="fas fa-grip-horizontal mr-2" style="font-size: 0.7rem;"></i>Overview
+                        </li>
+                        <li class="nav-item">
+                            @if(Auth::user()->hasRole('admin'))
+                                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Request::is('admin/dashboard') || Request::is('dashboard') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            @else
+                                <a href="{{ route('user.dashboard') }}" class="nav-link {{ Request::is('cashier/dashboard') || Request::is('dashboard') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            @endif
+                        </li>
+
+                        <!-- POS OPERATIONS -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-cash-register mr-2" style="font-size: 0.7rem;"></i>Point of Sale
+                        </li>
+
+                        <!-- Penjualan (POS) -->
+                        <li class="nav-item">
+                            <a href="{{ route('penjualan.index') }}" class="nav-link {{ Request::is('penjualan/index') || Request::is('penjualan') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>
+                                    Penjualan
+                                    <span class="badge badge-success right" style="font-size: 0.65rem;">Live</span>
+                                </p>
                             </a>
                         </li>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('perkiraan*') || Request::is('promo*') || Request::is('kategori*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-list"></i>
+                        <!-- Cart -->
+                        <li class="nav-item">
+                            <a href="{{ route('penjualan.viewCart') }}" class="nav-link {{ Request::is('cart') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-shopping-basket"></i>
                                 <p>
-                                    Master Data
+                                    Keranjang
+                                    @php
+                                        $cartCount = count(session('cart', []));
+                                    @endphp
+                                    @if($cartCount > 0)
+                                        <span class="badge badge-danger right">{{ $cartCount }}</span>
+                                    @endif
+                                </p>
+                            </a>
+                        </li>
+
+                        <!-- Cashflow -->
+                        <li class="nav-item">
+                            <a href="{{ route('cashflow.index') }}" class="nav-link {{ Request::is('cashflow*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-wallet"></i>
+                                <p>Cashflow</p>
+                            </a>
+                        </li>
+
+                        @if(Auth::user()->hasRole('admin'))
+                        <!-- INVENTORY MANAGEMENT -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-boxes mr-2" style="font-size: 0.7rem;"></i>Inventory
+                        </li>
+
+                        <!-- Produk -->
+                        <li class="nav-item has-treeview {{ Request::is('produk*') || Request::is('kategori*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('produk*') || Request::is('kategori*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-box-open"></i>
+                                <p>
+                                    Produk
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-
                                 <li class="nav-item">
-                                    <a href="{{ route('kategori.index') }}" class="nav-link {{ Request::is('kategori') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-th"></i>
+                                    <a href="{{ route('produk.index') }}" class="nav-link {{ Request::is('produk*') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Semua Produk</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('kategori.index') }}" class="nav-link {{ Request::is('kategori*') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
                                         <p>Kategori</p>
                                     </a>
                                 </li>
+                            </ul>
+                        </li>
+
+                        <!-- Pembelian (Stock In) -->
+                        <li class="nav-item">
+                            <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian/index') || Request::is('pembelian') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-dolly"></i>
+                                <p>Pembelian</p>
+                            </a>
+                        </li>
+
+                        <!-- Supplier -->
+                        <li class="nav-item">
+                            <a href="{{ route('supplier.index') }}" class="nav-link {{ Request::is('supplier*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-truck"></i>
+                                <p>Supplier</p>
+                            </a>
+                        </li>
+
+                        <!-- MARKETING -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-bullhorn mr-2" style="font-size: 0.7rem;"></i>Marketing
+                        </li>
+
+                        <!-- Promo -->
+                        <li class="nav-item">
+                            <a href="{{ route('promo.index') }}" class="nav-link {{ Request::is('promo*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-tags"></i>
+                                <p>Promo & Diskon</p>
+                            </a>
+                        </li>
+                        @else
+                        <!-- INVENTORY (Kasir - Limited) -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-boxes mr-2" style="font-size: 0.7rem;"></i>Inventory
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('produk.index') }}" class="nav-link {{ Request::is('produk*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-box-open"></i>
+                                <p>Cek Stok Produk</p>
+                            </a>
+                        </li>
+                        @endif
+
+                        <!-- REPORTS -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-chart-bar mr-2" style="font-size: 0.7rem;"></i>Reports
+                        </li>
+
+                        <li class="nav-item has-treeview {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>
+                                    Laporan Transaksi
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('produk.index') }}" class="nav-link {{ Request::is('produk') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-box-open"></i>
-                                        <p>Produk</p>
+                                    <a href="{{ route('penjualan.listData') }}" class="nav-link {{ Request::is('penjualan/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Laporan Penjualan</p>
+                                    </a>
+                                </li>
+                                @if(Auth::user()->hasRole('admin'))
+                                <li class="nav-item">
+                                    <a href="{{ route('pembelian.listData') }}" class="nav-link {{ Request::is('pembelian/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Laporan Pembelian</p>
+                                    </a>
+                                </li>
+                                @endif
+                            </ul>
+                        </li>
+
+                        @if(Auth::user()->hasRole('admin'))
+                        <!-- SYSTEM SETTINGS -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-cog mr-2" style="font-size: 0.7rem;"></i>System
+                        </li>
+
+                        <!-- Settings -->
+                        <li class="nav-item has-treeview {{ Request::is('users*') || Request::is('tipe*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('users*') || Request::is('tipe*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sliders-h"></i>
+                                <p>
+                                    Pengaturan
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('users.index') }}" class="nav-link {{ Request::is('users*') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Pengguna</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('promo.index') }}" class="nav-link {{ Request::is('promo') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-star"></i>
-                                        <p>Promo</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('supplier.index') }}" class="nav-link {{ Request::is('supplier') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-truck"></i>
-                                        <p>Supplier</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('tipe.index') }}" class="nav-link {{ Request::is('tipe') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-list-alt"></i>
+                                    <a href="{{ route('tipe.index') }}" class="nav-link {{ Request::is('tipe*') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
                                         <p>Tipe Pembelian</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
+                        @endif
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('pembelian.index') || Request::is('penjualan.index') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-shopping-cart"></i>
-                                <p>
-                                    Transaksi
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian/index') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-arrow-down"></i>
-                                        <p>Pembelian</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('penjualan.index') }}" class="nav-link {{ Request::is('penjualan/index') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-arrow-up"></i>
-                                        <p>Penjualan</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-history"></i> <!-- Ganti ikon utama menjadi fas fa-history -->
-                                <p>
-                                    Histori
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('pembelian.listData') }}" class="nav-link {{ Request::is('pembelian.listData') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-file-invoice-dollar"></i> <!-- Ganti ikon List Pembelian -->
-                                        <p>List Pembelian</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('penjualan.listData') }}" class="nav-link {{ Request::is('penjualan.listData') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-receipt"></i> <!-- Ganti ikon List Penjualan -->
-                                        <p>List Penjualan</p>
-                                    </a>
-                                </li>
-                            </ul>
+                        <!-- ACCOUNT -->
+                        <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
+                            <i class="fas fa-user-circle mr-2" style="font-size: 0.7rem;"></i>Account
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('supplier.index') }}" class="nav-link {{ Request::is('supplier') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>Supplier</p>
+                            <a href="{{ route('profile.index') }}" class="nav-link {{ Request::is('profile*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user-cog"></i>
+                                <p>Profil Saya</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a href="{{ route('users.index') }}" class="nav-link {{ Request::is('users') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user"></i>
-                                <p>Pengguna</p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="color: #f5576c;">
+                                <i class="nav-icon fas fa-sign-out-alt"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -253,7 +409,7 @@
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             @yield('page-bar')
@@ -277,7 +433,7 @@
         </aside>
         <!-- /.control-sidebar -->
         <footer class="main-footer">
-            <strong>Copyright &copy; <a href="http://adminlte.io">General Ledger</a>.</strong>
+            <strong>Copyright &copy; <a href="#" style="color: #0d6efd;">POS System</a>.</strong>
             All rights reserved.
         </footer>
     </div>

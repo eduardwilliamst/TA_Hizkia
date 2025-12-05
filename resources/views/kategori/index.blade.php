@@ -1,59 +1,73 @@
 @extends('layouts.adminlte')
 
-@section('title')
-Kategori
-@endsection
+@section('title', 'Kategori')
 
-@section('page-bar')
-<h1 class="m-0">Data Kategori</h1>
-@endsection
-
-@section('contents')
-<div class="content">
+@section('content')
+<div class="content-header">
     <div class="container-fluid">
-        <div class="card animate-fade-in-up">
-            <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h3 class="mb-0">
-                            <i class="fas fa-th-large mr-2"></i>
-                            Daftar Kategori
-                        </h3>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addDataModal" style="padding: 0.7rem 1.5rem; border-radius: 12px;">
-                            <i class="fas fa-plus-circle mr-2"></i>Tambah Kategori
-                        </a>
-                    </div>
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-th-large me-2"></i>
+                    Kategori Produk
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDataModal">
+                        <i class="fas fa-plus me-2"></i>
+                        Tambah Kategori
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="card-body" style="padding: 2rem;">
-                <div style="overflow-x: auto;">
-                    <table id="kategoriTable" class="table table-hover" style="border-radius: 10px; overflow: hidden;">
+<div class="content">
+    <div class="container-fluid">
+<div class="row">
+    <div class="col-12">
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Kategori</h3>
+                <div class="card-actions">
+                    <span class="badge bg-azure-lt">{{ $kategoris->count() }} Kategori</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="kategoriTable" class="table table-vcenter table-hover">
                         <thead>
                             <tr>
-                                <th style="width: 70%;"><i class="fas fa-tag mr-2"></i>Nama Kategori</th>
-                                <th style="width: 30%; text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
+                                <th><i class="fas fa-tag me-2"></i>Nama Kategori</th>
+                                <th class="text-center" style="width: 200px;"><i class="fas fa-cog me-2"></i>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($kategoris as $kategori)
-                            <tr class="animate-fade-in">
-                                <td style="font-weight: 600; color: #333; font-size: 1.05rem;">
-                                    <i class="fas fa-folder mr-2" style="color: #667eea;"></i>
-                                    {{ $kategori->nama }}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="avatar avatar-sm me-3" style="background: #0d6efd;">
+                                            <i class="fas fa-folder" style="color: white;"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold">{{ $kategori->nama }}</div>
+                                            <div class="text-muted small">ID: {{ $kategori->idkategori }}</div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td style="text-align: center;">
-                                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                                        <a data-toggle="modal" data-target="#modalEditKategori" onclick="modalEdit({{ $kategori->idkategori }})" class="btn btn-info btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" title="Edit">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" id="delete-form-{{ $kategori->idkategori }}" style="display:inline; margin: 0;">
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEditKategori" onclick="modalEdit({{ $kategori->idkategori }})" title="Edit">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </button>
+                                        <form action="{{ route('kategori.destroy', $kategori->idkategori) }}" method="POST" id="delete-form-{{ $kategori->idkategori }}" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-sm" style="border-radius: 8px; padding: 0.5rem 1rem;" onclick="confirmDelete('delete-form-{{ $kategori->idkategori }}')" title="Hapus">
-                                                <i class="fas fa-trash"></i> Hapus
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('delete-form-{{ $kategori->idkategori }}')" title="Hapus">
+                                                <i class="fas fa-trash me-1"></i> Hapus
                                             </button>
                                         </form>
                                     </div>
@@ -67,60 +81,95 @@ Kategori
         </div>
     </div>
 </div>
+    </div>
+</div>
 
 <!-- Modal Tambah Data -->
-<div class="modal fade" id="addDataModal" tabindex="-1" role="dialog" aria-labelledby="addDataModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal modal-blur fade" id="addDataModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addDataModalLabel">Tambah Data Kategori</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('kategori.store') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="nama">Nama Kategori</label>
-                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama kategori">
+            <form action="{{ route('kategori.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus-circle me-2 text-primary"></i>
+                        Tambah Data Kategori
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label required">Nama Kategori</label>
+                        <input type="text" class="form-control" name="nama" placeholder="Masukkan nama kategori" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Simpan
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <!-- Modal Edit -->
-<div class="modal fade" id="modalEditKategori" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="modalContent">
-
+<div class="modal modal-blur fade" id="modalEditKategori" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" id="modalContent">
+        <!-- Content will be loaded via AJAX -->
     </div>
 </div>
 @endsection
 
-@section('javascript')
+@section('scripts')
 <script>
     $(document).ready(function() {
         $('#kategoriTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
+            responsive: true,
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>B',
+            buttons: [
+                {
                     extend: 'excel',
+                    text: '<i class="fas fa-file-excel me-1"></i> Excel',
+                    className: 'btn btn-success btn-sm',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
                 },
                 {
                     extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf me-1"></i> PDF',
+                    className: 'btn btn-danger btn-sm',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
                 },
-            ]
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print me-1"></i> Print',
+                    className: 'btn btn-info btn-sm',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                zeroRecords: "Data tidak ditemukan",
+                info: "Menampilkan halaman _PAGE_ dari _PAGES_",
+                infoEmpty: "Tidak ada data yang tersedia",
+                infoFiltered: "(difilter dari _MAX_ total data)",
+                paginate: {
+                    first: "Pertama",
+                    last: "Terakhir",
+                    next: "Selanjutnya",
+                    previous: "Sebelumnya"
+                }
+            }
         });
     });
 
@@ -129,7 +178,7 @@ Kategori
             type: 'POST',
             url: '{{ route("kategori.getEditForm") }}',
             data: {
-                '_token': '<?php echo csrf_token() ?>',
+                '_token': '{{ csrf_token() }}',
                 'id': kategoriId,
             },
             success: function(data) {
@@ -137,6 +186,10 @@ Kategori
             },
             error: function(xhr) {
                 console.log(xhr);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Gagal memuat data'
+                });
             }
         });
     }

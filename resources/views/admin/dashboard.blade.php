@@ -1,6 +1,6 @@
 @extends('layouts.adminlte')
 
-@section('title', 'Dashboard')
+@section('title', 'Admin Dashboard')
 
 @section('content')
 <div class="content-header">
@@ -8,8 +8,8 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">
-                    <i class="fas fa-tachometer-alt me-2"></i>
-                    Dashboard
+                    <i class="fas fa-user-shield me-2"></i>
+                    Dashboard Administrator
                 </h1>
             </div>
             <div class="col-sm-6">
@@ -24,7 +24,7 @@
 
 <div class="content">
     <div class="container-fluid">
-<!-- Statistics Cards -->
+<!-- Statistics Row 1 -->
 <div class="row row-cards mb-3">
     <div class="col-sm-6 col-lg-3">
         <div class="card card-sm">
@@ -36,12 +36,8 @@
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium">
-                            Total Produk
-                        </div>
-                        <div class="text-muted">
-                            {{ number_format($totalProducts) }} items
-                        </div>
+                        <div class="font-weight-medium">Total Produk</div>
+                        <div class="text-muted">{{ number_format($totalProducts) }} items</div>
                     </div>
                 </div>
             </div>
@@ -58,12 +54,8 @@
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium">
-                            Stok Rendah
-                        </div>
-                        <div class="text-muted">
-                            {{ number_format($lowStockProducts) }} produk
-                        </div>
+                        <div class="font-weight-medium">Stok Rendah</div>
+                        <div class="text-muted">{{ number_format($lowStockProducts) }} produk</div>
                     </div>
                 </div>
             </div>
@@ -75,17 +67,52 @@
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-auto">
+                        <span class="bg-cyan text-white avatar">
+                            <i class="fas fa-th-large"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="font-weight-medium">Kategori</div>
+                        <div class="text-muted">{{ number_format($totalCategories) }} kategori</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="bg-orange text-white avatar">
+                            <i class="fas fa-truck"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="font-weight-medium">Supplier</div>
+                        <div class="text-muted">{{ number_format($totalSuppliers) }} supplier</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Row 2 -->
+<div class="row row-cards mb-3">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
                         <span class="bg-green text-white avatar">
                             <i class="fas fa-shopping-cart"></i>
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium">
-                            Penjualan Hari Ini
-                        </div>
-                        <div class="text-muted">
-                            {{ number_format($todaySales) }} transaksi
-                        </div>
+                        <div class="font-weight-medium">Penjualan Hari Ini</div>
+                        <div class="text-muted">{{ number_format($todaySales) }} transaksi</div>
                     </div>
                 </div>
             </div>
@@ -102,12 +129,44 @@
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium">
-                            Pendapatan Hari Ini
-                        </div>
-                        <div class="text-muted">
-                            Rp {{ number_format($todayRevenue, 0, ',', '.') }}
-                        </div>
+                        <div class="font-weight-medium">Pendapatan Hari Ini</div>
+                        <div class="text-muted">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="bg-teal text-white avatar">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="font-weight-medium">Penjualan Bulan Ini</div>
+                        <div class="text-muted">{{ number_format($monthSales) }} transaksi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="bg-pink text-white avatar">
+                            <i class="fas fa-dollar-sign"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="font-weight-medium">Pendapatan Bulan Ini</div>
+                        <div class="text-muted">Rp {{ number_format($monthRevenue, 0, ',', '.') }}</div>
                     </div>
                 </div>
             </div>
@@ -115,7 +174,7 @@
     </div>
 </div>
 
-<!-- Main Content Row -->
+<!-- Main Content -->
 <div class="row row-cards">
     <!-- Sales Chart -->
     <div class="col-lg-8">
@@ -133,7 +192,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Top 5 Produk</h3>
+                <h3 class="card-title">Top 5 Produk Bulan Ini</h3>
             </div>
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
@@ -172,7 +231,7 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Stok Rendah</h3>
+                <h3 class="card-title">Produk Stok Rendah</h3>
                 <div class="card-actions">
                     <a href="{{ route('produk.index') }}" class="btn btn-sm btn-primary">
                         Lihat Semua
@@ -201,7 +260,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3" class="text-center text-muted">
+                            <td colspan="3" class="text-center text-muted py-4">
                                 <i class="fas fa-check-circle fa-2x mb-2"></i>
                                 <div>Semua stok aman</div>
                             </td>
@@ -240,11 +299,11 @@
                             <td><span class="text-blue">#{{ $sale->idpenjualan }}</span></td>
                             <td>{{ $sale->user_name }}</td>
                             <td class="text-green">Rp {{ number_format($sale->total_harga, 0, ',', '.') }}</td>
-                            <td class="text-muted">{{ \Carbon\Carbon::parse($sale->created_at)->format('H:i') }}</td>
+                            <td class="text-muted">{{ \Carbon\Carbon::parse($sale->created_at)->format('d/m H:i') }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">
+                            <td colspan="4" class="text-center text-muted py-4">
                                 <i class="fas fa-shopping-cart fa-2x mb-2"></i>
                                 <div>Belum ada transaksi</div>
                             </td>
