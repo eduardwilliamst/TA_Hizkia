@@ -2,7 +2,7 @@
 
 @section('title', 'Admin Dashboard')
 
-@section('content')
+@section('contents')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
