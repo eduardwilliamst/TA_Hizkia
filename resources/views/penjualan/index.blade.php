@@ -84,9 +84,21 @@ Penjualan
             <div style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem;" id="cart-items-container">
                 <div id="cart-body">
                     <!-- Item keranjang akan ditambahkan di sini -->
-                    <div id="empty-cart-message" style="text-align: center; padding: 3rem; color: #999;">
-                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
-                        Keranjang masih kosong
+                    <div id="empty-cart-message" style="text-align: center; padding: 3rem 1rem; color: #999;">
+                        <i class="fas fa-shopping-cart" style="font-size: 3.5rem; color: #ddd; margin-bottom: 1.5rem; display: block;"></i>
+                        <h5 style="color: #666; font-weight: 600; margin-bottom: 0.5rem;">Keranjang Kosong</h5>
+                        <p style="color: #999; font-size: 0.9rem; margin-bottom: 1rem;">Pilih produk atau scan barcode untuk memulai transaksi</p>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                            <span class="badge badge-light" style="font-size: 0.75rem; padding: 0.4rem 0.6rem; background: #f8f9fa; color: #667eea; border: 1px solid #e0e0e0;">
+                                <i class="fas fa-keyboard mr-1"></i>Ctrl+F: Cari
+                            </span>
+                            <span class="badge badge-light" style="font-size: 0.75rem; padding: 0.4rem 0.6rem; background: #f8f9fa; color: #667eea; border: 1px solid #e0e0e0;">
+                                <i class="fas fa-barcode mr-1"></i>Scan Barcode
+                            </span>
+                            <span class="badge badge-light" style="font-size: 0.75rem; padding: 0.4rem 0.6rem; background: #f8f9fa; color: #667eea; border: 1px solid #e0e0e0;">
+                                <i class="fas fa-check mr-1"></i>Ctrl+Enter: Checkout
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,42 +155,17 @@ Penjualan
             }
 
             .payment-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                /* Remove decorative animation - POS best practice */
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border-color: #667eea !important;
             }
 
-            /* Checkout Modal Animations */
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
+            .payment-card {
+                transition: box-shadow 0.15s ease, border-color 0.15s ease;
             }
 
-            @keyframes fadeOut {
-                from {
-                    opacity: 1;
-                }
-                to {
-                    opacity: 0;
-                }
-            }
-
-            @keyframes slideUp {
-                from {
-                    transform: translateY(20px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-
+            /* Essential Feedback Animations */
+            /* Pulse animation for payment success confirmation - INFORMATIVE */
             @keyframes pulse {
                 0%, 100% {
                     transform: scale(1);
@@ -188,24 +175,11 @@ Penjualan
                 }
             }
 
+            /* Shake animation for errors - INFORMATIVE */
             @keyframes shake {
                 0%, 100% { transform: translateX(0); }
                 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
                 20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-
-            /* Modal Content Animation */
-            .modal.fade .modal-dialog {
-                transition: transform 0.3s ease-out;
-            }
-
-            .modal.show .modal-dialog {
-                transform: scale(1);
-            }
-
-            /* Cart Item Slide In */
-            .cart-item-animate {
-                animation: slideUp 0.3s ease-out;
             }
 
             /* Change Display Pulse */
@@ -323,12 +297,21 @@ Penjualan
                 box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
             }
 
-            /* Sticky Cart Responsive */
-            @media (max-width: 991px) {
+            /* Sticky Cart Responsive - Optimized for tablets */
+            @media (max-width: 767px) {
+                /* Only disable sticky on mobile phones */
                 .sticky-cart {
                     position: relative !important;
                     top: 0 !important;
                     margin-top: 2rem;
+                }
+            }
+
+            @media (min-width: 768px) and (max-width: 991px) {
+                /* Keep sticky on tablets, but adjust top offset */
+                .sticky-cart {
+                    position: sticky !important;
+                    top: 80px !important; /* Account for navbar height */
                 }
             }
         </style>
@@ -762,15 +745,13 @@ Penjualan
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             z-index: 9999;
-            animation: slideInRight 0.3s ease-out;
             font-weight: 500;
         `;
         toast.innerHTML = `<i class="fas ${icon} mr-2"></i>${message}`;
         document.body.appendChild(toast);
 
         setTimeout(() => {
-            toast.style.animation = 'fadeOut 0.3s ease-out';
-            setTimeout(() => toast.remove(), 300);
+            toast.remove();
         }, 2000);
     }
 
@@ -820,8 +801,7 @@ Penjualan
             const promoResult = calculatePromo(item);
 
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'cart-item-animate';
-            itemDiv.style.cssText = 'display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #e0e0e0; animation-delay: ' + (index * 0.05) + 's;';
+            itemDiv.style.cssText = 'display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #e0e0e0;';
 
             let promoInfo = '';
             if (promoResult.promoApplied) {
@@ -1153,6 +1133,47 @@ Penjualan
         }
     }
 
+// Barcode Scanner Auto-Add Functionality
+document.getElementById('search-bar').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const searchQuery = this.value.trim();
+
+        if (!searchQuery) return;
+
+        // Check if search query matches exactly one product barcode
+        const matchingProducts = document.querySelectorAll(`.product-card[data-barcode="${searchQuery}"]`);
+
+        if (matchingProducts.length === 1) {
+            // Auto-click the product to add to cart
+            matchingProducts[0].click();
+
+            // Clear search bar
+            this.value = '';
+            this.dispatchEvent(new Event('input')); // Trigger input event to reset search filter
+
+            // Show feedback with product name
+            const productName = matchingProducts[0].dataset.name;
+            showToast(`${productName} ditambahkan via barcode scanner!`, 'success');
+        } else if (matchingProducts.length === 0) {
+            // No match found - check by name as fallback
+            const nameMatches = document.querySelectorAll(`.product-card[data-name*="${searchQuery}"]`);
+
+            if (nameMatches.length === 1) {
+                nameMatches[0].click();
+                this.value = '';
+                this.dispatchEvent(new Event('input'));
+                showToast(`${nameMatches[0].dataset.name} ditambahkan!`, 'success');
+            } else {
+                showToast(`Barcode/Produk tidak ditemukan: ${searchQuery}`, 'warning');
+            }
+        } else {
+            // Multiple matches - let user choose manually
+            showToast(`Ditemukan ${matchingProducts.length} produk. Silakan pilih manual.`, 'info');
+        }
+    }
+});
+
 // Search functionality
 document.getElementById('search-bar').addEventListener('input', function(e) {
     const searchQuery = e.target.value.toLowerCase().trim();
@@ -1205,6 +1226,49 @@ document.getElementById('search-bar').addEventListener('input', function(e) {
         document.getElementById('categoryTabs').style.display = '';
     }
 });
+
+// Global Keyboard Shortcuts for POS Speed
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + F: Focus on search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        const searchBar = document.getElementById('search-bar');
+        if (searchBar) {
+            searchBar.focus();
+            searchBar.select();
+            showToast('Cari produk dengan nama atau scan barcode', 'info');
+        }
+    }
+
+    // Ctrl/Cmd + Enter: Checkout
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        const checkoutBtn = document.getElementById('checkout-button');
+        if (cart.length > 0 && checkoutBtn) {
+            checkoutBtn.click();
+        } else if (cart.length === 0) {
+            showToast('Keranjang masih kosong!', 'warning');
+        }
+    }
+
+    // Escape: Clear search and blur
+    if (e.key === 'Escape') {
+        const searchBar = document.getElementById('search-bar');
+        if (searchBar && searchBar === document.activeElement) {
+            searchBar.value = '';
+            searchBar.dispatchEvent(new Event('input'));
+            searchBar.blur();
+        }
+    }
+});
+
+// Show keyboard shortcuts hint on first visit
+if (!localStorage.getItem('keyboard-shortcuts-seen')) {
+    setTimeout(function() {
+        showToast('💡 Tips: Ctrl+F untuk cari, Ctrl+Enter untuk checkout, Esc untuk clear', 'info');
+        localStorage.setItem('keyboard-shortcuts-seen', 'true');
+    }, 2000);
+}
 
 </script>
 @endsection
