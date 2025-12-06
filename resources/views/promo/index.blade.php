@@ -27,7 +27,7 @@
 </div>
 @endsection
 
-@section('content')
+@section('contents')
 <div class="container-fluid">
 <div class="card">
     <div class="card-header" style="background: #0d6efd; color: white;">
