@@ -1,35 +1,45 @@
-@extends('layouts.pos')
+@extends('layouts.adminlte')
 
 @section('title', 'Promo')
 
-@section('content')
-<!-- Page Header -->
-<div class="page-header">
-    <h1 class="page-title">Data Promo</h1>
-    <div class="page-breadcrumb">
-        <div class="breadcrumb-item">
-            <a href="{{ route('dashboard') }}" class="breadcrumb-link">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-        </div>
-        <div class="breadcrumb-item">
-            <span>Promo</span>
+@section('page-bar')
+<h1 class="m-0" style="color: #0d6efd; font-weight: 600;">
+    <i class="fas fa-tags mr-2"></i>
+    Data Promo
+</h1>
+@endsection
+
+@section('content-header')
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                @yield('page-bar')
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" style="color: #0d6efd;"><i class="fas fa-home mr-1"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item active">Promo</li>
+                </ol>
+            </div>
         </div>
     </div>
 </div>
+@endsection
 
+@section('content')
+<div class="container-fluid">
 <div class="card">
-    <div class="card-header">
+    <div class="card-header" style="background: #0d6efd; color: white;">
         <h3 class="card-title">
-            <i class="fas fa-tags" style="margin-right: 0.5rem;"></i>
+            <i class="fas fa-tags mr-2"></i>
             Daftar Promo
         </h3>
-        <div>
-            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addPromoModal">
-                <i class="fas fa-plus-circle"></i>
+        <div class="card-tools">
+            <button class="btn btn-light btn-sm" data-toggle="modal" data-target="#addPromoModal">
+                <i class="fas fa-plus-circle mr-1"></i>
                 Tambah Promo
-            </a>
+            </button>
         </div>
     </div>
 
@@ -300,6 +310,10 @@
     </div>
 </div>
 
+</div>
+@endsection
+
+@section('style')
 <style>
     .promo-type-option input[type="radio"]:checked + .promo-type-card {
         border-color: currentColor !important;
