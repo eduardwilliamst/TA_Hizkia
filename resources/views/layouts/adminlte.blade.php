@@ -321,11 +321,22 @@
                             <i class="fas fa-chart-bar mr-2" style="font-size: 0.7rem;"></i>Reports
                         </li>
 
+                        <!-- Pusat Laporan -->
+                        <li class="nav-item">
+                            <a href="{{ route('laporan.index') }}" class="nav-link {{ Request::is('laporan') || Request::is('laporan/*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>
+                                    Pusat Laporan
+                                    <span class="badge badge-warning right" style="font-size: 0.65rem;">New</span>
+                                </p>
+                            </a>
+                        </li>
+
                         <li class="nav-item has-treeview {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('pembelian/listData') || Request::is('penjualan/listData') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-file-invoice"></i>
                                 <p>
-                                    Laporan Transaksi
+                                    Data Transaksi
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -333,14 +344,14 @@
                                 <li class="nav-item">
                                     <a href="{{ route('penjualan.listData') }}" class="nav-link {{ Request::is('penjualan/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
                                         <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
-                                        <p>Laporan Penjualan</p>
+                                        <p>Data Penjualan</p>
                                     </a>
                                 </li>
                                 @if(Auth::user()->hasRole('admin'))
                                 <li class="nav-item">
                                     <a href="{{ route('pembelian.listData') }}" class="nav-link {{ Request::is('pembelian/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
                                         <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
-                                        <p>Laporan Pembelian</p>
+                                        <p>Data Pembelian</p>
                                     </a>
                                 </li>
                                 @endif

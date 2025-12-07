@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TipeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CashFlowController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -102,4 +103,9 @@ Route::middleware(['auth'])->group(function () {
     // Profile routes
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Laporan routes
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::post('laporan/penjualan', [LaporanController::class, 'laporanPenjualan'])->name('laporan.penjualan');
+    Route::post('laporan/stok', [LaporanController::class, 'laporanStok'])->name('laporan.stok');
 });
