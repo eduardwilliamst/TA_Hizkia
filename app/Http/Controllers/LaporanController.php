@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use App\Models\Penjualan;
-use App\Models\PenjualanDetail;
+use App\Models\PenjualanDetil;
 use App\Models\Produk;
 use App\Models\User;
 use Illuminate\Http\Request;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 class LaporanController extends Controller
@@ -56,7 +56,7 @@ class LaporanController extends Controller
         $creditTotal = $penjualans->where('cara_bayar', 'credit')->sum('total_harga');
 
         // Top products
-        $topProducts = PenjualanDetail::whereIn('penjualan_idpenjualan', $penjualans->pluck('idpenjualan'))
+        $topProducts = PenjualanDetil::whereIn('penjualan_idpenjualan', $penjualans->pluck('idpenjualan'))
             ->selectRaw('produk_idproduk, SUM(jumlah) as total_qty, SUM(subtotal) as total_revenue')
             ->groupBy('produk_idproduk')
             ->orderByDesc('total_revenue')
@@ -107,7 +107,7 @@ class LaporanController extends Controller
             'generatedBy' => auth()->user()->name,
         ];
 
-        $pdf = PDF::loadView('laporan.pdf.penjualan', $data);
+        $pdf = Pdf::loadView('laporan.pdf.penjualan', $data);
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('Laporan-Penjualan-' . date('YmdHis') . '.pdf');
@@ -173,7 +173,7 @@ class LaporanController extends Controller
             'generatedBy' => auth()->user()->name,
         ];
 
-        $pdf = PDF::loadView('laporan.pdf.stok', $data);
+        $pdf = Pdf::loadView('laporan.pdf.stok', $data);
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('Laporan-Stok-' . date('YmdHis') . '.pdf');
