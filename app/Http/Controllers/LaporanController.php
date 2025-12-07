@@ -39,13 +39,13 @@ class LaporanController extends Controller
             $query->where('user_iduser', $request->user_id);
         }
 
-        $penjualans = $query->with(['details.produk', 'user'])->get();
+        $penjualans = $query->with(['penjualanDetils.produk', 'user'])->get();
 
         // Calculate statistics
         $totalTransaksi = $penjualans->count();
         $totalPendapatan = $penjualans->sum('total_harga');
         $totalItem = $penjualans->sum(function($penjualan) {
-            return $penjualan->details->sum('jumlah');
+            return $penjualan->penjualanDetils->sum('jumlah');
         });
         $avgPerTransaksi = $totalTransaksi > 0 ? $totalPendapatan / $totalTransaksi : 0;
 
@@ -57,7 +57,7 @@ class LaporanController extends Controller
 
         // Top products
         $topProducts = PenjualanDetil::whereIn('penjualan_idpenjualan', $penjualans->pluck('idpenjualan'))
-            ->selectRaw('produk_idproduk, SUM(jumlah) as total_qty, SUM(subtotal) as total_revenue')
+            ->selectRaw('produk_idproduk, SUM(jumlah) as total_qty, SUM(sub_total) as total_revenue')
             ->groupBy('produk_idproduk')
             ->orderByDesc('total_revenue')
             ->limit(10)

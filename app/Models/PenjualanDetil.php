@@ -27,7 +27,7 @@ class PenjualanDetil extends Model
      */
     public function penjualan()
     {
-        return $this->belongsTo(Penjualan::class, 'penjualan_id');
+        return $this->belongsTo(Penjualan::class, 'penjualan_idpenjualan', 'idpenjualan');
     }
 
     /**
@@ -35,7 +35,7 @@ class PenjualanDetil extends Model
      */
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id');
+        return $this->belongsTo(Produk::class, 'produk_idproduk', 'idproduk');
     }
 
     /**
