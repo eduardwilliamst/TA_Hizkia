@@ -83,21 +83,21 @@
             </div>
         </div>
 
-        <!-- Laporan Keuangan -->
+        <!-- Laporan Omzet -->
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanKeuangan" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
+            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanOmzet" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
                 <div class="card-body" style="padding: 1.5rem;">
                     <div class="d-flex align-items-center mb-3">
                         <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-wallet" style="font-size: 1.8rem; color: white;"></i>
+                            <i class="fas fa-money-bill-wave" style="font-size: 1.8rem; color: white;"></i>
                         </div>
                         <div style="flex: 1; margin-left: 1rem;">
-                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Keuangan</h5>
-                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Pendapatan & Pengeluaran</p>
+                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Omzet</h5>
+                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Breakdown Harian</p>
                         </div>
                     </div>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-                        Gross sales, net sales, COGS, profit margin, dan cashflow summary.
+                        Omzet per hari, total transaksi, cash vs credit, dan hari terbaik/terburuk.
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(0, 242, 254, 0.1); color: #00f2fe; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -122,21 +122,21 @@
     </div>
 
     <div class="row">
-        <!-- Laporan Promo -->
+        <!-- Laporan Laba Rugi -->
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanPromo" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
+            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanLabaRugi" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
                 <div class="card-body" style="padding: 1.5rem;">
-                    <div class="d-flex align-items: center mb-3">
+                    <div class="d-flex align-items-center mb-3">
                         <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-tags" style="font-size: 1.8rem; color: white;"></i>
+                            <i class="fas fa-calculator" style="font-size: 1.8rem; color: white;"></i>
                         </div>
                         <div style="flex: 1; margin-left: 1rem;">
-                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Promo</h5>
-                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Efektivitas Marketing</p>
+                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Laba Rugi</h5>
+                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Profit & Loss Statement</p>
                         </div>
                     </div>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-                        Performance promo, total redeem, ROI, dan konversi per promo.
+                        Revenue, HPP, laba bersih, margin laba, dan top produk menguntungkan.
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(67, 233, 123, 0.1); color: #43e97b; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -150,21 +150,21 @@
             </div>
         </div>
 
-        <!-- Laporan Pembelian -->
+        <!-- Laporan Detail Transaksi -->
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanPembelian" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
+            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanDetailTransaksi" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
                 <div class="card-body" style="padding: 1.5rem;">
                     <div class="d-flex align-items-center mb-3">
                         <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-truck-loading" style="font-size: 1.8rem; color: white;"></i>
+                            <i class="fas fa-receipt" style="font-size: 1.8rem; color: white;"></i>
                         </div>
                         <div style="flex: 1; margin-left: 1rem;">
-                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Pembelian</h5>
-                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Stock In & Supplier</p>
+                            <h5 style="margin: 0; font-weight: 600; color: #333;">Detail Transaksi</h5>
+                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Transaction Listing</p>
                         </div>
                     </div>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-                        Total pembelian, supplier performance, dan outstanding payments.
+                        Daftar lengkap transaksi dengan detail produk, kasir, dan metode bayar.
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(250, 112, 154, 0.1); color: #fa709a; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -178,21 +178,21 @@
             </div>
         </div>
 
-        <!-- Laporan Produk Terlaris -->
+        <!-- Laporan Inventory -->
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanProdukTerlaris" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
+            <div class="card report-card" data-toggle="modal" data-target="#modalLaporanInventory" style="cursor: pointer; border: 1px solid #e3e6f0; border-radius: 8px; transition: all 0.2s ease; height: 100%;">
                 <div class="card-body" style="padding: 1.5rem;">
                     <div class="d-flex align-items-center mb-3">
                         <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-trophy" style="font-size: 1.8rem; color: white;"></i>
+                            <i class="fas fa-warehouse" style="font-size: 1.8rem; color: white;"></i>
                         </div>
                         <div style="flex: 1; margin-left: 1rem;">
-                            <h5 style="margin: 0; font-weight: 600; color: #333;">Produk Terlaris</h5>
-                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Best & Worst Performers</p>
+                            <h5 style="margin: 0; font-weight: 600; color: #333;">Laporan Inventory</h5>
+                            <p style="margin: 0; color: #858796; font-size: 0.85rem;">Stock Value & Analysis</p>
                         </div>
                     </div>
                     <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-                        Top 20 best sellers, bottom performers, dan category comparison.
+                        Nilai inventori, potensi laba, breakdown kategori, dan produk bernilai tinggi.
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(166, 193, 238, 0.2); color: #a6c1ee; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -319,8 +319,225 @@
     </div>
 </div>
 
-<!-- Additional modals for other reports (simplified for now) -->
-<!-- You can add more modals following the same pattern -->
+<!-- Modal Laporan Omzet -->
+<div class="modal fade" id="modalLaporanOmzet" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title" style="color: white; font-weight: 600;">
+                    <i class="fas fa-money-bill-wave mr-2"></i>Laporan Omzet Penjualan
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.9;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('laporan.omzet') }}" method="POST" target="_blank">
+                @csrf
+                <div class="modal-body" style="padding: 2rem;">
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
+                        <select name="periode" class="form-control" required>
+                            <option value="today">Hari Ini</option>
+                            <option value="yesterday">Kemarin</option>
+                            <option value="this_week">Minggu Ini</option>
+                            <option value="last_week">Minggu Lalu</option>
+                            <option value="this_month" selected>Bulan Ini</option>
+                            <option value="last_month">Bulan Lalu</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div id="custom-date-range-omzet" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Akhir</label>
+                                    <input type="date" name="tanggal_akhir" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn" style="background: #00f2fe; color: white;">
+                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Laporan Laba Rugi -->
+<div class="modal fade" id="modalLaporanLabaRugi" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title" style="color: white; font-weight: 600;">
+                    <i class="fas fa-calculator mr-2"></i>Laporan Laba Rugi
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.9;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('laporan.laba-rugi') }}" method="POST" target="_blank">
+                @csrf
+                <div class="modal-body" style="padding: 2rem;">
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
+                        <select name="periode" class="form-control" required>
+                            <option value="today">Hari Ini</option>
+                            <option value="yesterday">Kemarin</option>
+                            <option value="this_week">Minggu Ini</option>
+                            <option value="last_week">Minggu Lalu</option>
+                            <option value="this_month" selected>Bulan Ini</option>
+                            <option value="last_month">Bulan Lalu</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div id="custom-date-range-laba" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Akhir</label>
+                                    <input type="date" name="tanggal_akhir" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn" style="background: #43e97b; color: white;">
+                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Laporan Detail Transaksi -->
+<div class="modal fade" id="modalLaporanDetailTransaksi" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title" style="color: white; font-weight: 600;">
+                    <i class="fas fa-receipt mr-2"></i>Laporan Detail Transaksi
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.9;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('laporan.detail-transaksi') }}" method="POST" target="_blank">
+                @csrf
+                <div class="modal-body" style="padding: 2rem;">
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
+                        <select name="periode" class="form-control" required>
+                            <option value="today">Hari Ini</option>
+                            <option value="yesterday">Kemarin</option>
+                            <option value="this_week">Minggu Ini</option>
+                            <option value="last_week">Minggu Lalu</option>
+                            <option value="this_month" selected>Bulan Ini</option>
+                            <option value="last_month">Bulan Lalu</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div id="custom-date-range-transaksi" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; color: #5a5c69;">Tanggal Akhir</label>
+                                    <input type="date" name="tanggal_akhir" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if(Auth::user()->hasRole('admin'))
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Kasir (Opsional)</label>
+                        <select name="user_id" class="form-control">
+                            <option value="">Semua Kasir</option>
+                            @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Metode Bayar (Opsional)</label>
+                        <select name="cara_bayar" class="form-control">
+                            <option value="">Semua Metode</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Credit/Debit Card</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn" style="background: #fa709a; color: white;">
+                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Laporan Inventory -->
+<div class="modal fade" id="modalLaporanInventory" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title" style="color: white; font-weight: 600;">
+                    <i class="fas fa-warehouse mr-2"></i>Laporan Inventory
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.9;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('laporan.inventory') }}" method="POST" target="_blank">
+                @csrf
+                <div class="modal-body" style="padding: 2rem;">
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #5a5c69;">Kategori (Opsional)</label>
+                        <select name="kategori_id" class="form-control">
+                            <option value="">Semua Kategori</option>
+                            @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->idkategori }}">{{ $kategori->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn" style="background: #a6c1ee; color: white;">
+                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <style>
 .report-card {
@@ -345,16 +562,52 @@ select[name="periode"]:focus {
 
 <script>
 $(document).ready(function() {
-    // Show/hide custom date range
-    $('select[name="periode"]').on('change', function() {
+    // Show/hide custom date range for all periode selects
+    $('#modalLaporanPenjualan select[name="periode"]').on('change', function() {
         if ($(this).val() === 'custom') {
             $('#custom-date-range').slideDown();
-            $('input[name="tanggal_mulai"]').attr('required', true);
-            $('input[name="tanggal_akhir"]').attr('required', true);
+            $('#modalLaporanPenjualan input[name="tanggal_mulai"]').attr('required', true);
+            $('#modalLaporanPenjualan input[name="tanggal_akhir"]').attr('required', true);
         } else {
             $('#custom-date-range').slideUp();
-            $('input[name="tanggal_mulai"]').removeAttr('required');
-            $('input[name="tanggal_akhir"]').removeAttr('required');
+            $('#modalLaporanPenjualan input[name="tanggal_mulai"]').removeAttr('required');
+            $('#modalLaporanPenjualan input[name="tanggal_akhir"]').removeAttr('required');
+        }
+    });
+
+    $('#modalLaporanOmzet select[name="periode"]').on('change', function() {
+        if ($(this).val() === 'custom') {
+            $('#custom-date-range-omzet').slideDown();
+            $('#modalLaporanOmzet input[name="tanggal_mulai"]').attr('required', true);
+            $('#modalLaporanOmzet input[name="tanggal_akhir"]').attr('required', true);
+        } else {
+            $('#custom-date-range-omzet').slideUp();
+            $('#modalLaporanOmzet input[name="tanggal_mulai"]').removeAttr('required');
+            $('#modalLaporanOmzet input[name="tanggal_akhir"]').removeAttr('required');
+        }
+    });
+
+    $('#modalLaporanLabaRugi select[name="periode"]').on('change', function() {
+        if ($(this).val() === 'custom') {
+            $('#custom-date-range-laba').slideDown();
+            $('#modalLaporanLabaRugi input[name="tanggal_mulai"]').attr('required', true);
+            $('#modalLaporanLabaRugi input[name="tanggal_akhir"]').attr('required', true);
+        } else {
+            $('#custom-date-range-laba').slideUp();
+            $('#modalLaporanLabaRugi input[name="tanggal_mulai"]').removeAttr('required');
+            $('#modalLaporanLabaRugi input[name="tanggal_akhir"]').removeAttr('required');
+        }
+    });
+
+    $('#modalLaporanDetailTransaksi select[name="periode"]').on('change', function() {
+        if ($(this).val() === 'custom') {
+            $('#custom-date-range-transaksi').slideDown();
+            $('#modalLaporanDetailTransaksi input[name="tanggal_mulai"]').attr('required', true);
+            $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').attr('required', true);
+        } else {
+            $('#custom-date-range-transaksi').slideUp();
+            $('#modalLaporanDetailTransaksi input[name="tanggal_mulai"]').removeAttr('required');
+            $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').removeAttr('required');
         }
     });
 });

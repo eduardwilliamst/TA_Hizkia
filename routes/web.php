@@ -108,4 +108,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('laporan/penjualan', [LaporanController::class, 'laporanPenjualan'])->name('laporan.penjualan');
     Route::post('laporan/stok', [LaporanController::class, 'laporanStok'])->name('laporan.stok');
+    Route::post('laporan/omzet', [LaporanController::class, 'laporanOmzet'])->name('laporan.omzet');
+    Route::post('laporan/laba-rugi', [LaporanController::class, 'laporanLabaRugi'])->name('laporan.laba-rugi');
+    Route::post('laporan/detail-transaksi', [LaporanController::class, 'laporanDetailTransaksi'])->name('laporan.detail-transaksi');
+    Route::post('laporan/inventory', [LaporanController::class, 'laporanInventory'])->name('laporan.inventory');
 });
