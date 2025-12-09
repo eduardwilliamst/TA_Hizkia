@@ -240,4 +240,142 @@ class PosSessionController extends Controller
             })
         ]);
     }
+
+    /**
+     * Show the session closing page with transaction summary
+     */
+    public function showCloseSession()
+    {
+        $posSessionId = session('pos_session');
+
+        if (!$posSessionId) {
+            return redirect()->route('login')->with('error', 'Tidak ada sesi aktif yang ditemukan.');
+        }
+
+        $posSession = PosSession::find($posSessionId);
+
+        if (!$posSession) {
+            return redirect()->route('login')->with('error', 'Sesi tidak ditemukan.');
+        }
+
+        // Get all cash flows for this session
+        $cashFlows = CashFlow::where('id_pos_session', $posSessionId)->get();
+
+        // Calculate cash in/out (excluding saldo_awal)
+        $totalCashIn = $cashFlows->where('tipe', 'cash_in')->sum('jumlah');
+        $totalCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
+        $cashInOut = $totalCashIn - $totalCashOut;
+
+        // Get all sales for this session
+        $penjualans = \App\Models\Penjualan::where('pos_session_id', $posSessionId)->get();
+
+        // Calculate total sales
+        $totalPenjualan = $penjualans->sum('total_harga');
+
+        // Calculate card payments (from penjualan table)
+        $kartuTotal = $penjualans->where('cara_bayar', 'card')->sum('total_harga');
+
+        // Calculate expected cash (opening + cash in/out + cash sales)
+        $cashSales = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
+        $kasTotal = $posSession->balance_awal + $cashInOut + $cashSales;
+
+        $summary = [
+            'totalPenjualan' => $totalPenjualan,
+            'kasTotal' => $kasTotal,
+            'balanceAwal' => $posSession->balance_awal,
+            'cashInOut' => $cashInOut,
+            'kartuTotal' => $kartuTotal,
+            'cashSales' => $cashSales,
+            'jumlahTransaksi' => $penjualans->count(),
+        ];
+
+        return view('pos-session.close', compact('summary'));
+    }
+
+    /**
+     * Process the session closing with actual cash count
+     */
+    public function processCloseSession(Request $request)
+    {
+        $request->validate([
+            'jumlah_tunai' => 'required|numeric|min:0',
+            'catatan_closing' => 'nullable|string|max:500',
+            'balance_akhir' => 'required|numeric',
+            'total_cash' => 'required|numeric',
+            'total_card' => 'required|numeric',
+        ]);
+
+        $posSessionId = session('pos_session');
+
+        if (!$posSessionId) {
+            return redirect()->route('login')->with('error', 'Tidak ada sesi aktif yang ditemukan.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $posSession = PosSession::find($posSessionId);
+
+            if (!$posSession) {
+                DB::rollBack();
+                return redirect()->route('login')->with('error', 'Sesi tidak ditemukan.');
+            }
+
+            // Calculate difference between actual and expected cash
+            $expectedCash = $request->total_cash;
+            $actualCash = $request->jumlah_tunai;
+            $selisih = $actualCash - $expectedCash;
+
+            // Update session with closing information
+            $posSession->balance_akhir = $request->balance_akhir;
+
+            // Build closing note with details
+            $closingNote = sprintf(
+                "Tutup Kasir - Cash Expected: Rp %s, Cash Actual: Rp %s, Selisih: Rp %s, Card: Rp %s",
+                number_format($expectedCash, 0, ',', '.'),
+                number_format($actualCash, 0, ',', '.'),
+                number_format(abs($selisih), 0, ',', '.') . ($selisih >= 0 ? ' (Lebih)' : ' (Kurang)'),
+                number_format($request->total_card, 0, ',', '.')
+            );
+
+            if ($request->catatan_closing) {
+                $closingNote .= " | Catatan: " . $request->catatan_closing;
+            }
+
+            $posSession->keterangan = $closingNote;
+            $posSession->save();
+
+            // If there's a cash difference, record it as cash flow
+            if ($selisih != 0) {
+                CashFlow::create([
+                    'balance_awal' => $expectedCash,
+                    'balance_akhir' => $actualCash,
+                    'tanggal' => Carbon::now(),
+                    'keterangan' => 'Selisih kas saat tutup kasir: ' . ($selisih > 0 ? 'Lebih Rp ' : 'Kurang Rp ') . number_format(abs($selisih), 0, ',', '.'),
+                    'tipe' => $selisih > 0 ? 'cash_in' : 'cash_out',
+                    'jumlah' => abs($selisih),
+                    'id_pos_session' => $posSessionId,
+                ]);
+            }
+
+            DB::commit();
+
+            // Clear session data
+            session()->forget('pos_session');
+            session()->forget('selected_pos_mesin');
+
+            // Logout user
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('success', 'Sesi berhasil ditutup. Terima kasih!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Gagal menutup sesi: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
 }

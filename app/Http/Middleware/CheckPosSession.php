@@ -17,6 +17,7 @@ class CheckPosSession
      */
     protected $except = [
         'possession/open',
+        'possession/close',
         'possession/check',
         'logout',
         'login',

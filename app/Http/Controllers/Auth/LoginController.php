@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\PosMesin;
 use App\Models\PosSession;
@@ -108,47 +109,20 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        // Get the current POS session before session is invalidated
+        // Get the current POS session before redirecting
         $posSessionId = session('pos_session');
 
-        try {
-            // Finalize the POS session if exists
-            if ($posSessionId) {
-                DB::beginTransaction();
+        // If there's an active session, redirect to close session page
+        if ($posSessionId) {
+            $posSession = PosSession::find($posSessionId);
 
-                $posSession = PosSession::find($posSessionId);
-
-                if ($posSession) {
-                    // Get all cash flows for this session
-                    $cashFlows = CashFlow::where('id_pos_session', $posSessionId)->get();
-
-                    // Calculate totals
-                    $totalCashIn = $cashFlows->where('tipe', 'cash_in')->sum('jumlah');
-                    $totalCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
-
-                    // Update session description with summary
-                    $posSession->keterangan = sprintf(
-                        'Sesi selesai - Cash In: Rp %s, Cash Out: Rp %s',
-                        number_format($totalCashIn, 0, ',', '.'),
-                        number_format($totalCashOut, 0, ',', '.')
-                    );
-
-                    // Ensure balance_akhir is set (should already be updated by transactions)
-                    if ($posSession->balance_akhir === null) {
-                        $posSession->balance_akhir = $posSession->balance_awal + $totalCashIn - $totalCashOut;
-                    }
-
-                    $posSession->save();
-                }
-
-                DB::commit();
+            // If session exists and is still open (balance_akhir is null), redirect to close page
+            if ($posSession && $posSession->balance_akhir === null) {
+                return redirect()->route('possession.show-close');
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Failed to close POS session on logout: ' . $e->getMessage());
         }
 
-        // Perform standard logout
+        // No active session, proceed with standard logout
         $this->guard()->logout();
 
         $request->session()->invalidate();
