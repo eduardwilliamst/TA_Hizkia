@@ -17,7 +17,8 @@ class Penjualan extends Model
         'cara_bayar',
         'total_diskon',
         'total_harga',
-        'user_id',
+        'user_iduser',
+        'pos_session_idpos_session',
     ];
 
     /**
@@ -25,7 +26,7 @@ class Penjualan extends Model
      */
     public function posSession()
     {
-        return $this->belongsTo(PosSession::class, 'pos_session_id');
+        return $this->belongsTo(PosSession::class, 'pos_session_idpos_session', 'idpos_session');
     }
 
     /**
@@ -33,7 +34,7 @@ class Penjualan extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_iduser', 'id');
     }
 
     /**
