@@ -267,7 +267,7 @@ class PosSessionController extends Controller
         $cashInOut = $totalCashIn - $totalCashOut;
 
         // Get all sales for this session
-        $penjualans = \App\Models\Penjualan::where('pos_session_id', $posSessionId)->get();
+        $penjualans = \App\Models\Penjualan::where('pos_session_idpos_session', $posSessionId)->get();
 
         // Calculate total sales
         $totalPenjualan = $penjualans->sum('total_harga');
