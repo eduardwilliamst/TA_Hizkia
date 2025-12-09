@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('balance_awal')->nullable(); // Balance awal
             $table->integer('balance_akhir')->nullable(); // Balance akhir
             $table->dateTime('tanggal')->nullable(); // Tanggal
-            $table->string('keterangan', 45)->nullable(); // Keterangan
+            $table->string('keterangan', 500)->nullable(); // Keterangan
             $table->unsignedBigInteger('user_iduser'); // ID pengguna (foreign key)
             $table->unsignedBigInteger('pos_mesin_idpos_mesin'); // ID mesin POS (foreign key)
             $table->timestamps(); // created_at and updated_at
