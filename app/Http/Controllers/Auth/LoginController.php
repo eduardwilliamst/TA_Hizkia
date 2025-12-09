@@ -76,37 +76,22 @@ class LoginController extends Controller
             // Attempt login with the credentials
             if (Auth::attempt($credentials)) {
 
-                // Get the selected pos_mesin id
-                $posMesinId = $request->input('pos_mesin');
+                // Store selected POS machine for later use in session opening
+                session(['selected_pos_mesin' => $request->input('pos_mesin')]);
 
-                // Get the POS machine to access its initial balance
-                $posMesin = PosMesin::find($posMesinId);
-
-                // Get the last session for this machine to determine starting balance
-                $lastSession = PosSession::where('pos_mesin_idpos_mesin', $posMesinId)
-                    ->orderBy('idpos_session', 'desc')
+                // Check if user already has an active session
+                $activeSession = PosSession::where('user_iduser', Auth::id())
+                    ->whereNull('balance_akhir')
                     ->first();
 
-                // Set balance_awal: use last session's balance_akhir, or machine's initial_balance, or default 1000000
-                $balanceAwal = $lastSession && $lastSession->balance_akhir
-                    ? $lastSession->balance_akhir
-                    : ($posMesin->initial_balance ?? 1000000);
+                if ($activeSession) {
+                    // User has active session, store it and go to dashboard
+                    session(['pos_session' => $activeSession->idpos_session]);
+                    return redirect('/dashboard');
+                }
 
-                // Create a new pos_session
-                $posSession = PosSession::create([
-                    'balance_awal' => $balanceAwal,
-                    'balance_akhir' => $balanceAwal, // Initialize as same as balance_awal
-                    'tanggal' => now(),
-                    'keterangan' => 'Sesi dimulai',
-                    'user_iduser' => Auth::id(),
-                    'pos_mesin_idpos_mesin' => $posMesinId,
-                ]);
-
-                // Store the pos_session ID in the session
-                session(['pos_session' => $posSession->idpos_session]);
-
-                // Redirect to the dashboard or intended route
-                return redirect('/dashboard');
+                // No active session, redirect to session opening page
+                return redirect()->route('possession.show-open');
             }
 
             // If login fails, return with errors

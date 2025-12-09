@@ -4,12 +4,132 @@ namespace App\Http\Controllers;
 
 use App\Models\PosSession;
 use App\Models\CashFlow;
+use App\Models\PosMesin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PosSessionController extends Controller
 {
+    /**
+     * Show the session opening page
+     */
+    public function showOpenSession()
+    {
+        // Check if user already has an active session today
+        $activeSession = PosSession::where('user_iduser', Auth::id())
+            ->whereDate('tanggal', Carbon::today())
+            ->whereNull('balance_akhir')
+            ->first();
+
+        if ($activeSession) {
+            // Session already exists, redirect to dashboard
+            return redirect()->route('dashboard')->with('info', 'Anda sudah memiliki sesi aktif');
+        }
+
+        return view('pos-session.open');
+    }
+
+    /**
+     * Open a new POS session with initial balance
+     */
+    public function openSession(Request $request)
+    {
+        $request->validate([
+            'balance_awal' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Check if user already has an active session
+            $activeSession = PosSession::where('user_iduser', Auth::id())
+                ->whereNull('balance_akhir')
+                ->first();
+
+            if ($activeSession) {
+                DB::rollBack();
+                return redirect()->route('dashboard')
+                    ->with('warning', 'Anda sudah memiliki sesi aktif. Tutup sesi sebelumnya terlebih dahulu.');
+            }
+
+            // Get POS machine from session (selected during login)
+            $posMesinId = session('selected_pos_mesin');
+
+            if (!$posMesinId) {
+                DB::rollBack();
+                return redirect()->route('login')
+                    ->with('error', 'Sesi login tidak valid. Silakan login ulang.');
+            }
+
+            $posMesin = PosMesin::find($posMesinId);
+
+            if (!$posMesin) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->with('error', 'Mesin POS yang dipilih tidak ditemukan. Silakan login ulang.');
+            }
+
+            // Create new POS session
+            $posSession = PosSession::create([
+                'balance_awal' => $request->balance_awal,
+                'balance_akhir' => null,
+                'tanggal' => Carbon::now(),
+                'keterangan' => $request->keterangan ?? 'Sesi dibuka',
+                'user_iduser' => Auth::id(),
+                'pos_mesin_idpos_mesin' => $posMesin->idpos_mesin,
+            ]);
+
+            // Store session ID in user session
+            session(['pos_session' => $posSession->idpos_session]);
+
+            // Create initial cash flow record
+            CashFlow::create([
+                'balance_awal' => $request->balance_awal,
+                'balance_akhir' => $request->balance_awal,
+                'tanggal' => Carbon::now(),
+                'keterangan' => 'Saldo awal sesi - ' . ($request->keterangan ?? 'Pembukaan kas'),
+                'tipe' => 'saldo_awal',
+                'jumlah' => $request->balance_awal,
+                'id_pos_session' => $posSession->idpos_session,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('dashboard')->with('success',
+                'Sesi berhasil dibuka dengan saldo awal Rp ' . number_format($request->balance_awal, 0, ',', '.'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Gagal membuka sesi: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Check if user has an active session
+     */
+    public function checkActiveSession()
+    {
+        $posSessionId = session('pos_session');
+
+        if (!$posSessionId) {
+            return response()->json(['has_session' => false]);
+        }
+
+        $posSession = PosSession::where('idpos_session', $posSessionId)
+            ->whereNull('balance_akhir')
+            ->first();
+
+        return response()->json([
+            'has_session' => $posSession ? true : false,
+            'session_id' => $posSession ? $posSession->idpos_session : null
+        ]);
+    }
+
     /**
      * Finalize the current session when user logs out
      * Calculates total cash in/out and updates final balance
