@@ -1065,24 +1065,15 @@ Penjualan
         .then(response => response.json())
         .then(data => {
             if (data.message) {
-                // Success animation on modal
-                const modalContent = document.querySelector('#checkoutModal .modal-content');
-                modalContent.style.animation = 'pulse 0.3s ease-in-out';
-
-                // Success - clear cart and close modal with delay for animation
+                // Success - redirect to cart page
+                showToast('Mengarahkan ke halaman cart...', 'success');
                 setTimeout(() => {
-                    showToast('Transaksi berhasil disimpan!', 'success');
-                    cart.length = 0;
-                    updateCart();
-                    $('#checkoutModal').modal('hide');
-
-                    // Reset button
-                    confirmBtn.disabled = false;
-                    confirmBtn.innerHTML = '<i class="fas fa-print mr-2"></i>Simpan & Cetak Struk';
-
-                    // Play success sound (if browser supports it)
-                    playSuccessSound();
-                }, 300);
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        window.location.href = "{{ route('penjualan.viewCart') }}";
+                    }
+                }, 500);
             }
         })
         .catch(error => {

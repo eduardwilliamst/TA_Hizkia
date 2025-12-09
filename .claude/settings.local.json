@@ -18,7 +18,9 @@
       "Bash(git commit:*)",
       "Bash(composer require:*)",
       "Bash(timeout /t 1)",
-      "Bash(if exist NUL del NUL)"
+      "Bash(if exist NUL del NUL)",
+      "Bash(echo:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []

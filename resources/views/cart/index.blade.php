@@ -65,12 +65,17 @@ Keranjang
 
                     <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
                         <label style="font-weight: 600; color: #333; margin-bottom: 1rem; display: block;">
-                            <i class="fas fa-credit-card mr-2"></i>Pilih Metode Pembayaran
+                            <i class="fas fa-credit-card mr-2"></i>Metode Pembayaran
                         </label>
-                        <select id="caraBayar" class="form-control" style="border-radius: 10px; border: 2px solid #e0e0e0; padding: 0.8rem; font-weight: 500;">
-                            <option value="cash">💵 Cash</option>
-                            <option value="credit">💳 Credit Card</option>
-                        </select>
+                        <div style="padding: 0.8rem; background: white; border-radius: 10px; border: 2px solid #667eea;">
+                            <strong style="color: #667eea; font-size: 1.1rem;">
+                                @if(session('cara_bayar') === 'cash')
+                                    💵 Cash
+                                @else
+                                    💳 Credit Card
+                                @endif
+                            </strong>
+                        </div>
                     </div>
 
                     <button id="simpanCart" class="btn btn-success btn-lg" style="width: 100%; padding: 1rem; font-weight: 600; border-radius: 12px; font-size: 1.1rem;">
@@ -85,7 +90,12 @@ Keranjang
 <script>
     document.getElementById('simpanCart').addEventListener('click', function () {
         const cart = @json($cart);
-        const caraBayar = document.getElementById('caraBayar').value;
+        const caraBayar = @json(session('cara_bayar', 'cash'));
+
+        // Disable button to prevent double submission
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
 
         fetch("{{ route('penjualan.store') }}", {
             method: "POST",
@@ -96,6 +106,7 @@ Keranjang
             body: JSON.stringify({
                 cart: cart,
                 cara_bayar: caraBayar,
+                total_diskon: @json(session('total_diskon', 0)),
             }),
         })
         .then(response => response.json())
@@ -105,11 +116,20 @@ Keranjang
                 // Hapus session cart
                 fetch("{{ route('cart.clear') }}", { method: "POST", headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" } })
                 .then(() => {
-                    window.location.reload(); // Reload halaman
+                    window.location.href = "{{ route('penjualan.index') }}"; // Kembali ke POS
                 });
+            } else if (data.error) {
+                alert('Error: ' + data.error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selesaikan Transaksi';
             }
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error("Error:", error);
+            alert('Terjadi kesalahan saat menyimpan transaksi!');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selesaikan Transaksi';
+        });
     });
 </script>
 @endsection

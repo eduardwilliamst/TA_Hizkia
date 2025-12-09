@@ -29,97 +29,40 @@ class CartController extends Controller
 
     public function save(Request $request)
     {
-        // Ambil data cart dari request
+        // Ambil data cart dari request (dari POS page)
         $cart = $request->input('cart', []);
         $totalDiskon = $request->input('total_diskon', 0);
         $caraBayar = $request->input('cara_bayar', 'cash');
 
-        if (empty($cart)) {
-            return response()->json(['error' => 'Keranjang kosong!'], 400);
-        }
-
-        // Calculate total payment
-        $totalBayar = 0;
-        foreach ($cart as $item) {
-            $itemTotal = $item['price'] * $item['quantity'];
-            $itemDiscount = $item['discount'] ?? 0;
-            $totalBayar += ($itemTotal - $itemDiscount);
-        }
-
-        // Get current POS session
-        $posSessionId = session('pos_session');
-        if (!$posSessionId) {
-            return response()->json(['error' => 'Sesi POS tidak ditemukan! Silakan login kembali.'], 400);
-        }
-
-        DB::beginTransaction();
-        try {
-            // Simpan ke tabel penjualans
-            $penjualan = Penjualan::create([
-                'tanggal' => Carbon::now(),
-                'cara_bayar' => $caraBayar,
-                'total_diskon' => $totalDiskon,
-                'total_harga' => $totalBayar,
-                'user_iduser' => auth()->id(),
-                'pos_session_idpos_session' => $posSessionId,
-            ]);
-
-            // Simpan ke tabel penjualan_detils
-            foreach ($cart as $item) {
+        // Perkaya data cart dengan detail produk
+        $cartWithDetails = collect($cart)->map(function ($item) {
+            $product = Produk::find($item['id']); // Ambil detail produk dari database
+            if ($product) {
                 $isBonus = isset($item['is_bonus']) && $item['is_bonus'];
-
-                PenjualanDetil::create([
-                    'penjualan_idpenjualan' => $penjualan->idpenjualan,
-                    'produk_idproduk' => $item['id'],
-                    'harga' => $isBonus ? 0 : $item['price'],
-                    'jumlah' => $item['quantity'],
-                    'sub_total' => $isBonus ? 0 : ($item['price'] * $item['quantity']),
-                ]);
-
-                // Update stock: decrease quantity (skip for bonus items)
-                if (!$isBonus) {
-                    $produk = Produk::find($item['id']);
-                    if ($produk) {
-                        $produk->stok -= $item['quantity'];
-                        $produk->save();
-                    }
-                }
+                return [
+                    'id' => $product->idproduk,
+                    'name' => $product->nama,
+                    'price' => $isBonus ? 0 : $product->harga,
+                    'quantity' => $item['quantity'],
+                    'discount' => $item['discount'] ?? 0,
+                    'promo_applied' => $item['promo_applied'] ?? null,
+                    'is_bonus' => $isBonus,
+                ];
             }
+            return null;
+        })->filter()->toArray(); // Filter untuk menghapus null jika produk tidak ditemukan
 
-            // Only record cash flow for cash payments (card payments don't affect cash balance)
-            if ($caraBayar === 'cash') {
-                // Get current session to calculate new balance
-                $posSession = PosSession::find($posSessionId);
-                $balanceAwal = $posSession->balance_akhir ?? $posSession->balance_awal;
-                $balanceAkhir = $balanceAwal + $totalBayar;
+        // Simpan data ke session untuk ditampilkan di cart page
+        session([
+            'cart' => $cartWithDetails,
+            'total_diskon' => $totalDiskon,
+            'cara_bayar' => $caraBayar
+        ]);
 
-                // Record to cash_flows (cash in from sales)
-                CashFlow::create([
-                    'balance_awal' => $balanceAwal,
-                    'balance_akhir' => $balanceAkhir,
-                    'tanggal' => Carbon::now(),
-                    'keterangan' => 'Penjualan #' . $penjualan->idpenjualan . ' (Cash)',
-                    'tipe' => 'cash_in',
-                    'jumlah' => $totalBayar,
-                    'id_pos_session' => $posSessionId,
-                ]);
-
-                // Update session balance_akhir
-                $posSession->balance_akhir = $balanceAkhir;
-                $posSession->save();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Transaksi berhasil disimpan!',
-                'penjualan_id' => $penjualan->idpenjualan
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Checkout gagal: ' . $e->getMessage()], 500);
-        }
+        return response()->json([
+            'message' => 'Cart saved to session. Redirect to cart page.',
+            'redirect' => route('penjualan.viewCart')
+        ]);
     }
     
     public function clear(Request $request)

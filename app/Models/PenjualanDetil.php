@@ -15,11 +15,12 @@ class PenjualanDetil extends Model
     public $incrementing = false; // Non-incrementing karena primary key gabungan
 
     protected $fillable = [
-        'penjualan_id',
-        'produk_id',
+        'penjualan_idpenjualan',
+        'produk_idproduk',
         'harga',
         'jumlah',
         'sub_total',
+        'promo_produk_idproduk',
     ];
 
     /**
