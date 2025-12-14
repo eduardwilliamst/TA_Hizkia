@@ -96,6 +96,16 @@ Keranjang
                                    style="font-size: 1.1rem; padding: 0.8rem; border: 2px solid #667eea;">
                         </div>
 
+                        <!-- Quick Cash Buttons -->
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem;">
+                                <i class="fas fa-bolt mr-1"></i>Nominal Cepat
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;" id="quick-cash-buttons-cart">
+                                <!-- Quick cash buttons will be inserted here by JavaScript -->
+                            </div>
+                        </div>
+
                         <div id="kembalianSection" style="display: none; padding: 1rem; background: white; border-radius: 10px; border: 2px solid #28a745; margin-top: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="font-weight: 600; color: #333;">
@@ -140,6 +150,33 @@ Keranjang
         const uangKembalianDisplay = document.getElementById('uangKembalian');
         const warningSection = document.getElementById('warningInsufficientCash');
         const simpanBtn = document.getElementById('simpanCart');
+
+        // Generate quick cash buttons
+        const quickCashContainer = document.getElementById('quick-cash-buttons-cart');
+        const quickAmounts = [50000, 100000, 150000, 200000, 500000];
+
+        // Calculate smart amounts based on total
+        const roundedTotal = Math.ceil(totalPembayaran / 10000) * 10000; // Round up to nearest 10k
+        const smartAmounts = [
+            roundedTotal,
+            roundedTotal + 50000,
+            roundedTotal + 100000
+        ];
+
+        // Use smart amounts if total > 100k, otherwise use fixed amounts
+        const displayAmounts = totalPembayaran > 100000 ? smartAmounts : quickAmounts.slice(0, 3);
+
+        displayAmounts.forEach(amount => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'quick-cash-btn';
+            btn.textContent = 'Rp ' + (amount / 1000) + 'k';
+            btn.onclick = function() {
+                uangDibayarInput.value = amount;
+                uangDibayarInput.dispatchEvent(new Event('input'));
+            };
+            quickCashContainer.appendChild(btn);
+        });
 
         uangDibayarInput.addEventListener('input', function() {
             const uangDibayar = parseFloat(this.value) || 0;
@@ -209,4 +246,32 @@ Keranjang
         });
     });
 </script>
+
+<style>
+    /* Quick Cash Button Styles */
+    .quick-cash-btn {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.6rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #667eea;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+    .quick-cash-btn:hover {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+    }
+
+    .quick-cash-btn:active {
+        transform: translateY(0);
+    }
+</style>
 @endsection

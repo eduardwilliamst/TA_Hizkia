@@ -81,15 +81,15 @@
                         </div>
                     @endif
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-box" style="color: {{ $produk->stok > 20 ? '#1dd1a1' : ($produk->stok > 10 ? '#feca57' : '#ff6b6b') }};"></i>
-                            <span style="font-weight: 600; color: #666; font-size: 0.95rem;">
-                                {{ $produk->stok }} Unit
+                    <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-box" style="color: {{ $produk->stok > 20 ? '#1dd1a1' : ($produk->stok > 10 ? '#feca57' : '#ff6b6b') }}; width: 20px; text-align: center;"></i>
+                            <span style="font-weight: 600; color: #666; font-size: 0.9rem;">
+                                Stock: {{ $produk->stok }} Unit
                             </span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-barcode" style="color: #999;"></i>
+                            <i class="fas fa-barcode" style="color: #999; width: 20px; text-align: center;"></i>
                             <span style="color: #999; font-size: 0.85rem;">
                                 {{ $produk->barcode }}
                             </span>

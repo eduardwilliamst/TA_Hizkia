@@ -157,15 +157,15 @@
                     </div>
 
                     <div class="card-footer d-flex justify-content-between" style="background: #f8f9fa; border-top: 1px solid #e3e6f0; padding: 1.5rem; border-radius: 0 0 12px 12px;">
-                        <button type="button" class="btn btn-secondary btn-lg" onclick="window.history.back()">
-                            <i class="fas fa-arrow-left mr-2"></i>Buang
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='{{ route('dashboard') }}'">
+                            <i class="fas fa-arrow-left mr-2"></i>Batal
                         </button>
                         <div>
                             <button type="button" class="btn btn-outline-primary btn-lg mr-2" onclick="downloadSaleReport()">
                                 <i class="fas fa-download mr-2"></i>Sale Hari ⬇
                             </button>
                             <button type="submit" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.75rem 2rem; border: none; font-weight: 600;">
-                                <i class="fas fa-check-circle mr-2"></i>Tutup Kasir
+                                <i class="fas fa-check-circle mr-2"></i>Tutup Kasir & Logout
                             </button>
                         </div>
                     </div>
