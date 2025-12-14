@@ -25,6 +25,92 @@ class LaporanController extends Controller
     }
 
     /**
+     * View Laporan Penjualan (Web with Charts)
+     */
+    public function viewLaporanPenjualan(Request $request)
+    {
+        // Parse periode
+        $dateRange = $this->getDateRange($request->periode, $request->tanggal_mulai, $request->tanggal_akhir);
+
+        // Query penjualan
+        $query = Penjualan::whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
+
+        if ($request->user_id) {
+            $query->where('user_iduser', $request->user_id);
+        }
+
+        $penjualans = $query->with(['penjualanDetils.produk', 'user'])->get();
+
+        // Calculate statistics
+        $totalTransaksi = $penjualans->count();
+        $totalPendapatan = $penjualans->sum('total_harga');
+        $totalItem = $penjualans->sum(function($penjualan) {
+            return $penjualan->penjualanDetils->sum('jumlah');
+        });
+        $avgPerTransaksi = $totalTransaksi > 0 ? $totalPendapatan / $totalTransaksi : 0;
+
+        // Payment method breakdown
+        $cashTransaksi = $penjualans->where('cara_bayar', 'cash')->count();
+        $creditTransaksi = $penjualans->where('cara_bayar', 'credit')->count();
+        $cashTotal = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
+        $creditTotal = $penjualans->where('cara_bayar', 'credit')->sum('total_harga');
+
+        // Top products
+        $topProducts = PenjualanDetil::whereIn('penjualan_idpenjualan', $penjualans->pluck('idpenjualan'))
+            ->selectRaw('produk_idproduk, SUM(jumlah) as total_qty, SUM(sub_total) as total_revenue')
+            ->groupBy('produk_idproduk')
+            ->orderByDesc('total_revenue')
+            ->limit(10)
+            ->with('produk')
+            ->get();
+
+        // Sales by hour (for today or single day only)
+        $salesByHour = [];
+        if ($request->periode == 'today' || $request->periode == 'yesterday') {
+            $salesByHour = $penjualans->groupBy(function($item) {
+                return Carbon::parse($item->created_at)->format('H:00');
+            })->map(function($items) {
+                return [
+                    'count' => $items->count(),
+                    'total' => $items->sum('total_harga')
+                ];
+            });
+        }
+
+        // Kasir performance (if admin)
+        $kasirPerformance = [];
+        if (auth()->user()->hasRole('admin') && !$request->user_id) {
+            $kasirPerformance = $penjualans->groupBy('user_iduser')->map(function($items) {
+                return [
+                    'name' => $items->first()->user->name ?? 'Unknown',
+                    'count' => $items->count(),
+                    'total' => $items->sum('total_harga')
+                ];
+            });
+        }
+
+        $data = [
+            'periode' => $this->getPeriodeName($request->periode, $dateRange),
+            'dateRange' => $dateRange,
+            'totalTransaksi' => $totalTransaksi,
+            'totalPendapatan' => $totalPendapatan,
+            'totalItem' => $totalItem,
+            'avgPerTransaksi' => $avgPerTransaksi,
+            'cashTransaksi' => $cashTransaksi,
+            'creditTransaksi' => $creditTransaksi,
+            'cashTotal' => $cashTotal,
+            'creditTotal' => $creditTotal,
+            'topProducts' => $topProducts,
+            'salesByHour' => $salesByHour,
+            'kasirPerformance' => $kasirPerformance,
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.penjualan', $data);
+    }
+
+    /**
      * Generate PDF Laporan Penjualan
      */
     public function laporanPenjualan(Request $request)

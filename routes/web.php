@@ -110,6 +110,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Laporan routes
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+
+    // Web views (with charts)
+    Route::get('laporan/view/penjualan', [LaporanController::class, 'viewLaporanPenjualan'])->name('laporan.view.penjualan');
+
+    // PDF downloads (formal, black & white)
     Route::post('laporan/penjualan', [LaporanController::class, 'laporanPenjualan'])->name('laporan.penjualan');
     Route::post('laporan/stok', [LaporanController::class, 'laporanStok'])->name('laporan.stok');
     Route::post('laporan/omzet', [LaporanController::class, 'laporanOmzet'])->name('laporan.omzet');

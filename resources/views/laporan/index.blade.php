@@ -265,8 +265,11 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-info" onclick="viewLaporanPenjualan(this.form)">
+                        <i class="fas fa-chart-bar mr-2"></i>Lihat Laporan
+                    </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                        <i class="fas fa-file-pdf mr-2"></i>Download PDF
                     </button>
                 </div>
             </form>
@@ -610,6 +613,24 @@ $(document).ready(function() {
             $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').removeAttr('required');
         }
     });
+
+    // Function to view Laporan Penjualan with charts
+    window.viewLaporanPenjualan = function(form) {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        for (let [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+
+        const url = '{{ route("laporan.view.penjualan") }}?' + params.toString();
+        window.open(url, '_blank');
+
+        // Close modal
+        $('#modalLaporanPenjualan').modal('hide');
+    };
 });
 </script>
 @endsection
