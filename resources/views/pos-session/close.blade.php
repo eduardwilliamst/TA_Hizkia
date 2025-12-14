@@ -35,9 +35,15 @@
                                     <span style="color: #333;">Rp {{ number_format($summary['balanceAwal'], 2, ',', '.') }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-1">
-                                    <span style="color: #666;">▸ Tunai Masuk / Keluar</span>
-                                    <span style="color: #333;">+ Rp {{ number_format($summary['cashInOut'], 2, ',', '.') }}</span>
+                                    <span style="color: #666;">▸ Penjualan Cash</span>
+                                    <span style="color: #333;">+ Rp {{ number_format($summary['cashSales'], 2, ',', '.') }}</span>
                                 </div>
+                                @if($summary['cashInOut'] != 0)
+                                <div class="d-flex justify-content-between py-1">
+                                    <span style="color: #666;">▸ Tunai Masuk / Keluar</span>
+                                    <span style="color: #333;">{{ $summary['cashInOut'] >= 0 ? '+' : '' }} Rp {{ number_format($summary['cashInOut'], 2, ',', '.') }}</span>
+                                </div>
+                                @endif
                                 <div class="d-flex justify-content-between py-1">
                                     <span style="color: #666;">Dihitung</span>
                                     <span style="color: #333;">Rp {{ number_format($summary['kasTotal'], 2, ',', '.') }}</span>

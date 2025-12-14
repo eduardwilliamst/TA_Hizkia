@@ -2,14 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Penjualan;
-use App\Models\PenjualanDetil;
 use App\Models\Produk;
-use App\Models\CashFlow;
-use App\Models\PosSession;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -18,13 +12,10 @@ class CartController extends Controller
      */
     public function index()
     {
-        // $carts = Penjualan::all();
-
         // Ambil data keranjang dari session
         $cart = session('cart', []);
-        dd($cart);
 
-        return view('cart.index', compact('carts'));
+        return view('cart.index', compact('cart'));
     }
 
     public function save(Request $request)

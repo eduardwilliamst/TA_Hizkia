@@ -88,15 +88,19 @@ class ProdukController extends Controller
             'nama' => 'required|string|max:100',
             'harga' => 'required|integer',
             'stok' => 'required|integer',
-            'gambar' => 'nullable|image|max:2048',
-            'usia_awal' => 'required|integer',
-            'usia_akhir' => 'required|integer',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'usia_awal' => 'nullable|integer',
+            // 'usia_akhir' => 'nullable|integer',
             'kategori_idkategori' => 'required|exists:kategoris,idkategori',
         ]);
 
         // Temukan produk dan update data
         $produk = Produk::findOrFail($id);
-        $produk->fill($request->all());
+        $produk->barcode = $request->barcode;
+        $produk->nama = $request->nama;
+        $produk->harga = $request->harga;
+        $produk->stok = $request->stok;
+        $produk->kategori_idkategori = $request->kategori_idkategori;
 
         // Jika ada gambar baru, simpan file gambar baru
         if ($request->hasFile('gambar')) {

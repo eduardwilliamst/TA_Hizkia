@@ -23,14 +23,20 @@
                 data-promo-bonus-price="{{ $promo->produkTambahan ? $promo->produkTambahan->harga : $produk->harga }}"
                 data-promo-desc="{{ $promo->deskripsi }}"
                 @endif
-                style="cursor: pointer; {{ $hasPromo ? 'border: 2px solid ' . ($promo->tipe === 'produk gratis' ? '#10B981' : '#F59E0B') . ';' : '' }}">
+                style="cursor: pointer; height: 100%; min-height: 480px; display: flex; flex-direction: column; {{ $hasPromo ? 'border: 2px solid ' . ($promo->tipe === 'produk gratis' ? '#10B981' : '#F59E0B') . ';' : '' }}">
 
-                <div style="position: relative; overflow: hidden;">
-                    <img src="{{ asset('storage/' . $produk->gambar) }}"
-                         class="card-img-top"
-                         alt="Gambar {{ $produk->nama }}"
-                         onerror="this.onerror=null; this.src='{{ asset('storage/images/default.png') }}';"
-                         style="height: 220px; object-fit: cover;">
+                <div style="position: relative; overflow: hidden; height: 220px; flex-shrink: 0;">
+                    @if($produk->gambar)
+                        <img src="{{ asset('storage/' . $produk->gambar) }}"
+                             class="card-img-top"
+                             alt="Gambar {{ $produk->nama }}"
+                             onerror="this.onerror=null; this.src='{{ asset('storage/images/default.png') }}';"
+                             style="height: 100%; width: 100%; object-fit: cover;">
+                    @else
+                        <div style="height: 100%; width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-image" style="font-size: 4rem; color: rgba(255,255,255,0.5);"></i>
+                        </div>
+                    @endif
 
                     {{-- Stock Badge --}}
                     @if($produk->stok < 10)
@@ -55,7 +61,7 @@
                     @endif
                 </div>
 
-                <div class="card-body text-center" style="padding: 1.2rem;">
+                <div class="card-body text-center" style="padding: 1.2rem; display: flex; flex-direction: column; flex-grow: 1;">
                     <h5 class="card-title" style="font-weight: 600; color: #333; margin-bottom: 0.8rem; font-size: 1.1rem;">
                         {{ Str::limit($produk->nama, 30) }}
                     </h5>
@@ -75,7 +81,7 @@
                         </div>
                     @endif
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <i class="fas fa-box" style="color: {{ $produk->stok > 20 ? '#1dd1a1' : ($produk->stok > 10 ? '#feca57' : '#ff6b6b') }};"></i>
                             <span style="font-weight: 600; color: #666; font-size: 0.95rem;">
@@ -107,6 +113,17 @@
 </div>
 
 <style>
+    /* Make all cards in a row have equal height */
+    .row.g-4 {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .row.g-4 > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
+
     /* Add hover effect to product cards */
     .product-card {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;

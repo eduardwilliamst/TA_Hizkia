@@ -258,26 +258,33 @@ class PosSessionController extends Controller
             return redirect()->route('login')->with('error', 'Sesi tidak ditemukan.');
         }
 
-        // Get all cash flows for this session
-        $cashFlows = CashFlow::where('id_pos_session', $posSessionId)->get();
-
-        // Calculate cash in/out (excluding saldo_awal)
-        $totalCashIn = $cashFlows->where('tipe', 'cash_in')->sum('jumlah');
-        $totalCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
-        $cashInOut = $totalCashIn - $totalCashOut;
-
         // Get all sales for this session
         $penjualans = \App\Models\Penjualan::where('pos_session_idpos_session', $posSessionId)->get();
 
-        // Calculate total sales
+        // Calculate total sales and breakdown by payment method
         $totalPenjualan = $penjualans->sum('total_harga');
-
-        // Calculate card payments (from penjualan table)
+        $cashSales = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
         $kartuTotal = $penjualans->where('cara_bayar', 'card')->sum('total_harga');
 
-        // Calculate expected cash (opening + cash in/out + cash sales)
-        $cashSales = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
-        $kasTotal = $posSession->balance_awal + $cashInOut + $cashSales;
+        // Get all cash flows for this session (excluding saldo_awal since it's just opening balance)
+        $cashFlows = CashFlow::where('id_pos_session', $posSessionId)
+            ->whereIn('tipe', ['cash_in', 'cash_out'])
+            ->get();
+
+        // Calculate manual cash in/out (excluding sales which are already in cash_in)
+        // Cash from sales is already recorded in cash_flows as cash_in
+        $manualCashIn = $cashFlows->where('tipe', 'cash_in')
+            ->filter(function($cf) {
+                return !str_contains($cf->keterangan, 'Penjualan #');
+            })
+            ->sum('jumlah');
+
+        $manualCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
+        $cashInOut = $manualCashIn - $manualCashOut;
+
+        // Calculate expected cash total from the current balance_akhir in pos_session
+        // balance_akhir should already include: balance_awal + cash sales + manual cash in/out
+        $kasTotal = $posSession->balance_akhir ?? $posSession->balance_awal;
 
         $summary = [
             'totalPenjualan' => $totalPenjualan,
