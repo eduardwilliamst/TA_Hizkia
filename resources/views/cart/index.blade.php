@@ -11,11 +11,14 @@ Keranjang
 @section('contents')
 <div class="container">
     <div class="card animate-fade-in-up" style="max-width: 1000px; margin: 0 auto;">
-        <div class="card-header">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
             <h3 class="mb-0">
                 <i class="fas fa-shopping-cart mr-2"></i>
                 Keranjang Belanja
             </h3>
+            <a href="{{ route('penjualan.index') }}" class="btn btn-primary" style="border-radius: 10px;">
+                <i class="fas fa-plus mr-2"></i>Tambah Item
+            </a>
         </div>
         <div class="card-body" style="padding: 2rem;">
             @if(empty($cart))
@@ -36,19 +39,33 @@ Keranjang
                                 <th><i class="fas fa-money-bill-wave mr-2"></i>Harga</th>
                                 <th style="text-align: center;"><i class="fas fa-hashtag mr-2"></i>Jumlah</th>
                                 <th><i class="fas fa-calculator mr-2"></i>Subtotal</th>
+                                <th style="text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($cart as $item)
-                                <tr class="animate-fade-in">
+                        <tbody id="cart-items-table">
+                            @foreach($cart as $index => $item)
+                                <tr class="animate-fade-in" data-index="{{ $index }}">
                                     <td style="font-weight: 600; color: #333;">{{ $item['name'] }}</td>
                                     <td style="color: #667eea; font-weight: 600;">Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
                                     <td style="text-align: center;">
-                                        <span class="badge" style="background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem;">
-                                            {{ $item['quantity'] }} x
-                                        </span>
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                            <button class="btn btn-sm btn-outline-secondary decrease-qty-cart" data-index="{{ $index }}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+                                                <i class="fas fa-minus" style="font-size: 0.7rem;"></i>
+                                            </button>
+                                            <span class="badge item-quantity" style="background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; min-width: 50px;">
+                                                {{ $item['quantity'] }}
+                                            </span>
+                                            <button class="btn btn-sm btn-outline-secondary increase-qty-cart" data-index="{{ $index }}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+                                                <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
+                                            </button>
+                                        </div>
                                     </td>
-                                    <td style="font-weight: 700; color: #333; font-size: 1.1rem;">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</td>
+                                    <td class="item-subtotal" style="font-weight: 700; color: #333; font-size: 1.1rem;">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</td>
+                                    <td style="text-align: center;">
+                                        <button class="btn btn-danger btn-sm remove-item-cart" data-index="{{ $index }}" style="border-radius: 8px;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -258,6 +275,126 @@ Keranjang
         });
     }
 
+    // Handle increase quantity
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.increase-qty-cart')) {
+            const button = e.target.closest('.increase-qty-cart');
+            const index = parseInt(button.dataset.index);
+            cart[index].quantity += 1;
+            updateCartUI();
+            saveCartToSession();
+        }
+
+        // Handle decrease quantity
+        if (e.target.closest('.decrease-qty-cart')) {
+            const button = e.target.closest('.decrease-qty-cart');
+            const index = parseInt(button.dataset.index);
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+                updateCartUI();
+                saveCartToSession();
+            }
+        }
+
+        // Handle remove item
+        if (e.target.closest('.remove-item-cart')) {
+            const button = e.target.closest('.remove-item-cart');
+            const index = parseInt(button.dataset.index);
+
+            if (confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?')) {
+                cart.splice(index, 1);
+
+                if (cart.length === 0) {
+                    // If cart is empty, clear session and reload
+                    fetch("{{ route('cart.clear') }}", {
+                        method: "POST",
+                        headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    updateCartUI();
+                    saveCartToSession();
+                }
+            }
+        }
+    });
+
+    // Function to update cart UI
+    function updateCartUI() {
+        const tbody = document.getElementById('cart-items-table');
+        tbody.innerHTML = '';
+
+        let total = 0;
+        cart.forEach((item, index) => {
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+
+            const row = document.createElement('tr');
+            row.className = 'animate-fade-in';
+            row.dataset.index = index;
+            row.innerHTML = `
+                <td style="font-weight: 600; color: #333;">${item.name}</td>
+                <td style="color: #667eea; font-weight: 600;">Rp ${item.price.toLocaleString('id-ID')}</td>
+                <td style="text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <button class="btn btn-sm btn-outline-secondary decrease-qty-cart" data-index="${index}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+                            <i class="fas fa-minus" style="font-size: 0.7rem;"></i>
+                        </button>
+                        <span class="badge item-quantity" style="background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; min-width: 50px;">
+                            ${item.quantity}
+                        </span>
+                        <button class="btn btn-sm btn-outline-secondary increase-qty-cart" data-index="${index}" style="border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+                            <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
+                        </button>
+                    </div>
+                </td>
+                <td class="item-subtotal" style="font-weight: 700; color: #333; font-size: 1.1rem;">Rp ${subtotal.toLocaleString('id-ID')}</td>
+                <td style="text-align: center;">
+                    <button class="btn btn-danger btn-sm remove-item-cart" data-index="${index}" style="border-radius: 8px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        // Update total
+        document.getElementById('totalPembayaran').textContent = 'Rp ' + total.toLocaleString('id-ID');
+
+        // Recalculate total for payment validation
+        totalPembayaran = total;
+
+        // Trigger input event to recalculate change
+        if (caraBayar === 'cash') {
+            const uangDibayarInput = document.getElementById('uangDibayar');
+            if (uangDibayarInput) {
+                uangDibayarInput.dispatchEvent(new Event('input'));
+            }
+        }
+    }
+
+    // Function to save cart to session
+    function saveCartToSession() {
+        fetch("{{ route('cart.update') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            },
+            body: JSON.stringify({
+                cart: cart
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Cart updated:', data);
+        })
+        .catch(error => {
+            console.error("Error updating cart:", error);
+        });
+    }
+
     document.getElementById('simpanCart').addEventListener('click', function () {
         // Disable button to prevent double submission
         const btn = this;
@@ -325,6 +462,22 @@ Keranjang
 
     .quick-cash-btn:active {
         transform: translateY(0);
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
     }
 </style>
 @endsection

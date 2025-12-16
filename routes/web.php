@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('cart', [PenjualanController::class, 'viewCart'])->name('penjualan.viewCart');
     Route::post('cart/save', [CartController::class, 'save'])->name('cart.save');
+    Route::post('cart/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('cart/add', [PenjualanController::class, 'addToCart'])->name('penjualan.addToCart');
     Route::post('cart/checkout', [PenjualanController::class, 'checkout'])->name('penjualan.checkout');
     Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');

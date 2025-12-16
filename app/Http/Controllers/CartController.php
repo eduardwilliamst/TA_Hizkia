@@ -21,14 +21,17 @@ class CartController extends Controller
     public function save(Request $request)
     {
         // Ambil data cart dari request (dari POS page)
-        $cart = $request->input('cart', []);
+        $newCart = $request->input('cart', []);
         $totalDiskon = $request->input('total_diskon', 0);
         $caraBayar = $request->input('cara_bayar', 'cash');
         $uangDibayar = $request->input('uang_dibayar', 0);
         $kembalian = $request->input('kembalian', 0);
 
-        // Perkaya data cart dengan detail produk
-        $cartWithDetails = collect($cart)->map(function ($item) {
+        // Ambil cart yang sudah ada di session
+        $existingCart = session('cart', []);
+
+        // Perkaya data cart baru dengan detail produk
+        $newCartWithDetails = collect($newCart)->map(function ($item) {
             $product = Produk::find($item['id']); // Ambil detail produk dari database
             if ($product) {
                 $isBonus = isset($item['is_bonus']) && $item['is_bonus'];
@@ -45,13 +48,39 @@ class CartController extends Controller
             return null;
         })->filter()->toArray(); // Filter untuk menghapus null jika produk tidak ditemukan
 
+        // Merge cart: tambahkan quantity jika produk sudah ada, atau tambah item baru
+        $mergedCart = collect($existingCart);
+
+        foreach ($newCartWithDetails as $newItem) {
+            $existingIndex = $mergedCart->search(function ($item) use ($newItem) {
+                return $item['id'] === $newItem['id'] && ($item['is_bonus'] ?? false) === ($newItem['is_bonus'] ?? false);
+            });
+
+            if ($existingIndex !== false) {
+                // Produk sudah ada, tambahkan quantity
+                $mergedCart[$existingIndex]['quantity'] += $newItem['quantity'];
+            } else {
+                // Produk baru, tambahkan ke cart
+                $mergedCart->push($newItem);
+            }
+        }
+
+        // Calculate total cart to check if payment needs to be reset
+        $totalCart = $mergedCart->sum(function ($item) {
+            return $item['price'] * $item['quantity'];
+        });
+
+        // Reset payment data if total changed (ada penambahan item baru)
+        $existingUangDibayar = session('uang_dibayar', 0);
+        $shouldResetPayment = $existingUangDibayar > 0 && $existingUangDibayar < $totalCart;
+
         // Simpan data ke session untuk ditampilkan di cart page
         session([
-            'cart' => $cartWithDetails,
+            'cart' => $mergedCart->values()->toArray(),
             'total_diskon' => $totalDiskon,
             'cara_bayar' => $caraBayar,
-            'uang_dibayar' => $uangDibayar,
-            'kembalian' => $kembalian
+            'uang_dibayar' => $shouldResetPayment ? 0 : $uangDibayar,
+            'kembalian' => $shouldResetPayment ? 0 : $kembalian
         ]);
 
         return response()->json([
@@ -62,8 +91,20 @@ class CartController extends Controller
     
     public function clear(Request $request)
     {
-        session()->forget('cart'); // Hapus data session cart
+        session()->forget(['cart', 'total_diskon', 'cara_bayar', 'uang_dibayar', 'kembalian']); // Hapus semua data cart dari session
         return response()->json(['message' => 'Cart cleared successfully.']);
+    }
+
+    public function updateCart(Request $request)
+    {
+        // Update cart di session
+        $cart = $request->input('cart', []);
+        session(['cart' => $cart]);
+
+        return response()->json([
+            'message' => 'Cart updated successfully.',
+            'cart' => $cart
+        ]);
     }
 
     /**
