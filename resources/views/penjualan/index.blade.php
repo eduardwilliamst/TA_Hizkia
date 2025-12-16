@@ -1011,7 +1011,10 @@ Penjualan
         const totalDiscount = window.cartDiscount || 0;
         const freeItems = window.cartFreeItems || [];
 
-        // Validate payment for cash
+        // Get payment data for cash
+        let uangDibayar = 0;
+        let kembalian = 0;
+
         if (caraBayar === 'cash') {
             const cashInput = document.getElementById('cash-tendered-input').value;
             const cashTendered = parseInt(cashInput.replace(/\D/g, ''));
@@ -1020,6 +1023,9 @@ Penjualan
                 showToast('Jumlah uang yang diterima tidak mencukupi!', 'warning');
                 return;
             }
+
+            uangDibayar = cashTendered;
+            kembalian = cashTendered - totalAmount;
         }
 
         // Prepare cart data with promo info
@@ -1059,7 +1065,9 @@ Penjualan
             body: JSON.stringify({
                 cart: cartData,
                 cara_bayar: caraBayar,
-                total_diskon: totalDiscount
+                total_diskon: totalDiscount,
+                uang_dibayar: uangDibayar,
+                kembalian: kembalian
             }),
         })
         .then(response => response.json())

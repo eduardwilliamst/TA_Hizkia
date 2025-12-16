@@ -24,6 +24,8 @@ class CartController extends Controller
         $cart = $request->input('cart', []);
         $totalDiskon = $request->input('total_diskon', 0);
         $caraBayar = $request->input('cara_bayar', 'cash');
+        $uangDibayar = $request->input('uang_dibayar', 0);
+        $kembalian = $request->input('kembalian', 0);
 
         // Perkaya data cart dengan detail produk
         $cartWithDetails = collect($cart)->map(function ($item) {
@@ -47,7 +49,9 @@ class CartController extends Controller
         session([
             'cart' => $cartWithDetails,
             'total_diskon' => $totalDiskon,
-            'cara_bayar' => $caraBayar
+            'cara_bayar' => $caraBayar,
+            'uang_dibayar' => $uangDibayar,
+            'kembalian' => $kembalian
         ]);
 
         return response()->json([

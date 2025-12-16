@@ -564,6 +564,24 @@ select[name="periode"]:focus {
 </style>
 
 <script>
+// Function to view Laporan Penjualan with charts - Define globally
+function viewLaporanPenjualan(form) {
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+
+    for (let [key, value] of formData.entries()) {
+        if (value) {
+            params.append(key, value);
+        }
+    }
+
+    const url = '{{ route("laporan.view.penjualan") }}?' + params.toString();
+    window.open(url, '_blank');
+
+    // Close modal
+    $('#modalLaporanPenjualan').modal('hide');
+}
+
 $(document).ready(function() {
     // Show/hide custom date range for all periode selects
     $('#modalLaporanPenjualan select[name="periode"]').on('change', function() {
@@ -613,24 +631,6 @@ $(document).ready(function() {
             $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').removeAttr('required');
         }
     });
-
-    // Function to view Laporan Penjualan with charts
-    window.viewLaporanPenjualan = function(form) {
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-
-        for (let [key, value] of formData.entries()) {
-            if (value) {
-                params.append(key, value);
-            }
-        }
-
-        const url = '{{ route("laporan.view.penjualan") }}?' + params.toString();
-        window.open(url, '_blank');
-
-        // Close modal
-        $('#modalLaporanPenjualan').modal('hide');
-    };
 });
 </script>
 @endsection

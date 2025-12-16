@@ -80,9 +80,15 @@ Keranjang
 
                     @if(session('cara_bayar') === 'cash')
                     <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                        <label style="font-weight: 600; color: #333; margin-bottom: 1rem; display: block;">
-                            <i class="fas fa-money-bill-wave mr-2"></i>Uang yang Dibayar
-                        </label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <label style="font-weight: 600; color: #333; margin: 0;">
+                                <i class="fas fa-money-bill-wave mr-2"></i>Uang yang Dibayar
+                            </label>
+                            <button type="button" id="toggleEditPayment" class="btn btn-sm btn-outline-primary" style="border-radius: 8px;">
+                                <i class="fas fa-lock" id="lockIcon"></i>
+                                <span id="lockText">Ubah</span>
+                            </button>
+                        </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" style="background: #667eea; color: white; border: none;">Rp</span>
@@ -93,11 +99,13 @@ Keranjang
                                    placeholder="Masukkan jumlah uang"
                                    min="0"
                                    step="1000"
+                                   value="{{ session('uang_dibayar', 0) }}"
+                                   @if(session('uang_dibayar', 0) > 0) readonly @endif
                                    style="font-size: 1.1rem; padding: 0.8rem; border: 2px solid #667eea;">
                         </div>
 
                         <!-- Quick Cash Buttons -->
-                        <div style="margin-bottom: 1rem;">
+                        <div id="quickCashSection" style="margin-bottom: 1rem; @if(session('uang_dibayar', 0) > 0) display: none; @endif">
                             <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem;">
                                 <i class="fas fa-bolt mr-1"></i>Nominal Cepat
                             </div>
@@ -106,13 +114,13 @@ Keranjang
                             </div>
                         </div>
 
-                        <div id="kembalianSection" style="display: none; padding: 1rem; background: white; border-radius: 10px; border: 2px solid #28a745; margin-top: 1rem;">
+                        <div id="kembalianSection" style="@if(session('kembalian', 0) > 0) display: block; @else display: none; @endif padding: 1rem; background: white; border-radius: 10px; border: 2px solid #28a745; margin-top: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="font-weight: 600; color: #333;">
                                     <i class="fas fa-hand-holding-usd mr-2"></i>Uang Kembalian:
                                 </span>
                                 <span id="uangKembalian" style="font-weight: 700; color: #28a745; font-size: 1.2rem;">
-                                    Rp 0
+                                    Rp {{ number_format(session('kembalian', 0), 0, ',', '.') }}
                                 </span>
                             </div>
                         </div>
@@ -150,6 +158,47 @@ Keranjang
         const uangKembalianDisplay = document.getElementById('uangKembalian');
         const warningSection = document.getElementById('warningInsufficientCash');
         const simpanBtn = document.getElementById('simpanCart');
+        const toggleEditBtn = document.getElementById('toggleEditPayment');
+        const lockIcon = document.getElementById('lockIcon');
+        const lockText = document.getElementById('lockText');
+        const quickCashSection = document.getElementById('quickCashSection');
+
+        // Check if payment data already exists
+        const hasPaymentData = @json(session('uang_dibayar', 0)) > 0;
+
+        // Set initial button state
+        if (hasPaymentData) {
+            simpanBtn.disabled = false; // Enable if payment already entered
+            lockIcon.className = 'fas fa-lock';
+            lockText.textContent = 'Ubah';
+        }
+
+        // Toggle edit payment button
+        toggleEditBtn.addEventListener('click', function() {
+            const isReadonly = uangDibayarInput.hasAttribute('readonly');
+
+            if (isReadonly) {
+                // Unlock - allow editing
+                uangDibayarInput.removeAttribute('readonly');
+                uangDibayarInput.focus();
+                quickCashSection.style.display = 'block';
+                lockIcon.className = 'fas fa-unlock';
+                lockText.textContent = 'Kunci';
+                simpanBtn.disabled = true; // Disable until valid input
+            } else {
+                // Lock - prevent editing
+                const uangDibayar = parseFloat(uangDibayarInput.value) || 0;
+                if (uangDibayar >= totalPembayaran) {
+                    uangDibayarInput.setAttribute('readonly', true);
+                    quickCashSection.style.display = 'none';
+                    lockIcon.className = 'fas fa-lock';
+                    lockText.textContent = 'Ubah';
+                    simpanBtn.disabled = false; // Enable if payment is sufficient
+                } else {
+                    alert('Uang yang dibayar harus lebih dari atau sama dengan total pembayaran!');
+                }
+            }
+        });
 
         // Generate quick cash buttons
         const quickCashContainer = document.getElementById('quick-cash-buttons-cart');
@@ -189,7 +238,11 @@ Keranjang
                     kembalianSection.style.display = 'block';
                     warningSection.style.display = 'none';
                     uangKembalianDisplay.textContent = 'Rp ' + kembalian.toLocaleString('id-ID');
-                    simpanBtn.disabled = false;
+
+                    // Only enable if not locked
+                    if (!uangDibayarInput.hasAttribute('readonly')) {
+                        simpanBtn.disabled = false;
+                    }
                 } else {
                     // Insufficient cash - hide change, show warning, disable button
                     kembalianSection.style.display = 'none';

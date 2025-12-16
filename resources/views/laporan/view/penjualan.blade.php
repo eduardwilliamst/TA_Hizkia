@@ -100,6 +100,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Metode Pembayaran</h6>
                 </div>
                 <div class="card-body">
+                    @if($cashTotal > 0 || $creditTotal > 0)
                     <div class="chart-container" style="position: relative; height:300px;">
                         <canvas id="paymentMethodChart"></canvas>
                     </div>
@@ -113,6 +114,12 @@
                             <span class="font-weight-bold">Rp {{ number_format($creditTotal, 0, ',', '.') }} ({{ $creditTransaksi }} transaksi)</span>
                         </div>
                     </div>
+                    @else
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-chart-pie fa-3x mb-3 opacity-50"></i>
+                        <p>Tidak ada data transaksi untuk periode ini</p>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -124,9 +131,16 @@
                     <h6 class="m-0 font-weight-bold text-primary">Top 10 Produk Terlaris</h6>
                 </div>
                 <div class="card-body">
+                    @if(!empty($topProducts) && count($topProducts) > 0)
                     <div class="chart-container" style="position: relative; height:300px;">
                         <canvas id="topProductsChart"></canvas>
                     </div>
+                    @else
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-chart-bar fa-3x mb-3 opacity-50"></i>
+                        <p>Tidak ada data produk untuk periode ini</p>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -195,154 +209,206 @@
 @section('javascript')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
-    // Payment Method Chart
-    const paymentCtx = document.getElementById('paymentMethodChart').getContext('2d');
-    new Chart(paymentCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Cash', 'Credit'],
-            datasets: [{
-                data: [{{ $cashTotal }}, {{ $creditTotal }}],
-                backgroundColor: ['#28a745', '#17a2b8'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+
+        // Payment Method Chart
+        const paymentCanvas = document.getElementById('paymentMethodChart');
+        if (paymentCanvas) {
+            console.log('Payment chart canvas found');
+            const paymentCtx = paymentCanvas.getContext('2d');
+            new Chart(paymentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cash', 'Credit'],
+                    datasets: [{
+                        data: [{{ $cashTotal }}, {{ $creditTotal }}],
+                        backgroundColor: ['#28a745', '#17a2b8'],
+                        borderWidth: 0
+                    }]
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'Rp ' + context.parsed.toLocaleString('id-ID');
+                                    return label;
+                                }
                             }
-                            label += 'Rp ' + context.parsed.toLocaleString('id-ID');
-                            return label;
                         }
                     }
                 }
-            }
+            });
         }
-    });
 
-    // Top Products Chart
-    const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
-    new Chart(topProductsCtx, {
-        type: 'bar',
-        data: {
-            labels: [
-                @foreach($topProducts as $item)
-                    '{{ Str::limit($item->produk->nama ?? "N/A", 15) }}',
-                @endforeach
-            ],
-            datasets: [{
-                label: 'Pendapatan (Rp)',
-                data: [
-                    @foreach($topProducts as $item)
-                        {{ $item->total_revenue }},
-                    @endforeach
-                ],
-                backgroundColor: '#4e73df',
-                borderColor: '#4e73df',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'Rp ' + value.toLocaleString('id-ID');
-                        }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
+        // Top Products Chart
+        const topProductsCanvas = document.getElementById('topProductsChart');
+        if (topProductsCanvas) {
+            const topProductsCtx = topProductsCanvas.getContext('2d');
+            new Chart(topProductsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        @foreach($topProducts as $item)
+                            '{{ Str::limit($item->produk->nama ?? "N/A", 15) }}',
+                        @endforeach
+                    ],
+                    datasets: [{
+                        label: 'Pendapatan (Rp)',
+                        data: [
+                            @foreach($topProducts as $item)
+                                {{ $item->total_revenue }},
+                            @endforeach
+                        ],
+                        backgroundColor: '#4e73df',
+                        borderColor: '#4e73df',
+                        borderWidth: 1
+                    }]
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
                         }
                     }
                 }
-            }
+            });
         }
-    });
 
-    @if(!empty($kasirPerformance) && count($kasirPerformance) > 0)
-    // Kasir Performance Chart
-    const kasirCtx = document.getElementById('kasirPerformanceChart').getContext('2d');
-    new Chart(kasirCtx, {
-        type: 'bar',
-        data: {
-            labels: [
-                @foreach($kasirPerformance as $kasir)
-                    '{{ $kasir["name"] }}',
-                @endforeach
-            ],
-            datasets: [{
-                label: 'Total Penjualan (Rp)',
-                data: [
-                    @foreach($kasirPerformance as $kasir)
-                        {{ $kasir["total"] }},
-                    @endforeach
-                ],
-                backgroundColor: '#1cc88a',
-                borderColor: '#1cc88a',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'Rp ' + value.toLocaleString('id-ID');
+        @if(!empty($kasirPerformance) && count($kasirPerformance) > 0)
+        // Kasir Performance Chart
+        const kasirCanvas = document.getElementById('kasirPerformanceChart');
+        if (kasirCanvas) {
+            const kasirCtx = kasirCanvas.getContext('2d');
+            new Chart(kasirCtx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        @foreach($kasirPerformance as $kasir)
+                            '{{ $kasir["name"] }}',
+                        @endforeach
+                    ],
+                    datasets: [{
+                        label: 'Total Penjualan (Rp)',
+                        data: [
+                            @foreach($kasirPerformance as $kasir)
+                                {{ $kasir["total"] }},
+                            @endforeach
+                        ],
+                        backgroundColor: '#1cc88a',
+                        borderColor: '#1cc88a',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
                         }
                     }
                 }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                        }
-                    }
-                }
-            }
+            });
         }
+        @endif
     });
-    @endif
 </script>
 
 <style>
     @media print {
-        .btn, .sidebar, .navbar, .card-header .dropdown {
+        /* Hide navigation elements */
+        .btn, .sidebar, .navbar, .card-header .dropdown, .main-sidebar, .main-header {
             display: none !important;
         }
 
+        /* Adjust main content for print */
+        .content-wrapper {
+            margin-left: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        /* Prevent page breaks inside cards */
         .card {
+            page-break-inside: avoid;
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+        }
+
+        /* Ensure charts print properly */
+        canvas {
+            max-height: 300px;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .chart-container {
             page-break-inside: avoid;
         }
 
-        canvas {
-            max-height: 300px;
+        /* Optimize text for print */
+        body {
+            font-size: 12pt;
+            color: #000;
         }
+
+        /* Add page breaks between sections */
+        .row {
+            page-break-inside: avoid;
+        }
+    }
+
+    /* Loading indicator for charts */
+    .chart-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        color: #999;
     }
 </style>
 @endsection
