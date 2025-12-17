@@ -180,28 +180,24 @@ class PembelianSeeder extends Seeder
             [
                 'supplier' => 'PT Maju Jaya',
                 'tanggal_pesan' => Carbon::now()->subDays(30),
-                'tanggal_datang' => Carbon::now()->subDays(28),
                 'products' => ['8992234567890', '8992234567891', '8992234567892', '8992234567893'],
             ],
             // Pembelian 2 - CV Sumber Rezeki (Minuman)
             [
                 'supplier' => 'CV Sumber Rezeki',
                 'tanggal_pesan' => Carbon::now()->subDays(25),
-                'tanggal_datang' => Carbon::now()->subDays(23),
                 'products' => ['8992234567894', '8992234567895', '8992234567896', '8992234567897'],
             ],
             // Pembelian 3 - UD Berkah Jaya (Pakaian)
             [
                 'supplier' => 'UD Berkah Jaya',
                 'tanggal_pesan' => Carbon::now()->subDays(20),
-                'tanggal_datang' => Carbon::now()->subDays(18),
                 'products' => ['8991234567890', '8991234567891', '8991234567892'],
             ],
             // Pembelian 4 - Toko Grosir Makmur (Elektronik & Aksesoris)
             [
                 'supplier' => 'Toko Grosir Makmur',
                 'tanggal_pesan' => Carbon::now()->subDays(15),
-                'tanggal_datang' => Carbon::now()->subDays(13),
                 'products' => ['8993234567890', '8993234567891', '8994234567890', '8994234567891'],
             ],
         ];
@@ -211,11 +207,10 @@ class PembelianSeeder extends Seeder
 
             $pembelianId = DB::table('pembelians')->insertGetId([
                 'tanggal_pesan' => $pembelian['tanggal_pesan'],
-                'tanggal_datang' => $pembelian['tanggal_datang'],
                 'supplier_idsupplier' => $supplierId,
                 'tipe_idtipe' => $tipeTunai,
-                'created_at' => $pembelian['tanggal_datang'],
-                'updated_at' => $pembelian['tanggal_datang'],
+                'created_at' => $pembelian['tanggal_pesan'],
+                'updated_at' => $pembelian['tanggal_pesan'],
             ]);
 
             // Create pembelian_detils
@@ -226,8 +221,8 @@ class PembelianSeeder extends Seeder
                         'produk_id' => $produkIds[$barcode]['id'],
                         'harga' => $produkIds[$barcode]['harga_beli'],
                         'jumlah' => $produkIds[$barcode]['stok'],
-                        'created_at' => $pembelian['tanggal_datang'],
-                        'updated_at' => $pembelian['tanggal_datang'],
+                        'created_at' => $pembelian['tanggal_pesan'],
+                        'updated_at' => $pembelian['tanggal_pesan'],
                     ]);
                 }
             }

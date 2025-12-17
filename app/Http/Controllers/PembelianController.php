@@ -61,7 +61,6 @@ class PembelianController extends Controller
         // Validasi input
         $request->validate([
             'tanggal_pesan' => 'required|date',
-            'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
             'tipe_idtipe' => 'required|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
@@ -76,7 +75,6 @@ class PembelianController extends Controller
             // Buat pembelian baru
             $pembelian = Pembelian::create([
                 'tanggal_pesan' => $request->tanggal_pesan,
-                'tanggal_datang' => $request->tanggal_datang,
                 'supplier_idsupplier' => $request->supplier_idsupplier,
                 'tipe_idtipe' => $request->tipe_idtipe,
             ]);
@@ -185,7 +183,6 @@ class PembelianController extends Controller
         // Validasi input
         $request->validate([
             'tanggal_pesan' => 'required|date',
-            'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
             'tipe_idtipe' => 'required|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
@@ -230,7 +227,6 @@ class PembelianController extends Controller
             // Update data pembelian
             $pembelian->update([
                 'tanggal_pesan' => $request->tanggal_pesan,
-                'tanggal_datang' => $request->tanggal_datang,
                 'supplier_idsupplier' => $request->supplier_idsupplier,
                 'tipe_idtipe' => $request->tipe_idtipe,
             ]);

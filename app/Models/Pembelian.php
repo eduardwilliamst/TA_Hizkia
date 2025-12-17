@@ -13,7 +13,6 @@ class Pembelian extends Model
     protected $primaryKey = 'idpembelian'; // Primary key tabel
     protected $fillable = [
         'tanggal_pesan',
-        'tanggal_datang',
         'supplier_idsupplier',
         'tipe_idtipe',
     ]; // Kolom yang dapat diisi

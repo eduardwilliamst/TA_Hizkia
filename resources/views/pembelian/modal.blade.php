@@ -10,16 +10,10 @@
             @csrf
             @method('PUT')
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="form-group">
-                        <label for="edit_tanggal_pesan">Tanggal Pesan <span class="text-danger">*</span></label>
+                        <label for="edit_tanggal_pesan">Tanggal <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="edit_tanggal_pesan" name="tanggal_pesan" value="{{ date('Y-m-d', strtotime($pembelian->tanggal_pesan)) }}" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="edit_tanggal_datang">Tanggal Datang</label>
-                        <input type="date" class="form-control" id="edit_tanggal_datang" name="tanggal_datang" value="{{ $pembelian->tanggal_datang ? date('Y-m-d', strtotime($pembelian->tanggal_datang)) : '' }}">
                     </div>
                 </div>
             </div>
@@ -61,14 +55,14 @@
                         <select class="form-control product-select" name="products[{{ $index }}][produk_id]" required onchange="updateEditProductPrice({{ $index }})">
                             <option value="">Pilih Produk</option>
                             @foreach($produks as $produk)
-                                <option value="{{ $produk->idproduk }}" data-harga="{{ $produk->harga }}" {{ $detil->produk_id == $produk->idproduk ? 'selected' : '' }}>
+                                <option value="{{ $produk->idproduk }}" data-harga="{{ $produk->harga_beli ?? $produk->harga }}" {{ $detil->produk_id == $produk->idproduk ? 'selected' : '' }}>
                                     {{ $produk->nama }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <input type="number" class="form-control harga-input" name="products[{{ $index }}][harga]" placeholder="Harga" min="0" value="{{ $detil->harga }}" required onchange="calculateEditTotal()">
+                        <input type="number" class="form-control harga-input" name="products[{{ $index }}][harga]" placeholder="Harga Beli" min="0" value="{{ $detil->harga }}" required onchange="calculateEditTotal()">
                     </div>
                     <div class="col-md-3">
                         <input type="number" class="form-control jumlah-input" name="products[{{ $index }}][jumlah]" placeholder="Jumlah" min="1" value="{{ $detil->jumlah }}" required onchange="calculateEditTotal()">
@@ -108,11 +102,11 @@
                 <div class="col-md-4">
                     <select class="form-control product-select" name="products[${editProductRowIndex}][produk_id]" required onchange="updateEditProductPrice(${editProductRowIndex})">
                         <option value="">Pilih Produk</option>
-                        ${editProduks.map(p => `<option value="${p.idproduk}" data-harga="${p.harga}">${p.nama}</option>`).join('')}
+                        ${editProduks.map(p => `<option value="${p.idproduk}" data-harga="${p.harga_beli || p.harga}">${p.nama}</option>`).join('')}
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control harga-input" name="products[${editProductRowIndex}][harga]" placeholder="Harga" min="0" required onchange="calculateEditTotal()">
+                    <input type="number" class="form-control harga-input" name="products[${editProductRowIndex}][harga]" placeholder="Harga Beli" min="0" required onchange="calculateEditTotal()">
                 </div>
                 <div class="col-md-3">
                     <input type="number" class="form-control jumlah-input" name="products[${editProductRowIndex}][jumlah]" placeholder="Jumlah" min="1" required onchange="calculateEditTotal()">

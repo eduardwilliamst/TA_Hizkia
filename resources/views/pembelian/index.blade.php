@@ -48,8 +48,7 @@ List Pembelian
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tanggal Pesan</th>
-                            <th>Tanggal Datang</th>
+                            <th>Tanggal</th>
                             <th>Supplier</th>
                             <th>Tipe</th>
                             <th>Produk</th>
@@ -62,7 +61,6 @@ List Pembelian
                         <tr>
                             <td>{{ $pembelian->idpembelian }}</td>
                             <td>{{ \Carbon\Carbon::parse($pembelian->tanggal_pesan)->format('d/m/Y') }}</td>
-                            <td>{{ $pembelian->tanggal_datang ? \Carbon\Carbon::parse($pembelian->tanggal_datang)->format('d/m/Y') : '-' }}</td>
                             <td>{{ $pembelian->supplier->nama ?? '-' }}</td>
                             <td>{{ $pembelian->tipe->keterangan ?? '-' }}</td>
                             <td>
@@ -124,16 +122,10 @@ List Pembelian
                 <form action="{{ route('pembelian.store') }}" method="POST" id="formAddPembelian">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="tanggal_pesan">Tanggal Pesan <span class="text-danger">*</span></label>
+                                <label for="tanggal_pesan">Tanggal <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_pesan" name="tanggal_pesan" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="tanggal_datang">Tanggal Datang</label>
-                                <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang">
                             </div>
                         </div>
                     </div>
@@ -228,11 +220,11 @@ List Pembelian
                 <div class="col-md-4">
                     <select class="form-control product-select" name="products[${productRowIndex}][produk_id]" required onchange="updateProductPrice(${productRowIndex})">
                         <option value="">Pilih Produk</option>
-                        ${produks.map(p => `<option value="${p.idproduk}" data-harga="${p.harga}">${p.nama}</option>`).join('')}
+                        ${produks.map(p => `<option value="${p.idproduk}" data-harga="${p.harga_beli || p.harga}">${p.nama}</option>`).join('')}
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control harga-input" name="products[${productRowIndex}][harga]" placeholder="Harga" min="0" required onchange="calculateTotal()">
+                    <input type="number" class="form-control harga-input" name="products[${productRowIndex}][harga]" placeholder="Harga Beli" min="0" required onchange="calculateTotal()">
                 </div>
                 <div class="col-md-3">
                     <input type="number" class="form-control jumlah-input" name="products[${productRowIndex}][jumlah]" placeholder="Jumlah" min="1" required onchange="calculateTotal()">
