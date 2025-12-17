@@ -17,12 +17,19 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             SupplierSeeder::class,
             TipeSeeder::class,
-            ProdukSeeder::class,
+
+            // Pembelian (creates products with HPP)
+            PembelianSeeder::class,
+
+            // Promo (requires products)
             PromoSeeder::class,
 
             // POS
             PosMesinSeeder::class,
             PosSessionSeeder::class,
+
+            // Penjualan (requires products & pos_session)
+            PenjualanSeeder::class,
 
             // Financial
             CashFlowSeeder::class,
