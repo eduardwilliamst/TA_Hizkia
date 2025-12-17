@@ -109,6 +109,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    // Grafik Penjualan
+    Route::get('grafik-penjualan', [HomeController::class, 'grafikPenjualan'])->name('grafik.penjualan');
+
     // Laporan routes
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
 

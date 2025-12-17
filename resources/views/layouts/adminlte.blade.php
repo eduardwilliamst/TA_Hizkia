@@ -321,13 +321,23 @@
                             <i class="fas fa-chart-bar mr-2" style="font-size: 0.7rem;"></i>Reports
                         </li>
 
+                        <!-- Grafik Penjualan -->
+                        <li class="nav-item">
+                            <a href="{{ route('grafik.penjualan') }}" class="nav-link {{ Request::is('grafik-penjualan') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>
+                                    Grafik Penjualan
+                                    <span class="badge badge-info right" style="font-size: 0.65rem;">New</span>
+                                </p>
+                            </a>
+                        </li>
+
                         <!-- Pusat Laporan -->
                         <li class="nav-item">
                             <a href="{{ route('laporan.index') }}" class="nav-link {{ Request::is('laporan') || Request::is('laporan/*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-file-alt"></i>
                                 <p>
                                     Pusat Laporan
-                                    <span class="badge badge-warning right" style="font-size: 0.65rem;">New</span>
                                 </p>
                             </a>
                         </li>
