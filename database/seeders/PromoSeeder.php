@@ -13,22 +13,27 @@ class PromoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get product IDs
-        $indomie = DB::table('produks')->where('barcode', '8992234567890')->value('idproduk');
-        $kaosHitam = DB::table('produks')->where('barcode', '8991234567890')->value('idproduk');
-        $chitato = DB::table('produks')->where('barcode', '8992234567892')->value('idproduk');
-        $aqua = DB::table('produks')->where('barcode', '8992234567896')->value('idproduk');
+        // Get first two products from database (if any exist)
+        $products = DB::table('produks')->limit(2)->pluck('idproduk')->toArray();
+
+        // Skip if no products exist
+        if (empty($products)) {
+            return;
+        }
+
+        $produk1 = $products[0];
+        $produk2 = $products[1] ?? $products[0];
 
         DB::table('promos')->insert([
             [
                 'buy_x' => 2,
                 'get_y' => 1,
-                'deskripsi' => 'Beli 2 Indomie Gratis 1',
+                'deskripsi' => 'Beli 2 Gratis 1',
                 'tanggal_awal' => Carbon::now()->subDays(5),
                 'tanggal_akhir' => Carbon::now()->addDays(25),
                 'tipe' => 'produk gratis',
-                'produk_idutama' => $indomie ?? 1,
-                'produk_idtambahan' => $indomie ?? 1,
+                'produk_idutama' => $produk1,
+                'produk_idtambahan' => $produk1,
                 'nilai_diskon' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -36,11 +41,11 @@ class PromoSeeder extends Seeder
             [
                 'buy_x' => 1,
                 'get_y' => 0,
-                'deskripsi' => 'Diskon 15% Kaos Polos Hitam',
+                'deskripsi' => 'Diskon 15%',
                 'tanggal_awal' => Carbon::now()->subDays(2),
                 'tanggal_akhir' => Carbon::now()->addDays(3),
                 'tipe' => 'diskon',
-                'produk_idutama' => $kaosHitam ?? 1,
+                'produk_idutama' => $produk1,
                 'produk_idtambahan' => null,
                 'nilai_diskon' => 15,
                 'created_at' => now(),
@@ -49,12 +54,12 @@ class PromoSeeder extends Seeder
             [
                 'buy_x' => 3,
                 'get_y' => 1,
-                'deskripsi' => 'Beli 3 Chitato Gratis 1 Aqua',
+                'deskripsi' => 'Beli 3 Gratis 1',
                 'tanggal_awal' => Carbon::now()->subDays(10),
                 'tanggal_akhir' => Carbon::now()->addDays(20),
                 'tipe' => 'produk gratis',
-                'produk_idutama' => $chitato ?? 2,
-                'produk_idtambahan' => $aqua ?? 2,
+                'produk_idutama' => $produk2,
+                'produk_idtambahan' => $produk1,
                 'nilai_diskon' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
