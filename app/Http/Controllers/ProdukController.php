@@ -38,6 +38,7 @@ class ProdukController extends Controller
             'barcode' => 'required|string|max:255|unique:produks,barcode',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric',
+            'harga_beli' => 'nullable|numeric|min:0',
             'stok' => 'required|integer',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal ukuran gambar 2MB
             // 'usia_awal' => 'required|date',
@@ -50,6 +51,7 @@ class ProdukController extends Controller
         $produk->barcode = $request->barcode;
         $produk->nama = $request->nama;
         $produk->harga = $request->harga;
+        $produk->harga_beli = $request->harga_beli;
         $produk->stok = $request->stok;
         // $produk->usia_awal = $request->usia_awal;
         // $produk->usia_akhir = $request->usia_akhir;
@@ -87,6 +89,7 @@ class ProdukController extends Controller
             'barcode' => 'required|string|max:45',
             'nama' => 'required|string|max:100',
             'harga' => 'required|integer',
+            'harga_beli' => 'nullable|numeric|min:0',
             'stok' => 'required|integer',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             // 'usia_awal' => 'nullable|integer',
@@ -99,6 +102,7 @@ class ProdukController extends Controller
         $produk->barcode = $request->barcode;
         $produk->nama = $request->nama;
         $produk->harga = $request->harga;
+        $produk->harga_beli = $request->harga_beli;
         $produk->stok = $request->stok;
         $produk->kategori_idkategori = $request->kategori_idkategori;
 

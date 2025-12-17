@@ -18,8 +18,13 @@
                 <input type="text" class="form-control" id="nama" name="nama" value="{{ $produk->nama }}" required>
             </div>
             <div class="form-group">
-                <label for="harga">Harga</label>
+                <label for="harga">Harga Jual</label>
                 <input type="number" class="form-control" id="harga" name="harga" value="{{ $produk->harga }}" required>
+            </div>
+            <div class="form-group">
+                <label for="harga_beli">Harga Beli / HPP</label>
+                <input type="number" class="form-control" id="harga_beli" name="harga_beli" value="{{ $produk->harga_beli }}" placeholder="Opsional (akan otomatis terisi dari pembelian)">
+                <small class="form-text text-muted">HPP akan otomatis dihitung dari pembelian produk.</small>
             </div>
             <div class="form-group">
                 <label for="stok">Stok</label>

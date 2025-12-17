@@ -15,6 +15,7 @@ class Produk extends Model
         'barcode',
         'nama',
         'harga',
+        'harga_beli',
         'stok',
         'gambar',
         'kategori_idkategori',
@@ -24,5 +25,11 @@ class Produk extends Model
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_idkategori', 'idkategori');
+    }
+
+    // Relasi dengan inventory histories
+    public function inventoryHistories()
+    {
+        return $this->hasMany(InventoryHistory::class, 'produk_id', 'idproduk');
     }
 }

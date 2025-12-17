@@ -10,9 +10,20 @@ class ProdukSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * CATATAN PENTING:
+     * Seeder ini tidak digunakan lagi karena produk harus dibuat melalui PEMBELIAN
+     * agar HPP (Harga Pokok Penjualan) dapat dihitung dengan benar.
+     *
+     * Untuk membuat produk awal, silakan:
+     * 1. Gunakan fitur Pembelian di aplikasi
+     * 2. Atau buat PembelianSeeder yang akan otomatis membuat produk dengan HPP yang benar
      */
     public function run(): void
     {
+        // SEEDER INI DI-DISABLE - Gunakan Pembelian untuk membuat produk
+        return;
+
         $kategoris = DB::table('kategoris')->pluck('idkategori', 'nama');
 
         DB::table('produks')->insert([

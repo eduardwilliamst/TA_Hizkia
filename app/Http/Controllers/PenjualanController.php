@@ -9,6 +9,7 @@ use App\Models\Produk;
 use App\Models\Promo;
 use App\Models\CashFlow;
 use App\Models\PosSession;
+use App\Models\InventoryHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -105,22 +106,36 @@ class PenjualanController extends Controller
             // Simpan data ke tabel penjualan_detils
             foreach ($cart as $item) {
                 $isBonus = isset($item['is_bonus']) && $item['is_bonus'];
+                $produk = Produk::find($item['id']);
 
                 PenjualanDetil::create([
                     'penjualan_idpenjualan' => $penjualan->idpenjualan,
                     'produk_idproduk' => $item['id'],
                     'harga' => $isBonus ? 0 : $item['price'],
+                    'hpp' => $produk ? $produk->harga_beli : 0,
                     'jumlah' => $item['quantity'],
                     'sub_total' => $isBonus ? 0 : ($item['price'] * $item['quantity']),
                 ]);
 
                 // Update stock: decrease quantity (skip for bonus items)
-                if (!$isBonus) {
-                    $produk = Produk::find($item['id']);
-                    if ($produk) {
-                        $produk->stok -= $item['quantity'];
-                        $produk->save();
-                    }
+                if (!$isBonus && $produk) {
+                    $stokLama = $produk->stok;
+                    $produk->stok -= $item['quantity'];
+                    $produk->save();
+
+                    // Record ke inventory history
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::now(),
+                        'tipe' => 'penjualan',
+                        'qty_before' => $stokLama,
+                        'qty_change' => -$item['quantity'],
+                        'qty_after' => $produk->stok,
+                        'harga_beli' => $produk->harga_beli,
+                        'referensi_id' => $penjualan->idpenjualan,
+                        'referensi_tipe' => 'Penjualan',
+                        'keterangan' => 'Penjualan #' . $penjualan->idpenjualan,
+                    ]);
                 }
             }
 
@@ -236,19 +251,36 @@ class PenjualanController extends Controller
 
             // Simpan ke tabel penjualan_detils
             foreach ($cart as $item) {
+                $produk = Produk::find($item['id']);
+
                 PenjualanDetil::create([
                     'penjualan_id' => $penjualan->idpenjualan,
                     'produk_id' => $item['id'],
                     'harga' => $item['price'],
+                    'hpp' => $produk ? $produk->harga_beli : 0,
                     'jumlah' => $item['quantity'],
                     'sub_total' => $item['price'] * $item['quantity'],
                 ]);
 
                 // Update stock: decrease quantity
-                $produk = Produk::find($item['id']);
                 if ($produk) {
+                    $stokLama = $produk->stok;
                     $produk->stok -= $item['quantity'];
                     $produk->save();
+
+                    // Record ke inventory history
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::now(),
+                        'tipe' => 'penjualan',
+                        'qty_before' => $stokLama,
+                        'qty_change' => -$item['quantity'],
+                        'qty_after' => $produk->stok,
+                        'harga_beli' => $produk->harga_beli,
+                        'referensi_id' => $penjualan->idpenjualan,
+                        'referensi_tipe' => 'Penjualan',
+                        'keterangan' => 'Penjualan #' . $penjualan->idpenjualan,
+                    ]);
                 }
             }
 

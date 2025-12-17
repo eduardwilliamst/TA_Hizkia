@@ -18,6 +18,7 @@ class PenjualanDetil extends Model
         'penjualan_idpenjualan',
         'produk_idproduk',
         'harga',
+        'hpp',
         'jumlah',
         'sub_total',
         'promo_produk_idproduk',

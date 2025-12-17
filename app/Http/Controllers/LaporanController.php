@@ -414,13 +414,11 @@ class LaporanController extends Controller
         $totalDiskon = $penjualans->sum('total_diskon');
         $pendapatanBersih = $totalPendapatan - $totalDiskon;
 
-        // COGS (Cost of Goods Sold) - using harga_beli from produk
+        // COGS (Cost of Goods Sold) - using hpp from penjualan_detils
         $hpp = 0;
         foreach ($penjualans as $penjualan) {
             foreach ($penjualan->penjualanDetils as $detil) {
-                if ($detil->produk) {
-                    $hpp += ($detil->produk->harga_beli ?? 0) * $detil->jumlah;
-                }
+                $hpp += ($detil->hpp ?? 0) * $detil->jumlah;
             }
         }
 
@@ -449,7 +447,7 @@ class LaporanController extends Controller
                     }
                     $productProfit[$produkId]['qty'] += $detil->jumlah;
                     $productProfit[$produkId]['revenue'] += $detil->sub_total;
-                    $cogs = ($detil->produk->harga_beli ?? 0) * $detil->jumlah;
+                    $cogs = ($detil->hpp ?? 0) * $detil->jumlah;
                     $productProfit[$produkId]['hpp'] += $cogs;
                     $productProfit[$produkId]['profit'] += ($detil->sub_total - $cogs);
                 }

@@ -9,6 +9,7 @@ use App\Models\Produk;
 use App\Models\Supplier;
 use App\Models\Tipe;
 use App\Models\PosSession;
+use App\Models\InventoryHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -91,11 +92,40 @@ class PembelianController extends Controller
                     'jumlah' => $product['jumlah'],
                 ]);
 
-                // Update stok produk
+                // Update stok produk dan hitung HPP average
                 $produk = Produk::find($product['produk_id']);
                 if ($produk) {
-                    $produk->stok += $product['jumlah'];
+                    $stokLama = $produk->stok;
+                    $hppLama = $produk->harga_beli ?? 0;
+                    $qtyBeli = $product['jumlah'];
+                    $hargaBeli = $product['harga'];
+
+                    // Hitung HPP baru dengan weighted average
+                    $nilaiLama = $stokLama * $hppLama;
+                    $nilaiBaru = $qtyBeli * $hargaBeli;
+                    $stokBaru = $stokLama + $qtyBeli;
+
+                    // Hindari division by zero
+                    $hppBaru = $stokBaru > 0 ? ($nilaiLama + $nilaiBaru) / $stokBaru : $hargaBeli;
+
+                    // Update produk
+                    $produk->stok = $stokBaru;
+                    $produk->harga_beli = round($hppBaru);
                     $produk->save();
+
+                    // Record ke inventory history
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::parse($request->tanggal_pesan),
+                        'tipe' => 'pembelian',
+                        'qty_before' => $stokLama,
+                        'qty_change' => $qtyBeli,
+                        'qty_after' => $stokBaru,
+                        'harga_beli' => $hargaBeli,
+                        'referensi_id' => $pembelian->idpembelian,
+                        'referensi_tipe' => 'Pembelian',
+                        'keterangan' => 'Pembelian dari ' . Supplier::find($request->supplier_idsupplier)->nama,
+                    ]);
                 }
 
                 $totalPembelian += $product['harga'] * $product['jumlah'];
@@ -173,7 +203,23 @@ class PembelianController extends Controller
             foreach ($pembelian->detils as $detil) {
                 $produk = Produk::find($detil->produk_id);
                 if ($produk) {
+                    $stokLama = $produk->stok;
                     $produk->stok -= $detil->jumlah;
+
+                    // Record inventory history untuk reverse
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::now(),
+                        'tipe' => 'adjustment',
+                        'qty_before' => $stokLama,
+                        'qty_change' => -$detil->jumlah,
+                        'qty_after' => $produk->stok,
+                        'harga_beli' => $produk->harga_beli,
+                        'referensi_id' => $pembelian->idpembelian,
+                        'referensi_tipe' => 'Pembelian (Reverse)',
+                        'keterangan' => 'Reverse stok karena edit pembelian #' . $pembelian->idpembelian,
+                    ]);
+
                     $produk->save();
                 }
             }
@@ -200,11 +246,40 @@ class PembelianController extends Controller
                     'jumlah' => $product['jumlah'],
                 ]);
 
-                // Update stok produk
+                // Update stok produk dan hitung HPP average
                 $produk = Produk::find($product['produk_id']);
                 if ($produk) {
-                    $produk->stok += $product['jumlah'];
+                    $stokLama = $produk->stok;
+                    $hppLama = $produk->harga_beli ?? 0;
+                    $qtyBeli = $product['jumlah'];
+                    $hargaBeli = $product['harga'];
+
+                    // Hitung HPP baru dengan weighted average
+                    $nilaiLama = $stokLama * $hppLama;
+                    $nilaiBaru = $qtyBeli * $hargaBeli;
+                    $stokBaru = $stokLama + $qtyBeli;
+
+                    // Hindari division by zero
+                    $hppBaru = $stokBaru > 0 ? ($nilaiLama + $nilaiBaru) / $stokBaru : $hargaBeli;
+
+                    // Update produk
+                    $produk->stok = $stokBaru;
+                    $produk->harga_beli = round($hppBaru);
                     $produk->save();
+
+                    // Record ke inventory history
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::parse($request->tanggal_pesan),
+                        'tipe' => 'pembelian',
+                        'qty_before' => $stokLama,
+                        'qty_change' => $qtyBeli,
+                        'qty_after' => $stokBaru,
+                        'harga_beli' => $hargaBeli,
+                        'referensi_id' => $pembelian->idpembelian,
+                        'referensi_tipe' => 'Pembelian (Edit)',
+                        'keterangan' => 'Edit pembelian dari ' . Supplier::find($request->supplier_idsupplier)->nama,
+                    ]);
                 }
 
                 $totalPembelian += $product['harga'] * $product['jumlah'];
@@ -233,7 +308,23 @@ class PembelianController extends Controller
             foreach ($pembelian->detils as $detil) {
                 $produk = Produk::find($detil->produk_id);
                 if ($produk) {
+                    $stokLama = $produk->stok;
                     $produk->stok -= $detil->jumlah;
+
+                    // Record inventory history untuk penghapusan
+                    InventoryHistory::create([
+                        'produk_id' => $produk->idproduk,
+                        'tanggal' => Carbon::now(),
+                        'tipe' => 'adjustment',
+                        'qty_before' => $stokLama,
+                        'qty_change' => -$detil->jumlah,
+                        'qty_after' => $produk->stok,
+                        'harga_beli' => $produk->harga_beli,
+                        'referensi_id' => $pembelian->idpembelian,
+                        'referensi_tipe' => 'Pembelian (Delete)',
+                        'keterangan' => 'Hapus pembelian #' . $pembelian->idpembelian,
+                    ]);
+
                     $produk->save();
                 }
             }
