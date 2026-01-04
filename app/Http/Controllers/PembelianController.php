@@ -61,6 +61,7 @@ class PembelianController extends Controller
         // Validasi input
         $request->validate([
             'tanggal_pesan' => 'required|date',
+            'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
             'tipe_idtipe' => 'required|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
@@ -183,6 +184,7 @@ class PembelianController extends Controller
         // Validasi input
         $request->validate([
             'tanggal_pesan' => 'required|date',
+            'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
             'tipe_idtipe' => 'required|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
