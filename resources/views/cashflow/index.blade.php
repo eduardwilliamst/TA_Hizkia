@@ -183,9 +183,173 @@ Cashflow
                 },
             ]
         });
+
+        // Form Tambah Cash In
+        $('#cash-in form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Menyimpan cash in...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addCashflowModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cash In berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan cash in';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Tambah Cash Out
+        $('#cash-out form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Menyimpan cash out...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addCashflowModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cash Out berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan cash out';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Edit Cashflow (delegated event)
+        $(document).on('submit', '#editCashflowModal form', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Memperbarui cashflow...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#editCashflowModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Cashflow berhasil diperbarui!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat memperbarui cashflow';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
     });
 
     function modalEdit(supplierId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("cashflow.getEditForm") }}',
@@ -194,10 +358,17 @@ Cashflow
                 'id': supplierId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat form edit cashflow',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }

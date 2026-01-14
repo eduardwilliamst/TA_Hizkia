@@ -45,10 +45,10 @@ Supplier
                                 <a data-toggle="modal" data-target="#modalEditSupplier" onclick="modalEdit({{ $supplier->idsupplier }})" class="btn btn-info btn-sm">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('supplier.destroy', $supplier->idsupplier) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('supplier.destroy', $supplier->idsupplier) }}" method="POST" id="delete-form-{{ $supplier->idsupplier }}" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this supplier?');">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('delete-form-{{ $supplier->idsupplier }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -124,9 +124,119 @@ Supplier
                 },
             ]
         });
+
+        // Form Tambah Supplier
+        $('#addSupplierModal form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Menyimpan supplier...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addSupplierModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Supplier berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan supplier';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Edit Supplier (delegated event)
+        $(document).on('submit', '#modalEditSupplier form', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Memperbarui supplier...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#modalEditSupplier').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Supplier berhasil diperbarui!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat memperbarui supplier';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
     });
 
     function modalEdit(supplierId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("supplier.getEditForm") }}',
@@ -135,10 +245,17 @@ Supplier
                 'id': supplierId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat form edit supplier',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }

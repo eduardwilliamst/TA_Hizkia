@@ -263,7 +263,138 @@ List Pembelian
         $('#totalPembelian').text(total.toLocaleString('id-ID'));
     }
 
+    // Form Submit Pembelian dengan Loader
+    $('#formAddPembelian').on('submit', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = new FormData(this);
+        const submitBtn = form.find('button[type="submit"]');
+
+        // Validasi: harus ada minimal 1 produk
+        if ($('.product-row').length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: 'Minimal harus ada 1 produk yang dibeli',
+                confirmButtonColor: '#f39c12'
+            });
+            return;
+        }
+
+        LoaderUtil.show('Menyimpan pembelian...');
+        submitBtn.prop('disabled', true);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                LoaderUtil.hide();
+                $('#addPembelianModal').modal('hide');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Pembelian berhasil disimpan dan HPP sudah diupdate',
+                    timer: 2500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.reload();
+                });
+            },
+            error: function(xhr) {
+                LoaderUtil.hide();
+                submitBtn.prop('disabled', false);
+
+                let errorMessage = 'Terjadi kesalahan saat menyimpan pembelian';
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: errorMessage,
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    });
+
+    // Form Edit Pembelian (delegated event)
+    $(document).on('submit', '#modalEditPembelian form', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = new FormData(this);
+        const submitBtn = form.find('button[type="submit"]');
+
+        LoaderUtil.show('Memperbarui pembelian...');
+        submitBtn.prop('disabled', true);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                LoaderUtil.hide();
+                $('#modalEditPembelian').modal('hide');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Pembelian berhasil diperbarui',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.reload();
+                });
+            },
+            error: function(xhr) {
+                LoaderUtil.hide();
+                submitBtn.prop('disabled', false);
+
+                let errorMessage = 'Terjadi kesalahan saat memperbarui pembelian';
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    errorMessage = '<ul style="text-align: left; margin: 0;">';
+                    for (let field in errors) {
+                        errors[field].forEach(error => {
+                            errorMessage += `<li>${error}</li>`;
+                        });
+                    }
+                    errorMessage += '</ul>';
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: errorMessage,
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    });
+
     function modalEdit(pembelianId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("pembelian.getEditForm") }}',
@@ -272,10 +403,17 @@ List Pembelian
                 'id': pembelianId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat form edit pembelian',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }

@@ -1053,7 +1053,9 @@ Penjualan
         // Disable button to prevent double submission
         const confirmBtn = document.getElementById('confirm-checkout-btn');
         confirmBtn.disabled = true;
-        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+
+        // Show loader overlay
+        LoaderUtil.show('Memproses transaksi penjualan...');
 
         // Send POST request
         fetch("{{ route('cart.save') }}", {
@@ -1072,25 +1074,52 @@ Penjualan
         })
         .then(response => response.json())
         .then(data => {
+            LoaderUtil.hide();
+
             if (data.message) {
-                // Success - redirect to cart page
-                showToast('Mengarahkan ke halaman cart...', 'success');
-                setTimeout(() => {
+                // Success - close modal and show success message
+                $('#checkoutModal').modal('hide');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Transaksi Berhasil!',
+                    text: data.message || 'Penjualan berhasil disimpan',
+                    timer: 2500,
+                    showConfirmButton: false
+                }).then(() => {
                     if (data.redirect) {
                         window.location.href = data.redirect;
                     } else {
                         window.location.href = "{{ route('penjualan.viewCart') }}";
                     }
-                }, 500);
+                });
             }
         })
         .catch(error => {
+            LoaderUtil.hide();
             console.error("Error:", error);
-            showToast('Terjadi kesalahan saat menyimpan transaksi!', 'error');
+
+            let errorMessage = 'Terjadi kesalahan saat menyimpan transaksi';
+            if (error.response && error.response.errors) {
+                const errors = error.response.errors;
+                errorMessage = '<ul style="text-align: left; margin: 0;">';
+                for (let field in errors) {
+                    errors[field].forEach(err => {
+                        errorMessage += `<li>${err}</li>`;
+                    });
+                }
+                errorMessage += '</ul>';
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                html: errorMessage,
+                confirmButtonColor: '#d33'
+            });
 
             // Reset button
             confirmBtn.disabled = false;
-            confirmBtn.innerHTML = '<i class="fas fa-print mr-2"></i>Simpan & Cetak Struk';
         });
     });
 

@@ -250,16 +250,10 @@ $(document).ready(function() {
             width: '600px'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menutup Kasir...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                // Show loading overlay
+                LoaderUtil.show('Menutup sesi kasir...');
+
+                // Submit form
                 this.submit();
             }
         });

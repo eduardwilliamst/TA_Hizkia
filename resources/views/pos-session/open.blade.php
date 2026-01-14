@@ -169,17 +169,8 @@ $(document).ready(function() {
             width: '500px'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Show loading
-                Swal.fire({
-                    title: 'Membuka Sesi...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                // Show loading overlay
+                LoaderUtil.show('Membuka sesi kasir...');
 
                 // Submit form
                 this.submit();

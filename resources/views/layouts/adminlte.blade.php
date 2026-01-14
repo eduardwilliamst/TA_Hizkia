@@ -541,6 +541,9 @@
         }
     </script>
 
+    <!-- Global App Utilities (Loader & SweetAlert) -->
+    <script src="{{ asset('js/app-utilities.js') }}"></script>
+
     <!-- Global SweetAlert2 Configuration -->
     <script>
         // Configure SweetAlert2 defaults
@@ -613,6 +616,8 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Show loader
+                    LoaderUtil.show('Menghapus data...');
                     document.getElementById(formId).submit();
                 }
             });

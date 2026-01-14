@@ -172,9 +172,121 @@ Produk
                 },
             ]
         });
+
+        // Form Tambah Produk - Handle submission dengan loader
+        $('#addProdukModal form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            // Show loader
+            LoaderUtil.show('Menyimpan produk...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addProdukModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Produk berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan produk';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Edit Produk - Handle submission dengan loader (delegated event)
+        $(document).on('submit', '#modalEditProduk form', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            // Show loader
+            LoaderUtil.show('Memperbarui produk...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#modalEditProduk').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Produk berhasil diperbarui!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat memperbarui produk';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
     });
 
     function modalDetail(produkId) {
+        LoaderUtil.show('Memuat data produk...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("produk.getDetailForm") }}',
@@ -183,15 +295,24 @@ Produk
                 'id': produkId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalDetailContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat detail produk',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }
 
     function modalEdit(produkId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("produk.getEditForm") }}',
@@ -200,10 +321,17 @@ Produk
                 'id': produkId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat form edit',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }

@@ -122,9 +122,119 @@ Tipe Pembelian
                 },
             ]
         });
+
+        // Form Tambah Tipe
+        $('#addDataModal form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Menyimpan tipe pembelian...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addDataModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Tipe pembelian berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan tipe pembelian';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Edit Tipe (delegated event)
+        $(document).on('submit', '#modalEditTipe form', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Memperbarui tipe pembelian...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#modalEditTipe').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Tipe pembelian berhasil diperbarui!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat memperbarui tipe pembelian';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
     });
 
     function modalEdit(tipeId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("tipe.getEditForm") }}',
@@ -133,27 +243,17 @@ Tipe Pembelian
                 'id': tipeId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
             },
             error: function(xhr) {
-                console.log(xhr);
-            }
-        });
-    }
-
-    function confirmDelete(formId) {
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(formId).submit();
+                LoaderUtil.hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memuat form edit tipe pembelian',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     }

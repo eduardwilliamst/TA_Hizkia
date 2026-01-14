@@ -180,9 +180,119 @@
                 }
             }
         });
+
+        // Form Tambah Kategori
+        $('#addDataModal form').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Menyimpan kategori...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#addDataModal').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Kategori berhasil ditambahkan!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan kategori';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+
+        // Form Edit Kategori (delegated event)
+        $(document).on('submit', '#modalEditKategori form', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+            const submitBtn = form.find('button[type="submit"]');
+
+            LoaderUtil.show('Memperbarui kategori...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    LoaderUtil.hide();
+                    $('#modalEditKategori').modal('hide');
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Kategori berhasil diperbarui!'
+                    });
+
+                    setTimeout(() => window.location.reload(), 1500);
+                },
+                error: function(xhr) {
+                    LoaderUtil.hide();
+                    submitBtn.prop('disabled', false);
+
+                    let errorMessage = 'Terjadi kesalahan saat memperbarui kategori';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        errorMessage = '<ul style="text-align: left; margin: 0;">';
+                        for (let field in errors) {
+                            errors[field].forEach(error => {
+                                errorMessage += `<li>${error}</li>`;
+                            });
+                        }
+                        errorMessage += '</ul>';
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
     });
 
     function modalEdit(kategoriId) {
+        LoaderUtil.show('Memuat form edit...');
+
         $.ajax({
             type: 'POST',
             url: '{{ route("kategori.getEditForm") }}',
@@ -191,6 +301,7 @@
                 'id': kategoriId,
             },
             success: function(data) {
+                LoaderUtil.hide();
                 $("#modalContent").html(data.msg);
                 // Auto-focus on edit input after modal loaded
                 setTimeout(function() {
@@ -198,16 +309,12 @@
                 }, 300);
             },
             error: function(xhr) {
-                console.log(xhr);
-                // Use Swal directly to avoid Toast undefined error
+                LoaderUtil.hide();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Gagal Memuat Data',
-                    text: xhr.responseJSON?.message || 'Terjadi kesalahan saat memuat form edit kategori',
-                    timer: 3000,
-                    showConfirmButton: false,
-                    position: 'top-end',
-                    toast: true
+                    title: 'Gagal!',
+                    text: xhr.responseJSON?.message || 'Gagal memuat form edit kategori',
+                    confirmButtonColor: '#d33'
                 });
             }
         });
