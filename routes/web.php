@@ -82,6 +82,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('posmesin/getEditForm', [PosMesinController::class, 'getEditForm'])->name('posmesin.getEditForm');
 
     // POS Session routes
+    Route::get('pos-session', [PosSessionController::class, 'index'])->name('pos-session.index')->middleware('role:admin');
+    Route::get('pos-session/{id}/detail', [PosSessionController::class, 'getDetail'])->name('pos-session.detail')->middleware('role:admin');
     Route::get('possession/open', [PosSessionController::class, 'showOpenSession'])->name('possession.show-open');
     Route::post('possession/open', [PosSessionController::class, 'openSession'])->name('possession.open');
     Route::get('possession/check', [PosSessionController::class, 'checkActiveSession'])->name('possession.check');

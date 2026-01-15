@@ -30,16 +30,23 @@ class PembelianController extends Controller
 
     public function listData()
     {
-        $datas = Pembelian::with(['supplier', 'tipe', 'detils.produk'])->get();
+        $pembelians = Pembelian::with(['supplier', 'tipe', 'detils.produk'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
-        return view('pembelian.list', compact('datas'));
+        return view('pembelian.list', compact('pembelians'));
     }
 
     public function show($id)
     {
         $pembelian = Pembelian::with(['supplier', 'tipe', 'detils.produk'])->findOrFail($id);
 
-        return view('pembelian.show', compact('pembelian'));
+        // Calculate total
+        $total = $pembelian->detils->sum(function($detil) {
+            return $detil->harga * $detil->jumlah;
+        });
+
+        return view('pembelian.show', compact('pembelian', 'total'));
     }
 
     /**

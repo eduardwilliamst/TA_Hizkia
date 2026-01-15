@@ -244,6 +244,17 @@
                         </li>
 
                         @if(Auth::user()->hasRole('admin'))
+                        <!-- List Sesi POS (Admin Only) -->
+                        <li class="nav-item">
+                            <a href="{{ route('pos-session.index') }}" class="nav-link {{ Request::is('pos-session*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-history"></i>
+                                <p>
+                                    Riwayat Sesi
+                                    <span class="badge badge-primary right" style="font-size: 0.65rem;">Admin</span>
+                                </p>
+                            </a>
+                        </li>
+
                         <!-- INVENTORY MANAGEMENT -->
                         <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
                             <i class="fas fa-boxes mr-2" style="font-size: 0.7rem;"></i>Inventory
@@ -275,11 +286,28 @@
                         </li>
 
                         <!-- Pembelian (Stock In) -->
-                        <li class="nav-item">
-                            <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian/index') || Request::is('pembelian') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('pembelian*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('pembelian*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-dolly"></i>
-                                <p>Pembelian</p>
+                                <p>
+                                    Pembelian
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('pembelian.index') }}" class="nav-link {{ Request::is('pembelian/index') || Request::is('pembelian') && !Request::is('pembelian/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Tambah Pembelian</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('pembelian.listData') }}" class="nav-link {{ Request::is('pembelian/listData') ? 'active' : '' }}" style="padding-left: 3rem;">
+                                        <i class="far fa-dot-circle nav-icon" style="font-size: 0.5rem;"></i>
+                                        <p>Riwayat Pembelian</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
                         <!-- Supplier -->

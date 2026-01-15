@@ -13,6 +13,24 @@ use Illuminate\Support\Facades\Auth;
 class PosSessionController extends Controller
 {
     /**
+     * Display a listing of all POS sessions (Admin only)
+     */
+    public function index()
+    {
+        // Check if user is admin
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Get all sessions with relationships, ordered by latest
+        $sessions = PosSession::with(['user', 'posMesin'])
+            ->orderBy('tanggal', 'desc')
+            ->paginate(20);
+
+        return view('pos-session.index', compact('sessions'));
+    }
+
+    /**
      * Show the session opening page
      */
     public function showOpenSession()
@@ -297,6 +315,35 @@ class PosSessionController extends Controller
         ];
 
         return view('pos-session.close', compact('summary'));
+    }
+
+    /**
+     * Get session detail (Admin only)
+     */
+    public function getDetail($id)
+    {
+        // Check if user is admin
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $session = PosSession::with(['user', 'posMesin'])->findOrFail($id);
+
+        // Get all sales for this session
+        $penjualans = \App\Models\Penjualan::where('pos_session_idpos_session', $id)->get();
+
+        // Get all cash flows for this session
+        $cashFlows = CashFlow::where('id_pos_session', $id)->get();
+
+        // Calculate totals
+        $totalPenjualan = $penjualans->sum('total_harga');
+        $cashSales = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
+        $cardSales = $penjualans->where('cara_bayar', 'card')->sum('total_harga');
+
+        $totalCashIn = $cashFlows->where('tipe', 'cash_in')->sum('jumlah');
+        $totalCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
+
+        return view('pos-session.detail', compact('session', 'penjualans', 'cashFlows', 'totalPenjualan', 'cashSales', 'cardSales', 'totalCashIn', 'totalCashOut'));
     }
 
     /**
