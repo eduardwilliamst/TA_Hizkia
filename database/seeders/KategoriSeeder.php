@@ -14,27 +14,37 @@ class KategoriSeeder extends Seeder
     {
         DB::table('kategoris')->insert([
             [
-                'nama' => 'Pakaian',
+                'nama' => 'Popok & Diaper',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Makanan',
+                'nama' => 'Makanan Bayi',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Minuman',
+                'nama' => 'Susu Formula',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Elektronik',
+                'nama' => 'Perlengkapan Mandi',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Aksesoris',
+                'nama' => 'Pakaian Bayi',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Mainan Bayi',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Perlengkapan Makan',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

@@ -14,28 +14,28 @@ class SupplierSeeder extends Seeder
     {
         DB::table('suppliers')->insert([
             [
-                'nama' => 'PT Maju Jaya',
-                'alamat' => 'Jl. Sudirman No. 123, Jakarta',
+                'nama' => 'PT Pampers Indonesia',
+                'alamat' => 'Jl. Sudirman No. 123, Jakarta Selatan',
                 'telp' => '021-12345678',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'CV Sumber Rezeki',
+                'nama' => 'CV Baby Care Supply',
                 'alamat' => 'Jl. Gatot Subroto No. 45, Bandung',
                 'telp' => '022-87654321',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'UD Berkah Jaya',
+                'nama' => 'PT Nutricia Indonesia',
                 'alamat' => 'Jl. Ahmad Yani No. 78, Surabaya',
                 'telp' => '031-98765432',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Toko Grosir Makmur',
+                'nama' => 'UD Baby Fashion',
                 'alamat' => 'Jl. Diponegoro No. 56, Semarang',
                 'telp' => '024-55556666',
                 'created_at' => now(),
