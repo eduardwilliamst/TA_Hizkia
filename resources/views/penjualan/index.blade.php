@@ -40,9 +40,15 @@ Penjualan
                         <!-- Category Tabs -->
                         <div id="product-container">
                             <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+                                <!-- Tab Semua Produk -->
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="tab-all" data-toggle="tab" href="#category-all" role="tab" aria-controls="category-all" aria-selected="true">
+                                        <i class="fas fa-th-large mr-1"></i> Semua Produk
+                                    </a>
+                                </li>
                                 @foreach($kategoris as $kategori)
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link @if($loop->first) active @endif" id="tab-{{ $kategori->idkategori }}" data-toggle="tab" href="#category-{{ $kategori->idkategori }}" role="tab" aria-controls="category-{{ $kategori->idkategori }}" aria-selected="@if($loop->first) true @else false @endif">
+                                    <a class="nav-link" id="tab-{{ $kategori->idkategori }}" data-toggle="tab" href="#category-{{ $kategori->idkategori }}" role="tab" aria-controls="category-{{ $kategori->idkategori }}" aria-selected="false">
                                         {{ $kategori->nama }}
                                     </a>
                                 </li>
@@ -51,8 +57,17 @@ Penjualan
 
                             <!-- Tab Content -->
                             <div class="tab-content" id="categoryTabContent">
+                                <!-- Tab Content Semua Produk -->
+                                <div class="tab-pane fade show active" id="category-all" role="tabpanel" aria-labelledby="tab-all">
+                                    <div class="table-responsive" id="div_tabel_all">
+                                        <!-- All products will be loaded here -->
+                                        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                                            <div class="spinner-border text-primary" role="status"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                 @foreach($kategoris as $kategori)
-                                <div class="tab-pane fade @if($loop->first) show active @endif" id="category-{{ $kategori->idkategori }}" role="tabpanel" aria-labelledby="tab-{{ $kategori->idkategori }}">
+                                <div class="tab-pane fade" id="category-{{ $kategori->idkategori }}" role="tabpanel" aria-labelledby="tab-{{ $kategori->idkategori }}">
                                     <div class="table-responsive" id="div_tabel_{{ $kategori->idkategori }}">
                                         <!-- Product data will be loaded here -->
                                         <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
@@ -434,6 +449,9 @@ Penjualan
     $(document).ready(function() {
         // Initialize tabs
         $('#categoryTabs a:first').tab('show');
+
+        // Load all products (default tab)
+        loadProductData('{{ csrf_token() }}', '#div_tabel_all', '{{ route("penjualan.data") }}', 'all');
 
         // Load product data for each category
         @foreach($kategoris as $kategori)

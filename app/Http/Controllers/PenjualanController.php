@@ -37,7 +37,12 @@ class PenjualanController extends Controller
     public function data(Request $request)
     {
         try {
-            $produks = Produk::where('kategori_idkategori', $request->kategori_id)->get();
+            // Jika kategori_id = 'all' atau tidak ada, tampilkan semua produk
+            if (!$request->kategori_id || $request->kategori_id === 'all') {
+                $produks = Produk::with('kategori')->orderBy('nama')->get();
+            } else {
+                $produks = Produk::where('kategori_idkategori', $request->kategori_id)->get();
+            }
 
             // Get active promos
             $now = Carbon::now();
