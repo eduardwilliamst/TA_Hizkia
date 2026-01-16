@@ -50,7 +50,6 @@ List Pembelian
                             <th>ID</th>
                             <th>Tanggal</th>
                             <th>Supplier</th>
-                            <th>Tipe</th>
                             <th>Produk</th>
                             <th>Total</th>
                             <th>Action</th>
@@ -62,7 +61,6 @@ List Pembelian
                             <td>{{ $pembelian->idpembelian }}</td>
                             <td>{{ \Carbon\Carbon::parse($pembelian->tanggal_pesan)->format('d/m/Y') }}</td>
                             <td>{{ $pembelian->supplier->nama ?? '-' }}</td>
-                            <td>{{ $pembelian->tipe->keterangan ?? '-' }}</td>
                             <td>
                                 @if($pembelian->detils->count() > 0)
                                     <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#detil{{ $pembelian->idpembelian }}" aria-expanded="false">
@@ -130,24 +128,13 @@ List Pembelian
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="supplier_idsupplier">Supplier <span class="text-danger">*</span></label>
                                 <select class="form-control" id="supplier_idsupplier" name="supplier_idsupplier" required>
                                     <option value="">Pilih Supplier</option>
                                     @foreach($suppliers as $supplier)
                                         <option value="{{ $supplier->idsupplier }}">{{ $supplier->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="tipe_idtipe">Tipe Pembelian <span class="text-danger">*</span></label>
-                                <select class="form-control" id="tipe_idtipe" name="tipe_idtipe" required>
-                                    <option value="">Pilih Tipe</option>
-                                    @foreach($tipes as $tipe)
-                                        <option value="{{ $tipe->idtipe }}">{{ $tipe->keterangan }}</option>
                                     @endforeach
                                 </select>
                             </div>

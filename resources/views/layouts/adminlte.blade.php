@@ -326,8 +326,16 @@
                         <!-- Promo -->
                         <li class="nav-item">
                             <a href="{{ route('promo.index') }}" class="nav-link {{ Request::is('promo*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-tags"></i>
-                                <p>Promo & Diskon</p>
+                                <i class="nav-icon fas fa-tag"></i>
+                                <p>Promo</p>
+                            </a>
+                        </li>
+
+                        <!-- Diskon -->
+                        <li class="nav-item">
+                            <a href="{{ route('diskon.index') }}" class="nav-link {{ Request::is('diskon*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-percent"></i>
+                                <p>Diskon</p>
                             </a>
                         </li>
                         @else

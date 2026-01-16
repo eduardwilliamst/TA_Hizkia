@@ -25,7 +25,7 @@ class PosSession extends Model
     // Menggunakan konvensi default untuk foreign key jika nama field sesuai (user_id dan pos_mesin_id)
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_iduser', 'iduser');
+        return $this->belongsTo(User::class, 'user_iduser', 'id');
     }
 
     public function posMesin()

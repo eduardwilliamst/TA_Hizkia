@@ -70,7 +70,7 @@ class PembelianController extends Controller
             'tanggal_pesan' => 'required|date',
             'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
-            'tipe_idtipe' => 'required|exists:tipes,idtipe',
+            'tipe_idtipe' => 'nullable|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
             'products.*.produk_id' => 'required|exists:produks,idproduk',
             'products.*.harga' => 'required|numeric|min:0',
@@ -80,11 +80,18 @@ class PembelianController extends Controller
         try {
             DB::beginTransaction();
 
+            // Get default tipe if not provided (get first tipe)
+            $tipeId = $request->tipe_idtipe;
+            if (!$tipeId) {
+                $defaultTipe = Tipe::first();
+                $tipeId = $defaultTipe ? $defaultTipe->idtipe : null;
+            }
+
             // Buat pembelian baru
             $pembelian = Pembelian::create([
                 'tanggal_pesan' => $request->tanggal_pesan,
                 'supplier_idsupplier' => $request->supplier_idsupplier,
-                'tipe_idtipe' => $request->tipe_idtipe,
+                'tipe_idtipe' => $tipeId,
             ]);
 
             $totalPembelian = 0;
@@ -193,7 +200,7 @@ class PembelianController extends Controller
             'tanggal_pesan' => 'required|date',
             'tanggal_datang' => 'nullable|date',
             'supplier_idsupplier' => 'required|exists:suppliers,idsupplier',
-            'tipe_idtipe' => 'required|exists:tipes,idtipe',
+            'tipe_idtipe' => 'nullable|exists:tipes,idtipe',
             'products' => 'required|array|min:1',
             'products.*.produk_id' => 'required|exists:produks,idproduk',
             'products.*.harga' => 'required|numeric|min:0',
@@ -204,6 +211,13 @@ class PembelianController extends Controller
             DB::beginTransaction();
 
             $pembelian = Pembelian::findOrFail($id);
+
+            // Get default tipe if not provided (get first tipe)
+            $tipeId = $request->tipe_idtipe;
+            if (!$tipeId) {
+                $defaultTipe = Tipe::first();
+                $tipeId = $defaultTipe ? $defaultTipe->idtipe : null;
+            }
 
             // Kembalikan stok dari detail pembelian lama
             foreach ($pembelian->detils as $detil) {
@@ -237,7 +251,7 @@ class PembelianController extends Controller
             $pembelian->update([
                 'tanggal_pesan' => $request->tanggal_pesan,
                 'supplier_idsupplier' => $request->supplier_idsupplier,
-                'tipe_idtipe' => $request->tipe_idtipe,
+                'tipe_idtipe' => $tipeId,
             ]);
 
             $totalPembelian = 0;

@@ -221,24 +221,6 @@
             transform: translateY(0);
         }
 
-        .forgot-password {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .forgot-password a:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-
         .register-link {
             text-align: center;
             margin-top: 25px;
@@ -389,15 +371,6 @@
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
-
-                <!-- Forgot Password Link -->
-                @if (Route::has('password.request'))
-                    <div class="forgot-password">
-                        <a href="{{ route('password.request') }}">
-                            <i class="fas fa-question-circle"></i> Forgot Your Password?
-                        </a>
-                    </div>
-                @endif
 
                 <!-- Register Link -->
                 @if (Route::has('register'))

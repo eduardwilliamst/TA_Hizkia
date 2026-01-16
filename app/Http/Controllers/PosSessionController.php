@@ -264,6 +264,11 @@ class PosSessionController extends Controller
      */
     public function showCloseSession()
     {
+        // Check if user is admin or kasir
+        if (!auth()->user()->hasRole(['admin', 'kasir'])) {
+            abort(403, 'Unauthorized action. Only admin and kasir can close sessions.');
+        }
+
         $posSessionId = session('pos_session');
 
         if (!$posSessionId) {
@@ -351,6 +356,11 @@ class PosSessionController extends Controller
      */
     public function processCloseSession(Request $request)
     {
+        // Check if user is admin or kasir
+        if (!auth()->user()->hasRole(['admin', 'kasir'])) {
+            abort(403, 'Unauthorized action. Only admin and kasir can close sessions.');
+        }
+
         $request->validate([
             'jumlah_tunai' => 'required|numeric|min:0',
             'catatan_closing' => 'nullable|string|max:500',

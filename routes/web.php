@@ -11,6 +11,7 @@ use App\Http\Controllers\PosMesinController;
 use App\Http\Controllers\PosSessionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PromoController;
+use App\Http\Controllers\DiskonController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TipeController;
 use App\Http\Controllers\Auth\LoginController;
@@ -59,8 +60,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
     // Menambahkan resource routes untuk controller yang telah Anda buat
-    // Route::resource('diskon', DiskonController::class);
-    // Route::post('diskon/getEditForm', [DiskonController::class, 'getEditForm'])->name('diskon.getEditForm');
+    Route::resource('diskon', DiskonController::class);
+    Route::post('diskon/getEditForm', [DiskonController::class, 'getEditForm'])->name('diskon.getEditForm');
 
     Route::resource('cashflow', CashFlowController::class);
     Route::post('cashflow/getEditForm', [CashFlowController::class, 'getEditForm'])->name('cashflow.getEditForm');
