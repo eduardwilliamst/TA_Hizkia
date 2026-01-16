@@ -18,11 +18,6 @@
                     <div class="col-md-6">
                         <p class="mb-2"><strong>Tanggal Pesan:</strong> {{ \Carbon\Carbon::parse($pembelian->tanggal_pesan)->translatedFormat('d F Y') }}</p>
                         <p class="mb-2"><strong>Supplier:</strong> {{ $pembelian->supplier->nama ?? 'N/A' }}</p>
-                        <p class="mb-2"><strong>Tipe Pembelian:</strong>
-                            <span class="badge" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
-                                {{ $pembelian->tipe->keterangan ?? 'N/A' }}
-                            </span>
-                        </p>
                     </div>
                     <div class="col-md-6">
                         <p class="mb-2"><strong>Jumlah Item:</strong>

@@ -16,9 +16,6 @@ Keranjang
                 <i class="fas fa-shopping-cart mr-2"></i>
                 Keranjang Belanja
             </h3>
-            <a href="{{ route('penjualan.index') }}" class="btn btn-primary" style="border-radius: 10px;">
-                <i class="fas fa-plus mr-2"></i>Tambah Item
-            </a>
         </div>
         <div class="card-body" style="padding: 2rem;">
             @if(empty($cart))

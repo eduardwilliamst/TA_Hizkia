@@ -70,14 +70,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('kategori', KategoriController::class);
     Route::post('kategori/getEditForm', [KategoriController::class, 'getEditForm'])->name('kategori.getEditForm');
 
-    Route::resource('pembelian', PembelianController::class);
+    // Pembelian routes - custom routes MUST come before resource routes
     Route::get('pembelian/listData', [PembelianController::class, 'listData'])->name('pembelian.listData');
     Route::post('pembelian/getEditForm', [PembelianController::class, 'getEditForm'])->name('pembelian.getEditForm');
+    Route::resource('pembelian', PembelianController::class);
 
-    Route::resource('penjualan', PenjualanController::class);
+    // Penjualan routes - custom routes MUST come before resource routes
     Route::get('penjualan/listData', [PenjualanController::class, 'listData'])->name('penjualan.listData');
     Route::post('penjualan/getEditForm', [PenjualanController::class, 'getEditForm'])->name('penjualan.getEditForm');
     Route::post('penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
+    Route::resource('penjualan', PenjualanController::class);
 
     Route::resource('posmesin', PosMesinController::class);
     Route::post('posmesin/getEditForm', [PosMesinController::class, 'getEditForm'])->name('posmesin.getEditForm');

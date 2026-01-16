@@ -90,6 +90,18 @@ class CashFlowController extends Controller
     }
 
     /**
+     * Get edit form via AJAX
+     */
+    public function getEditForm(Request $request)
+    {
+        $cashflow = CashFlow::findOrFail($request->id);
+
+        $html = view('cashflow.modal', compact('cashflow'))->render();
+
+        return response()->json(['msg' => $html]);
+    }
+
+    /**
      * Memperbarui cashflow yang ada di database.
      */
     public function update(Request $request, $id)

@@ -51,7 +51,6 @@
                                 <th><i class="fas fa-hashtag mr-2"></i>ID</th>
                                 <th><i class="fas fa-calendar mr-2"></i>Tanggal</th>
                                 <th><i class="fas fa-truck mr-2"></i>Supplier</th>
-                                <th><i class="fas fa-tag mr-2"></i>Tipe</th>
                                 <th><i class="fas fa-box mr-2"></i>Produk</th>
                                 <th><i class="fas fa-money-bill-wave mr-2"></i>Total</th>
                                 <th style="text-align: center;"><i class="fas fa-cog mr-2"></i>Aksi</th>
@@ -75,11 +74,6 @@
                                 <td style="color: #333;">
                                     <i class="fas fa-building mr-1" style="color: #667eea;"></i>
                                     {{ $pembelian->supplier->nama ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <span class="badge" style="padding: 0.4rem 0.8rem; border-radius: 8px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; font-size: 0.85rem;">
-                                        {{ $pembelian->tipe->keterangan ?? 'N/A' }}
-                                    </span>
                                 </td>
                                 <td>
                                     @if($pembelian->detils->count() > 0)
@@ -147,7 +141,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center" style="padding: 3rem; color: #999;">
+                                <td colspan="6" class="text-center" style="padding: 3rem; color: #999;">
                                     <i class="fas fa-inbox" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem; display: block;"></i>
                                     <h5 style="color: #666; font-weight: 600;">Belum Ada Riwayat Pembelian</h5>
                                     <p style="color: #999; font-size: 0.9rem;">Mulai tambahkan pembelian produk dari supplier</p>
@@ -241,6 +235,24 @@
                     text: 'Gagal memuat detail pembelian',
                     confirmButtonColor: '#d33'
                 });
+            }
+        });
+    }
+
+    function confirmDelete(formId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Pembelian akan dihapus dan stok produk akan dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                LoaderUtil.show('Menghapus pembelian...');
+                document.getElementById(formId).submit();
             }
         });
     }
