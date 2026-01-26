@@ -168,20 +168,7 @@ Cashflow
 <script>
     $(document).ready(function() {
         $('#cashflowTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-            ]
+            order: [[0, 'desc']]
         });
 
         // Form Tambah Cash In

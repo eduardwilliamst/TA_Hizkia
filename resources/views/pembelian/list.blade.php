@@ -180,23 +180,6 @@
 <script>
     $(document).ready(function() {
         $('#pembelianTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    },
-                    title: 'Riwayat Pembelian - ' + new Date().toLocaleDateString('id-ID')
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    },
-                    title: 'Riwayat Pembelian - ' + new Date().toLocaleDateString('id-ID')
-                },
-            ],
             order: [[0, 'desc']],
             pageLength: 20,
             language: {

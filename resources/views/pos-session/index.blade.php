@@ -141,23 +141,6 @@
 <script>
     $(document).ready(function() {
         $('#sessionTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    },
-                    title: 'Riwayat Sesi POS - ' + new Date().toLocaleDateString('id-ID')
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    },
-                    title: 'Riwayat Sesi POS - ' + new Date().toLocaleDateString('id-ID')
-                },
-            ],
             order: [[0, 'desc']],
             pageLength: 20,
             language: {

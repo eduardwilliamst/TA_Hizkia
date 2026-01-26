@@ -180,20 +180,7 @@ List Pembelian
 
     $(document).ready(function() {
         $('#pembelianTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-            ]
+            order: [[0, 'desc']]
         });
 
         // Set default date to today

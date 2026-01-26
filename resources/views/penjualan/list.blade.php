@@ -61,20 +61,7 @@ List Penjualan
 <script>
     $(document).ready(function() {
         $('#penjualanTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-            ]
+            order: [[0, 'desc']]
         });
     });
 </script>
