@@ -103,20 +103,6 @@ Diskon
     </div>
 </div>
 
-<!-- Modal Tambah Data By Excel -->
-<div class="modal fade" id="addDataModalExcel" tabindex="-1" role="dialog" aria-labelledby="addDataModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addDataModalLabel">Tambah Data Diskon By Excel</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEditDiskon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="modalContent">
@@ -130,20 +116,7 @@ Diskon
     $(document).ready(function() {
 
         $('#diskonTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-            ]
+            order: [[0, 'desc']]
         });
 
     });
