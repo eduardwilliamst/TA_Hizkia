@@ -29,7 +29,6 @@ class PenjualanController extends Controller
     public function listData()
     {
         $datas = Penjualan::all();
-        dd($datas);
 
         return view('penjualan.list', compact('datas'));
     }

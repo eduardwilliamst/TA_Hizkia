@@ -81,28 +81,6 @@
 
                         <hr style="border-color: #e3e6f0;">
 
-                        <!-- Akun Pelanggan Section -->
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 style="margin: 0; font-weight: 600; color: #333;">
-                                    <i class="fas fa-user-circle mr-2" style="color: #f6c23e;"></i>Akun Pelanggan
-                                </h5>
-                                <h5 style="margin: 0; font-weight: 700; color: #666;">
-                                    Rp 0,00
-                                </h5>
-                            </div>
-                            <div class="pl-4">
-                                <div class="d-flex justify-content-between py-1">
-                                    <span style="color: #666;">Dihitung</span>
-                                    <span style="color: #333;">Rp 0,00</span>
-                                </div>
-                                <div class="d-flex justify-content-between py-1">
-                                    <span style="color: #666;">Selisih</span>
-                                    <span style="color: #666;">Rp 0,00</span>
-                                </div>
-                            </div>
-                        </div>
-
                         <hr style="border-color: #e3e6f0;">
 
                         <!-- Jumlah Tunai Input -->
@@ -161,9 +139,6 @@
                             <i class="fas fa-arrow-left mr-2"></i>Batal
                         </button>
                         <div>
-                            <button type="button" class="btn btn-outline-primary btn-lg mr-2" onclick="downloadSaleReport()">
-                                <i class="fas fa-download mr-2"></i>Sale Hari ⬇
-                            </button>
                             <button type="submit" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.75rem 2rem; border: none; font-weight: 600;">
                                 <i class="fas fa-check-circle mr-2"></i>Tutup Kasir & Logout
                             </button>
