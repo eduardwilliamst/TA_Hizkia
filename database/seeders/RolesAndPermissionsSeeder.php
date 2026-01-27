@@ -16,7 +16,6 @@ class RolesAndPermissionsSeeder extends Seeder
         // Create roles
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $kasir = Role::firstOrCreate(['name' => 'kasir', 'guard_name' => 'web']);
-        $supervisor = Role::firstOrCreate(['name' => 'supervisor', 'guard_name' => 'web']);
 
         // Create permissions
         $permissions = [
@@ -66,20 +65,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'view categories',
             'view sales',
             'create sales',
-        ]);
-
-        // Supervisor has more permissions than kasir
-        $supervisor->givePermissionTo([
-            'view products',
-            'create products',
-            'edit products',
-            'view categories',
-            'create categories',
-            'edit categories',
-            'view sales',
-            'create sales',
-            'view cashflow',
-            'view reports',
         ]);
     }
 }

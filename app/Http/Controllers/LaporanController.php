@@ -200,6 +200,286 @@ class LaporanController extends Controller
     }
 
     /**
+     * View Laporan Stok (Web)
+     */
+    public function viewLaporanStok(Request $request)
+    {
+        $query = Produk::with('kategori');
+
+        switch ($request->filter_stok) {
+            case 'rendah':
+                $query->where('stok', '<', 10)->where('stok', '>', 0);
+                break;
+            case 'habis':
+                $query->where('stok', 0);
+                break;
+            case 'tinggi':
+                $query->where('stok', '>', 100);
+                break;
+        }
+
+        if ($request->kategori_id) {
+            $query->where('kategori_idkategori', $request->kategori_id);
+        }
+
+        $produks = $query->orderBy('stok', 'asc')->get();
+
+        $totalProduk = $produks->count();
+        $totalNilaiInventori = $produks->sum(function($produk) {
+            return $produk->stok * $produk->harga;
+        });
+        $produkStokRendah = Produk::where('stok', '<', 10)->where('stok', '>', 0)->count();
+        $produkStokHabis = Produk::where('stok', 0)->count();
+
+        $categoryBreakdown = $produks->groupBy('kategori_idkategori')->map(function($items) {
+            return [
+                'nama' => $items->first()->kategori->nama ?? 'Unknown',
+                'count' => $items->count(),
+                'total_stok' => $items->sum('stok'),
+                'nilai' => $items->sum(function($item) {
+                    return $item->stok * $item->harga;
+                })
+            ];
+        });
+
+        $data = [
+            'filterStok' => $this->getFilterStokName($request->filter_stok),
+            'kategori' => $request->kategori_id ? Kategori::find($request->kategori_id)->nama : 'Semua Kategori',
+            'produks' => $produks,
+            'totalProduk' => $totalProduk,
+            'totalNilaiInventori' => $totalNilaiInventori,
+            'produkStokRendah' => $produkStokRendah,
+            'produkStokHabis' => $produkStokHabis,
+            'categoryBreakdown' => $categoryBreakdown,
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.stok', $data);
+    }
+
+    /**
+     * View Laporan Omzet (Web)
+     */
+    public function viewLaporanOmzet(Request $request)
+    {
+        $dateRange = $this->getDateRange($request->periode ?? 'this_month', $request->tanggal_mulai, $request->tanggal_akhir);
+
+        $query = Penjualan::whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
+        $penjualans = $query->with(['penjualanDetils.produk', 'user'])->get();
+
+        $omzetByDate = $penjualans->groupBy(function($item) {
+            return Carbon::parse($item->created_at)->format('Y-m-d');
+        })->map(function($items, $date) {
+            return [
+                'tanggal' => Carbon::parse($date)->format('d/m/Y'),
+                'transaksi' => $items->count(),
+                'omzet' => $items->sum('total_harga'),
+                'cash' => $items->where('cara_bayar', 'cash')->sum('total_harga'),
+                'credit' => $items->where('cara_bayar', 'credit')->sum('total_harga'),
+            ];
+        })->sortKeys();
+
+        $totalOmzet = $penjualans->sum('total_harga');
+        $totalTransaksi = $penjualans->count();
+        $rataRataPerHari = $omzetByDate->count() > 0 ? $totalOmzet / $omzetByDate->count() : 0;
+        $hariTertinggi = $omzetByDate->sortByDesc('omzet')->first();
+        $hariTerendah = $omzetByDate->sortBy('omzet')->first();
+
+        $data = [
+            'periode' => $this->getPeriodeName($request->periode ?? 'this_month', $dateRange),
+            'dateRange' => $dateRange,
+            'omzetByDate' => $omzetByDate,
+            'totalOmzet' => $totalOmzet,
+            'totalTransaksi' => $totalTransaksi,
+            'rataRataPerHari' => $rataRataPerHari,
+            'hariTertinggi' => $hariTertinggi,
+            'hariTerendah' => $hariTerendah,
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.omzet', $data);
+    }
+
+    /**
+     * View Laporan Laba Rugi (Web)
+     */
+    public function viewLaporanLabaRugi(Request $request)
+    {
+        $dateRange = $this->getDateRange($request->periode ?? 'this_month', $request->tanggal_mulai, $request->tanggal_akhir);
+
+        $penjualans = Penjualan::whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+            ->with(['penjualanDetils.produk'])
+            ->get();
+
+        $totalPendapatan = $penjualans->sum('total_harga');
+        $totalDiskon = $penjualans->sum('total_diskon');
+        $pendapatanBersih = $totalPendapatan - $totalDiskon;
+
+        $hpp = 0;
+        foreach ($penjualans as $penjualan) {
+            foreach ($penjualan->penjualanDetils as $detil) {
+                $hpp += ($detil->hpp ?? 0) * $detil->jumlah;
+            }
+        }
+
+        $labaBersih = $pendapatanBersih - $hpp;
+        $marginLaba = $pendapatanBersih > 0 ? ($labaBersih / $pendapatanBersih) * 100 : 0;
+
+        $cashRevenue = $penjualans->where('cara_bayar', 'cash')->sum('total_harga');
+        $creditRevenue = $penjualans->where('cara_bayar', 'credit')->sum('total_harga');
+
+        $productProfit = [];
+        foreach ($penjualans as $penjualan) {
+            foreach ($penjualan->penjualanDetils as $detil) {
+                if ($detil->produk) {
+                    $produkId = $detil->produk->idproduk;
+                    if (!isset($productProfit[$produkId])) {
+                        $productProfit[$produkId] = [
+                            'nama' => $detil->produk->nama,
+                            'qty' => 0,
+                            'revenue' => 0,
+                            'hpp' => 0,
+                            'profit' => 0,
+                        ];
+                    }
+                    $productProfit[$produkId]['qty'] += $detil->jumlah;
+                    $productProfit[$produkId]['revenue'] += $detil->sub_total;
+                    $cogs = ($detil->hpp ?? 0) * $detil->jumlah;
+                    $productProfit[$produkId]['hpp'] += $cogs;
+                    $productProfit[$produkId]['profit'] += ($detil->sub_total - $cogs);
+                }
+            }
+        }
+        $productProfit = collect($productProfit)->sortByDesc('profit')->take(10);
+
+        $data = [
+            'periode' => $this->getPeriodeName($request->periode ?? 'this_month', $dateRange),
+            'dateRange' => $dateRange,
+            'totalPendapatan' => $totalPendapatan,
+            'totalDiskon' => $totalDiskon,
+            'pendapatanBersih' => $pendapatanBersih,
+            'hpp' => $hpp,
+            'labaBersih' => $labaBersih,
+            'marginLaba' => $marginLaba,
+            'cashRevenue' => $cashRevenue,
+            'creditRevenue' => $creditRevenue,
+            'productProfit' => $productProfit,
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.laba-rugi', $data);
+    }
+
+    /**
+     * View Laporan Detail Transaksi (Web)
+     */
+    public function viewLaporanDetailTransaksi(Request $request)
+    {
+        $dateRange = $this->getDateRange($request->periode ?? 'this_month', $request->tanggal_mulai, $request->tanggal_akhir);
+
+        $query = Penjualan::whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
+
+        if ($request->user_id) {
+            $query->where('user_iduser', $request->user_id);
+        }
+
+        if ($request->cara_bayar) {
+            $query->where('cara_bayar', $request->cara_bayar);
+        }
+
+        $penjualans = $query->with(['penjualanDetils.produk', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data = [
+            'periode' => $this->getPeriodeName($request->periode ?? 'this_month', $dateRange),
+            'dateRange' => $dateRange,
+            'penjualans' => $penjualans,
+            'totalTransaksi' => $penjualans->count(),
+            'totalNilai' => $penjualans->sum('total_harga'),
+            'filter_kasir' => $request->user_id ? User::find($request->user_id)->name : 'Semua Kasir',
+            'filter_bayar' => $request->cara_bayar ? strtoupper($request->cara_bayar) : 'Semua Metode',
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.detail-transaksi', $data);
+    }
+
+    /**
+     * View Laporan Inventory (Web)
+     */
+    public function viewLaporanInventory(Request $request)
+    {
+        $query = Produk::with('kategori');
+
+        if ($request->kategori_id) {
+            $query->where('kategori_idkategori', $request->kategori_id);
+        }
+
+        $produks = $query->orderBy('nama', 'asc')->get();
+
+        $totalProduk = $produks->count();
+        $totalNilaiModal = $produks->sum(function($produk) {
+            return ($produk->harga_beli ?? 0) * $produk->stok;
+        });
+        $totalNilaiJual = $produks->sum(function($produk) {
+            return $produk->harga * $produk->stok;
+        });
+        $potensiLaba = $totalNilaiJual - $totalNilaiModal;
+
+        $stokHabis = $produks->where('stok', 0)->count();
+        $stokRendah = $produks->where('stok', '>', 0)->where('stok', '<', 10)->count();
+        $stokAman = $produks->where('stok', '>=', 10)->count();
+
+        $categoryInventory = $produks->groupBy('kategori_idkategori')->map(function($items) {
+            return [
+                'nama' => $items->first()->kategori->nama ?? 'Unknown',
+                'jumlah_produk' => $items->count(),
+                'total_stok' => $items->sum('stok'),
+                'nilai_modal' => $items->sum(function($item) {
+                    return ($item->harga_beli ?? 0) * $item->stok;
+                }),
+                'nilai_jual' => $items->sum(function($item) {
+                    return $item->harga * $item->stok;
+                }),
+            ];
+        })->sortByDesc('nilai_jual');
+
+        $topValueProducts = $produks->map(function($produk) {
+            return [
+                'nama' => $produk->nama,
+                'stok' => $produk->stok,
+                'harga_beli' => $produk->harga_beli ?? 0,
+                'harga_jual' => $produk->harga,
+                'nilai_modal' => ($produk->harga_beli ?? 0) * $produk->stok,
+                'nilai_jual' => $produk->harga * $produk->stok,
+            ];
+        })->sortByDesc('nilai_jual')->take(10);
+
+        $data = [
+            'kategori' => $request->kategori_id ? Kategori::find($request->kategori_id)->nama : 'Semua Kategori',
+            'produks' => $produks,
+            'totalProduk' => $totalProduk,
+            'totalNilaiModal' => $totalNilaiModal,
+            'totalNilaiJual' => $totalNilaiJual,
+            'potensiLaba' => $potensiLaba,
+            'stokHabis' => $stokHabis,
+            'stokRendah' => $stokRendah,
+            'stokAman' => $stokAman,
+            'categoryInventory' => $categoryInventory,
+            'topValueProducts' => $topValueProducts,
+            'generatedAt' => Carbon::now()->format('d/m/Y H:i'),
+            'generatedBy' => auth()->user()->name,
+        ];
+
+        return view('laporan.view.inventory', $data);
+    }
+
+    /**
      * Generate PDF Laporan Stok
      */
     public function laporanStok(Request $request)

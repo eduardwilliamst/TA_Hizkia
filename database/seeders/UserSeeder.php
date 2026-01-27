@@ -39,15 +39,5 @@ class UserSeeder extends Seeder
             ]
         );
         $kasir->assignRole('kasir');
-
-        // Create supervisor user
-        $supervisor = User::firstOrCreate(
-            ['email' => 'supervisor@mail.com'],
-            [
-                'name' => 'Supervisor',
-                'password' => bcrypt('password'),
-            ]
-        );
-        $supervisor->assignRole('supervisor');
     }
 }

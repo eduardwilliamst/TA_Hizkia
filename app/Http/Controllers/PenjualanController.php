@@ -28,9 +28,9 @@ class PenjualanController extends Controller
 
     public function listData()
     {
-        $datas = Penjualan::all();
+        $penjualans = Penjualan::orderBy('tanggal', 'desc')->get();
 
-        return view('penjualan.list', compact('datas'));
+        return view('penjualan.list', compact('penjualans'));
     }
 
     public function data(Request $request)

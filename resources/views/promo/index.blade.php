@@ -349,7 +349,7 @@
 </style>
 @endsection
 
-@section('scripts')
+@section('javascript')
 <script>
     // Toggle form fields based on promo type
     document.querySelectorAll('input[name="tipe"]').forEach(radio => {

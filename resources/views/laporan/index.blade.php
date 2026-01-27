@@ -14,7 +14,7 @@
     <!-- Info Banner -->
     <div class="alert alert-info" style="border-left: 4px solid #0d6efd; background: rgba(13, 110, 253, 0.1); border-radius: 4px;">
         <i class="fas fa-info-circle mr-2"></i>
-        <strong>Pilih laporan yang ingin Anda lihat.</strong> Klik pada card untuk membuka modal filter, kemudian generate PDF.
+        <strong>Pilih laporan yang ingin Anda lihat.</strong> Klik pada card untuk membuka modal filter, kemudian lihat laporan.
     </div>
 
     <!-- Laporan Wajib Section -->
@@ -45,10 +45,10 @@
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(102, 126, 234, 0.1); color: #667eea; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
                         <span style="color: #667eea; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -73,10 +73,10 @@
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(245, 87, 108, 0.1); color: #f5576c; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
                         <span style="color: #f5576c; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -100,11 +100,11 @@
                         Omzet per hari, total transaksi, cash vs credit, dan hari terbaik/terburuk.
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge" style="background: rgba(0, 242, 254, 0.1); color: #00f2fe; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                        <span class="badge" style="background: rgba(79, 172, 254, 0.1); color: #4facfe; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
-                        <span style="color: #00f2fe; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                        <span style="color: #4facfe; font-weight: 600; font-size: 0.9rem;">
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -140,10 +140,10 @@
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(67, 233, 123, 0.1); color: #43e97b; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
                         <span style="color: #43e97b; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -168,10 +168,10 @@
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(250, 112, 154, 0.1); color: #fa709a; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
                         <span style="color: #fa709a; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -196,10 +196,10 @@
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="badge" style="background: rgba(166, 193, 238, 0.2); color: #a6c1ee; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
-                            <i class="fas fa-file-pdf mr-1"></i>PDF
+                            <i class="fas fa-eye mr-1"></i>View
                         </span>
                         <span style="color: #a6c1ee; font-weight: 600; font-size: 0.9rem;">
-                            Klik untuk generate <i class="fas fa-arrow-right ml-1"></i>
+                            Klik untuk lihat <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
                 </div>
@@ -220,12 +220,11 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.penjualan') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanPenjualan">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
-                        <select name="periode" class="form-control" required>
+                        <select name="periode" class="form-control periode-select" data-target="penjualan" required>
                             <option value="today">Hari Ini</option>
                             <option value="yesterday">Kemarin</option>
                             <option value="this_week">Minggu Ini</option>
@@ -235,7 +234,7 @@
                             <option value="custom">Custom Range</option>
                         </select>
                     </div>
-                    <div id="custom-date-range" style="display: none;">
+                    <div id="custom-date-penjualan" class="custom-date-range" style="display: none;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -265,11 +264,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-info" onclick="viewLaporanPenjualan(this.form)">
-                        <i class="fas fa-chart-bar mr-2"></i>Lihat Laporan
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-file-pdf mr-2"></i>Download PDF
+                    <button type="button" class="btn btn-primary" onclick="viewLaporan('penjualan', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -289,8 +285,7 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.stok') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanStok">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Filter Stok</label>
@@ -313,8 +308,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn" style="background: #f5576c; color: white;">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    <button type="button" class="btn" style="background: #f5576c; color: white;" onclick="viewLaporan('stok', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -334,12 +329,11 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.omzet') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanOmzet">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
-                        <select name="periode" class="form-control" required>
+                        <select name="periode" class="form-control periode-select" data-target="omzet" required>
                             <option value="today">Hari Ini</option>
                             <option value="yesterday">Kemarin</option>
                             <option value="this_week">Minggu Ini</option>
@@ -349,7 +343,7 @@
                             <option value="custom">Custom Range</option>
                         </select>
                     </div>
-                    <div id="custom-date-range-omzet" style="display: none;">
+                    <div id="custom-date-omzet" class="custom-date-range" style="display: none;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -368,8 +362,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn" style="background: #00f2fe; color: white;">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    <button type="button" class="btn" style="background: #4facfe; color: white;" onclick="viewLaporan('omzet', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -389,12 +383,11 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.laba-rugi') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanLabaRugi">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
-                        <select name="periode" class="form-control" required>
+                        <select name="periode" class="form-control periode-select" data-target="laba-rugi" required>
                             <option value="today">Hari Ini</option>
                             <option value="yesterday">Kemarin</option>
                             <option value="this_week">Minggu Ini</option>
@@ -404,7 +397,7 @@
                             <option value="custom">Custom Range</option>
                         </select>
                     </div>
-                    <div id="custom-date-range-laba" style="display: none;">
+                    <div id="custom-date-laba-rugi" class="custom-date-range" style="display: none;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -423,8 +416,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn" style="background: #43e97b; color: white;">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    <button type="button" class="btn" style="background: #43e97b; color: white;" onclick="viewLaporan('laba-rugi', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -444,12 +437,11 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.detail-transaksi') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanDetailTransaksi">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Periode Laporan</label>
-                        <select name="periode" class="form-control" required>
+                        <select name="periode" class="form-control periode-select" data-target="detail-transaksi" required>
                             <option value="today">Hari Ini</option>
                             <option value="yesterday">Kemarin</option>
                             <option value="this_week">Minggu Ini</option>
@@ -459,7 +451,7 @@
                             <option value="custom">Custom Range</option>
                         </select>
                     </div>
-                    <div id="custom-date-range-transaksi" style="display: none;">
+                    <div id="custom-date-detail-transaksi" class="custom-date-range" style="display: none;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -497,8 +489,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn" style="background: #fa709a; color: white;">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    <button type="button" class="btn" style="background: #fa709a; color: white;" onclick="viewLaporan('detail-transaksi', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -518,8 +510,7 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('laporan.inventory') }}" method="POST" target="_blank">
-                @csrf
+            <form id="formLaporanInventory">
                 <div class="modal-body" style="padding: 2rem;">
                     <div class="form-group">
                         <label style="font-weight: 600; color: #5a5c69;">Kategori (Opsional)</label>
@@ -533,8 +524,8 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e3e6f0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn" style="background: #a6c1ee; color: white;">
-                        <i class="fas fa-file-pdf mr-2"></i>Generate PDF
+                    <button type="button" class="btn" style="background: #a6c1ee; color: white;" onclick="viewLaporan('inventory', this.form)">
+                        <i class="fas fa-eye mr-2"></i>Lihat Laporan
                     </button>
                 </div>
             </form>
@@ -542,6 +533,9 @@
     </div>
 </div>
 
+@endsection
+
+@section('style')
 <style>
 .report-card {
     overflow: hidden;
@@ -553,19 +547,28 @@
     border-color: var(--primary-color) !important;
 }
 
-select[name="periode"] {
+select.form-control {
     transition: border-color 0.15s ease;
 }
 
-select[name="periode"]:focus {
+select.form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem var(--primary-light);
 }
-</style>
 
+.custom-date-range {
+    background: #f8f9fc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+</style>
+@endsection
+
+@section('javascript')
 <script>
-// Function to view Laporan Penjualan with charts - Define globally
-function viewLaporanPenjualan(form) {
+// Function to view laporan
+function viewLaporan(type, form) {
     const formData = new FormData(form);
     const params = new URLSearchParams();
 
@@ -575,61 +578,49 @@ function viewLaporanPenjualan(form) {
         }
     }
 
-    const url = '{{ route("laporan.view.penjualan") }}?' + params.toString();
+    const routes = {
+        'penjualan': '{{ route("laporan.view.penjualan") }}',
+        'stok': '{{ route("laporan.view.stok") }}',
+        'omzet': '{{ route("laporan.view.omzet") }}',
+        'laba-rugi': '{{ route("laporan.view.laba-rugi") }}',
+        'detail-transaksi': '{{ route("laporan.view.detail-transaksi") }}',
+        'inventory': '{{ route("laporan.view.inventory") }}'
+    };
+
+    const url = routes[type] + '?' + params.toString();
     window.open(url, '_blank');
 
     // Close modal
-    $('#modalLaporanPenjualan').modal('hide');
+    $('.modal').modal('hide');
 }
 
 $(document).ready(function() {
-    // Show/hide custom date range for all periode selects
-    $('#modalLaporanPenjualan select[name="periode"]').on('change', function() {
+    // Handle periode select change for all modals
+    $('.periode-select').on('change', function() {
+        const target = $(this).data('target');
+        const customDateDiv = $('#custom-date-' + target);
+        const form = $(this).closest('form');
+
+        console.log('Periode changed to:', $(this).val(), 'Target:', target);
+
         if ($(this).val() === 'custom') {
-            $('#custom-date-range').slideDown();
-            $('#modalLaporanPenjualan input[name="tanggal_mulai"]').attr('required', true);
-            $('#modalLaporanPenjualan input[name="tanggal_akhir"]').attr('required', true);
+            customDateDiv.slideDown(300);
+            form.find('input[name="tanggal_mulai"]').attr('required', true);
+            form.find('input[name="tanggal_akhir"]').attr('required', true);
         } else {
-            $('#custom-date-range').slideUp();
-            $('#modalLaporanPenjualan input[name="tanggal_mulai"]').removeAttr('required');
-            $('#modalLaporanPenjualan input[name="tanggal_akhir"]').removeAttr('required');
+            customDateDiv.slideUp(300);
+            form.find('input[name="tanggal_mulai"]').removeAttr('required').val('');
+            form.find('input[name="tanggal_akhir"]').removeAttr('required').val('');
         }
     });
 
-    $('#modalLaporanOmzet select[name="periode"]').on('change', function() {
-        if ($(this).val() === 'custom') {
-            $('#custom-date-range-omzet').slideDown();
-            $('#modalLaporanOmzet input[name="tanggal_mulai"]').attr('required', true);
-            $('#modalLaporanOmzet input[name="tanggal_akhir"]').attr('required', true);
-        } else {
-            $('#custom-date-range-omzet').slideUp();
-            $('#modalLaporanOmzet input[name="tanggal_mulai"]').removeAttr('required');
-            $('#modalLaporanOmzet input[name="tanggal_akhir"]').removeAttr('required');
-        }
-    });
-
-    $('#modalLaporanLabaRugi select[name="periode"]').on('change', function() {
-        if ($(this).val() === 'custom') {
-            $('#custom-date-range-laba').slideDown();
-            $('#modalLaporanLabaRugi input[name="tanggal_mulai"]').attr('required', true);
-            $('#modalLaporanLabaRugi input[name="tanggal_akhir"]').attr('required', true);
-        } else {
-            $('#custom-date-range-laba').slideUp();
-            $('#modalLaporanLabaRugi input[name="tanggal_mulai"]').removeAttr('required');
-            $('#modalLaporanLabaRugi input[name="tanggal_akhir"]').removeAttr('required');
-        }
-    });
-
-    $('#modalLaporanDetailTransaksi select[name="periode"]').on('change', function() {
-        if ($(this).val() === 'custom') {
-            $('#custom-date-range-transaksi').slideDown();
-            $('#modalLaporanDetailTransaksi input[name="tanggal_mulai"]').attr('required', true);
-            $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').attr('required', true);
-        } else {
-            $('#custom-date-range-transaksi').slideUp();
-            $('#modalLaporanDetailTransaksi input[name="tanggal_mulai"]').removeAttr('required');
-            $('#modalLaporanDetailTransaksi input[name="tanggal_akhir"]').removeAttr('required');
-        }
+    // Reset form when modal is closed
+    $('.modal').on('hidden.bs.modal', function() {
+        const form = $(this).find('form');
+        form[0].reset();
+        form.find('.custom-date-range').hide();
+        form.find('input[name="tanggal_mulai"]').removeAttr('required');
+        form.find('input[name="tanggal_akhir"]').removeAttr('required');
     });
 });
 </script>

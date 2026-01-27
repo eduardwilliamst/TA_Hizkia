@@ -11,7 +11,6 @@ use App\Http\Controllers\PosMesinController;
 use App\Http\Controllers\PosSessionController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PromoController;
-use App\Http\Controllers\DiskonController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TipeController;
 use App\Http\Controllers\Auth\LoginController;
@@ -58,10 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('cart/add', [PenjualanController::class, 'addToCart'])->name('penjualan.addToCart');
     Route::post('cart/checkout', [PenjualanController::class, 'checkout'])->name('penjualan.checkout');
     Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-    // Diskon routes - custom routes MUST come before resource routes
-    Route::post('diskon/getEditForm', [DiskonController::class, 'getEditForm'])->name('diskon.getEditForm');
-    Route::resource('diskon', DiskonController::class);
 
     // Cashflow routes - custom routes MUST come before resource routes
     Route::post('cashflow/getEditForm', [CashFlowController::class, 'getEditForm'])->name('cashflow.getEditForm');
@@ -121,14 +116,11 @@ Route::middleware(['auth'])->group(function () {
     // Laporan routes
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
 
-    // Web views (with charts)
+    // Web views for reports
     Route::get('laporan/view/penjualan', [LaporanController::class, 'viewLaporanPenjualan'])->name('laporan.view.penjualan');
-
-    // PDF downloads (formal, black & white)
-    Route::post('laporan/penjualan', [LaporanController::class, 'laporanPenjualan'])->name('laporan.penjualan');
-    Route::post('laporan/stok', [LaporanController::class, 'laporanStok'])->name('laporan.stok');
-    Route::post('laporan/omzet', [LaporanController::class, 'laporanOmzet'])->name('laporan.omzet');
-    Route::post('laporan/laba-rugi', [LaporanController::class, 'laporanLabaRugi'])->name('laporan.laba-rugi');
-    Route::post('laporan/detail-transaksi', [LaporanController::class, 'laporanDetailTransaksi'])->name('laporan.detail-transaksi');
-    Route::post('laporan/inventory', [LaporanController::class, 'laporanInventory'])->name('laporan.inventory');
+    Route::get('laporan/view/stok', [LaporanController::class, 'viewLaporanStok'])->name('laporan.view.stok');
+    Route::get('laporan/view/omzet', [LaporanController::class, 'viewLaporanOmzet'])->name('laporan.view.omzet');
+    Route::get('laporan/view/laba-rugi', [LaporanController::class, 'viewLaporanLabaRugi'])->name('laporan.view.laba-rugi');
+    Route::get('laporan/view/detail-transaksi', [LaporanController::class, 'viewLaporanDetailTransaksi'])->name('laporan.view.detail-transaksi');
+    Route::get('laporan/view/inventory', [LaporanController::class, 'viewLaporanInventory'])->name('laporan.view.inventory');
 });

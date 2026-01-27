@@ -331,13 +331,6 @@
                             </a>
                         </li>
 
-                        <!-- Diskon -->
-                        <li class="nav-item">
-                            <a href="{{ route('diskon.index') }}" class="nav-link {{ Request::is('diskon*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-percent"></i>
-                                <p>Diskon</p>
-                            </a>
-                        </li>
                         @else
                         <!-- INVENTORY (Kasir - Limited) -->
                         <li class="nav-header" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 1rem; margin-top: 1rem;">
