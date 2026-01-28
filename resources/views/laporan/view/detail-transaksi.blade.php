@@ -2,6 +2,19 @@
 
 @section('title', 'Laporan Detail Transaksi')
 
+@section('css')
+<style>
+    .detail-row td:last-child {
+        position: relative;
+        left: 0;
+        right: 0;
+    }
+    .detail-row td:last-child table {
+        width: 100%;
+    }
+</style>
+@endsection
+
 @section('contents')
 <div class="container-fluid">
     <!-- Header -->
@@ -104,13 +117,13 @@
                     <tbody>
                         @php $no = 1; @endphp
                         @forelse($penjualans as $penjualan)
-                        <tr>
+                        <tr class="parent-row">
                             <td>{{ $no++ }}</td>
                             <td>#{{ $penjualan->idpenjualan }}</td>
                             <td>{{ \Carbon\Carbon::parse($penjualan->created_at)->format('d/m/Y H:i') }}</td>
                             <td>{{ $penjualan->user->name ?? '-' }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-info" type="button" data-toggle="collapse" data-target="#items-{{ $penjualan->idpenjualan }}">
+                                <button class="btn btn-sm btn-outline-info toggle-details" type="button" data-id="{{ $penjualan->idpenjualan }}">
                                     <i class="fas fa-eye mr-1"></i>{{ $penjualan->penjualanDetils->sum('jumlah') }} item
                                 </button>
                             </td>
@@ -124,8 +137,15 @@
                             <td>Rp {{ number_format($penjualan->total_diskon, 0, ',', '.') }}</td>
                             <td class="font-weight-bold">Rp {{ number_format($penjualan->total_harga, 0, ',', '.') }}</td>
                         </tr>
-                        <tr class="collapse" id="items-{{ $penjualan->idpenjualan }}">
-                            <td colspan="8" class="bg-light">
+                        <tr class="detail-row" id="items-{{ $penjualan->idpenjualan }}" style="display: none;">
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td style="display: none;"></td>
+                            <td class="bg-light p-0">
                                 <table class="table table-sm mb-0">
                                     <thead>
                                         <tr>
@@ -180,7 +200,8 @@
 @section('javascript')
 <script>
     $(document).ready(function() {
-        $('#transactionTable').DataTable({
+        // Initialize DataTable
+        var table = $('#transactionTable').DataTable({
             "pageLength": 25,
             "ordering": true,
             "order": [[2, 'desc']],
@@ -197,6 +218,33 @@
                     "next": "Selanjutnya",
                     "previous": "Sebelumnya"
                 }
+            },
+            "drawCallback": function() {
+                // Ensure detail rows stay hidden after page/sort/search
+                $('.detail-row').hide();
+                // Reset all icons to eye
+                $('.toggle-details i').removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        // Handle toggle details button
+        $(document).on('click', '.toggle-details', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var detailRow = $('#items-' + id);
+            var icon = $(this).find('i');
+
+            if (detailRow.is(':visible')) {
+                detailRow.hide();
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                // Hide all other detail rows first
+                $('.detail-row').hide();
+                $('.toggle-details i').removeClass('fa-eye-slash').addClass('fa-eye');
+
+                // Show clicked detail row
+                detailRow.show();
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
             }
         });
     });

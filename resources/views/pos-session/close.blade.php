@@ -38,10 +38,16 @@
                                     <span style="color: #666;">▸ Penjualan Cash</span>
                                     <span style="color: #333;">+ Rp {{ number_format($summary['cashSales'], 2, ',', '.') }}</span>
                                 </div>
-                                @if($summary['cashInOut'] != 0)
+                                @if($summary['manualCashIn'] > 0)
                                 <div class="d-flex justify-content-between py-1">
-                                    <span style="color: #666;">▸ Tunai Masuk / Keluar</span>
-                                    <span style="color: #333;">{{ $summary['cashInOut'] >= 0 ? '+' : '' }} Rp {{ number_format($summary['cashInOut'], 2, ',', '.') }}</span>
+                                    <span style="color: #666;">▸ Tunai Masuk</span>
+                                    <span style="color: #1cc88a;">+ Rp {{ number_format($summary['manualCashIn'], 2, ',', '.') }}</span>
+                                </div>
+                                @endif
+                                @if($summary['manualCashOut'] > 0)
+                                <div class="d-flex justify-content-between py-1">
+                                    <span style="color: #666;">▸ Tunai Keluar</span>
+                                    <span style="color: #e74a3b;">- Rp {{ number_format($summary['manualCashOut'], 2, ',', '.') }}</span>
                                 </div>
                                 @endif
                                 <div class="d-flex justify-content-between py-1">

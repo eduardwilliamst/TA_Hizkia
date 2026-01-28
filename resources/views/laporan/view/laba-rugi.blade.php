@@ -129,7 +129,9 @@
                     <h6 class="m-0 font-weight-bold text-primary">Pembayaran per Metode</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="paymentChart" style="height: 200px;"></canvas>
+                    <div style="position: relative; height: 250px; width: 100%;">
+                        <canvas id="paymentChart"></canvas>
+                    </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between mb-2">
                             <span><i class="fas fa-money-bill-wave text-success"></i> Cash</span>
@@ -207,15 +209,35 @@
                     datasets: [{
                         data: [{{ $cashRevenue }}, {{ $creditRevenue }}],
                         backgroundColor: ['#28a745', '#17a2b8'],
-                        borderWidth: 0
+                        borderWidth: 2,
+                        borderColor: '#fff'
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.5,
                     plugins: {
                         legend: {
                             position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'Rp ' + context.parsed.toLocaleString('id-ID');
+                                    return label;
+                                }
+                            }
                         }
                     }
                 }

@@ -98,7 +98,9 @@
                     <h6 class="m-0 font-weight-bold text-primary">Status Stok</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="stockStatusChart" style="height: 200px;"></canvas>
+                    <div style="position: relative; height: 250px; width: 100%;">
+                        <canvas id="stockStatusChart"></canvas>
+                    </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span><i class="fas fa-circle text-success mr-2"></i>Stok Aman (>=10)</span>
@@ -308,15 +310,29 @@
                     datasets: [{
                         data: [{{ $stokAman }}, {{ $stokRendah }}, {{ $stokHabis }}],
                         backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                        borderWidth: 0
+                        borderWidth: 2,
+                        borderColor: '#fff'
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.2,
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed + ' produk';
+                                    return label;
+                                }
+                            }
                         }
                     }
                 }
