@@ -303,17 +303,18 @@ class PosSessionController extends Controller
             ->sum('jumlah');
 
         $manualCashOut = $cashFlows->where('tipe', 'cash_out')->sum('jumlah');
+        // Cash out is stored as negative in DB, so just add them together
+        $cashInOut = $manualCashIn + $manualCashOut;
 
-        // Calculate expected cash total from the current balance_akhir in pos_session
-        // balance_akhir should already include: balance_awal + cash sales + manual cash in/out
-        $kasTotal = $posSession->balance_akhir ?? $posSession->balance_awal;
+        // Calculate expected cash total: balance_awal + cash sales + cash in/out
+        $kasTotal = $posSession->balance_awal + $cashSales + $cashInOut;
 
         $summary = [
             'totalPenjualan' => $totalPenjualan,
             'kasTotal' => $kasTotal,
             'balanceAwal' => $posSession->balance_awal,
-            'manualCashIn' => $manualCashIn,
-            'manualCashOut' => $manualCashOut,
+            'cashInOut' => $cashInOut,
+
             'kartuTotal' => $kartuTotal,
             'cashSales' => $cashSales,
             'jumlahTransaksi' => $penjualans->count(),
